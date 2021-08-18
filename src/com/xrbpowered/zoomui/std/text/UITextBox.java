@@ -2,6 +2,7 @@ package com.xrbpowered.zoomui.std.text;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.KeyEvent;
 
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
@@ -31,9 +32,36 @@ public class UITextBox extends UIPanView {
 	}
 	
 	protected UITextEdit createEditor() {
-		return new UITextEdit(this, true);
+		return new UITextEdit(this, true) {
+			public boolean onKeyPressed(char c, int code, int modifiers) {
+				switch(code) {
+					case KeyEvent.VK_ENTER:
+						checkPushHistory(HistoryAction.unspecified);
+						if(onEnter())
+							getBase().resetFocus();
+						repaint();
+						return true;
+					case KeyEvent.VK_ESCAPE:
+						checkPushHistory(HistoryAction.unspecified);
+						if(onEscape())
+							getBase().resetFocus();
+						repaint();
+						return true;
+					default:
+						return super.onKeyPressed(c, code, modifiers);
+				}
+			}
+		};
 	}
 
+	public boolean onEnter() {
+		return true;
+	}
+
+	public boolean onEscape() {
+		return true;
+	}
+	
 	@Override
 	public void layout() {
 		editor.setLocation(0, 0);
