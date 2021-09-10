@@ -107,8 +107,10 @@ public class UIFileBrowser extends UIContainer {
 		btnOk = new UIButton(this, "OK") {
 			@Override
 			public void onAction() {
-				if(resultHandler!=null)
-					resultHandler.onResult(view.selectedFile);
+				if(resultHandler!=null) {
+					File result = new File(view.getDirectory(), txtFileName.editor.getText());
+					resultHandler.onResult(result);
+				}
 			}
 		};
 		btnCancel = new UIButton(this, "Cancel") {
