@@ -7,6 +7,10 @@ import com.xrbpowered.zoomui.swing.SwingWindowFactory;
 
 public abstract class UIWindowFactory {
 
+	static {
+		System.setProperty("sun.java2d.uiScale", "1.0");
+	}
+	
 	public static UIWindowFactory instance = new SwingWindowFactory();
 	
 	private float baseScale = getSystemScale();
