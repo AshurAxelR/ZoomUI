@@ -1,4 +1,4 @@
-package com.xrbpowered.uitest;
+package com.xrbpowered.zoomui.examples;
 
 import java.awt.Color;
 
