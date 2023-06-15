@@ -51,9 +51,25 @@ public class UITextBox extends UIPanView {
 						return super.onKeyPressed(c, code, modifiers);
 				}
 			}
+			@Override
+			public void onFocusGained() {
+				UITextBox.this.onFocusGained();
+				super.onFocusGained();
+			}
+			@Override
+			public void onFocusLost() {
+				UITextBox.this.onFocusLost();
+				super.onFocusLost();
+			}
 		};
 	}
 
+	public void onFocusGained() {
+	}
+
+	public void onFocusLost() {
+	}
+	
 	public boolean onEnter() {
 		return true;
 	}
