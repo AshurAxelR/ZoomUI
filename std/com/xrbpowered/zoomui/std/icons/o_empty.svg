@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
 <path id="bg" style="fill:#f2f2f2;stroke:none" d="M 165,80 A 85,85 0 0 1 80,165 85,85 0 0 1 -5,80 85,85 0 0 1 80,-5 85,85 0 0 1 165,80 Z" />
-<path id="fg" style="fill:#000000;stroke:none" d="M 80,10 A 70,70 0 0 0 10,80 70,70 0 0 0 80,150 70,70 0 0 0 150,80 70,70 0 0 0 80,10 Z m -12.2,25.3 h 24.4 l -2.5,65 H 70.3 Z m 0.1,75.1 h 24.1 v 16.2 H 67.9 Z" />
+<path id="fg" style="fill:#000000;stroke:none" d="M 79.8 10 A 70 70 0 0 0 10 80 A 70 70 0 0 0 80 150 A 70 70 0 0 0 150 80 A 70 70 0 0 0 80 10 A 70 70 0 0 0 79.8 10 z M 80 20 A 60 60 0 0 1 140 80 A 60 60 0 0 1 80 140 A 60 60 0 0 1 20 80 A 60 60 0 0 1 80 20 z " />
 </svg>

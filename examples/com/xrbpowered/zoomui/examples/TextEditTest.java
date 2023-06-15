@@ -14,7 +14,7 @@ import com.xrbpowered.zoomui.swing.SwingWindowFactory;
 
 public class TextEditTest {
 	
-	private static final String TEST_INPUT = "src_samples/com/xrbpowered/uitest/TextEditTest.java";
+	private static final String TEST_INPUT = "examples/com/xrbpowered/zoomui/examples/TextEditTest.java";
 
 	public static byte[] loadBytes(InputStream s) throws IOException {
 		DataInputStream in = new DataInputStream(s);

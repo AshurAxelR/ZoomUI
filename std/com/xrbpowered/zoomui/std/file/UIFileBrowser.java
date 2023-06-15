@@ -60,13 +60,13 @@ public class UIFileBrowser extends UIContainer {
 		
 		// top pane
 		txtPath = new UITextBox(this);
-		btnBack = new UIToolButton(this, UIToolButton.iconPath+"back.svg", 16, 2) {
+		btnBack = new UIToolButton(this, UIToolButton.iconPath+"left.svg", 16, 2) {
 			public void onAction() {
 				if(history.undo())
 					repaint();
 			}
 		}.disable();
-		btnFwd = new UIToolButton(this, UIToolButton.iconPath+"forward.svg", 16, 2) {
+		btnFwd = new UIToolButton(this, UIToolButton.iconPath+"right.svg", 16, 2) {
 			public void onAction() {
 				if(history.redo())
 					repaint();
@@ -80,7 +80,7 @@ public class UIFileBrowser extends UIContainer {
 		};
 		
 		// left pane
-		btnUp = new UIToolButton(this, UIToolButton.iconPath+"up.svg", 32, 8) {
+		btnUp = new UIToolButton(this, UIToolButton.iconPath+"o_up.svg", 32, 8) {
 			public void onAction() {
 				if(view.upDirectory())
 					history.push();
@@ -94,7 +94,7 @@ public class UIFileBrowser extends UIContainer {
 				repaint();
 			}
 		};
-		btnRoots = new UIToolButton(this, UIToolButton.iconPath+"roots.svg", 32, 8) {
+		btnRoots = new UIToolButton(this, UIToolButton.iconPath+"computer.svg", 32, 8) {
 			public void onAction() {
 				if(view.setDirectory(null))
 					history.push();

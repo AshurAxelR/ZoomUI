@@ -13,6 +13,7 @@ public class SvgIcon {
 	public final String uri;
 	public IconPalette palette;
 	public final int baseSize;
+	public final boolean onlyFg;
 	
 	private Path2D fgPath;
 	private Path2D bgPath;
@@ -20,16 +21,21 @@ public class SvgIcon {
 
 	private HashMap<Integer, BufferedImage> cache = new HashMap<>();
 	
-	public SvgIcon(String uri, int baseSize, IconPalette palette) {
+	public SvgIcon(String uri, int baseSize, IconPalette palette, boolean onlyFg) {
 		this.uri = uri;
 		this.baseSize = baseSize;
 		this.palette = palette;
+		this.onlyFg = onlyFg;
+	}
+	
+	public SvgIcon(String uri, int baseSize, IconPalette palette) {
+		this(uri, baseSize, palette, false);
 	}
 	
 	public SvgIcon load() {
 		SvgFile svg = new SvgFile(uri);
 		fgPath = svg.getPath("fg", 1);
-		bgPath = svg.getPath("bg", 1);
+		bgPath = onlyFg ? null : svg.getPath("bg", 1);
 		bounds = fgPath.getBounds2D();
 		if(bgPath!=null)
 			bounds.add(bgPath.getBounds2D());
