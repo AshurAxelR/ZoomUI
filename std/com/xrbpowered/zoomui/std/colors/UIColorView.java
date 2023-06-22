@@ -22,7 +22,7 @@ public class UIColorView extends UIContainer {
 		private BufferedImage buffer = null;
 		private float bufferHue = -1f;
 		
-		private DragActor dragActor = new DragPointActor(this) {
+		protected DragActor dragActor = new DragPointActor(this) {
 			@Override
 			public boolean notifyMouseMove(float dx, float dy) {
 				super.notifyMouseMove(dx, dy);
@@ -50,25 +50,25 @@ public class UIColorView extends UIContainer {
 			this.hovery = -1;
 		}
 
-		public int getBoxSize(float pix) {
-			return (int)(getWidth()/pix);
+		protected Color getColorAtHover(float size) {
+			return getBoxColorAt(hoverx/size, hovery/size);
 		}
 		
-		public int getRgbAt(int x, int y, float hue, int size) {
-			float s = x/(float)size;
-			float v = 1f - y/(float)size;
-			return Color.HSBtoRGB(hue, s, v);
-		}
-		
-		private void updateBuffer(int size) {
+		protected void updateBuffer(int size) {
+			if(size<=0)
+				return;
 			buffer = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
 			bufferHue = getHue();
 			Graphics2D g = (Graphics2D) buffer.getGraphics();
 			for(int x=0; x<size; x++)
 				for(int y=0; y<size; y++) {
-					g.setColor(new Color(getRgbAt(x, y, bufferHue, size)));
+					g.setColor(getBoxColorAt(x/(float)size, y/(float)size));
 					g.fillRect(x, y, 1, 1);
 				}
+		}
+		
+		protected int getBoxSize(float pix) {
+			return (int)(getWidth()/pix);
 		}
 		
 		@Override
@@ -77,7 +77,8 @@ public class UIColorView extends UIContainer {
 			int size = getBoxSize(pix);
 			if(buffer==null || bufferHue!=getHue() || buffer.getWidth()!=size)
 				updateBuffer(size);
-			g.graph.drawImage(buffer, 0, 0, null);
+			if(buffer!=null)
+				g.graph.drawImage(buffer, 0, 0, null);
 			if(this.hoverx>=0 && hovery>=0) {
 				g.pushClip(0, 0, size, size);
 				g.pushAntialiasing(true);
@@ -86,7 +87,7 @@ public class UIColorView extends UIContainer {
 				g.setStroke(3f/pix);
 				g.setColor(new Color(0x77000000, true));
 				g.graph.drawOval(hoverx-r, hovery-r, r*2, r*2);
-				g.setColor(new Color(getRgbAt(hoverx, hovery, getHue(), size)));
+				g.setColor(getColorAtHover(size));
 				g.graph.fillOval(hoverx-r, hovery-r, r*2, r*2);
 				g.resetStroke();
 				g.setColor(Color.WHITE);
@@ -95,12 +96,12 @@ public class UIColorView extends UIContainer {
 				g.popPureStroke();
 				g.popClip();
 			}
-			g.finishPixelMode();
 			g.resetStroke();
-			g.drawRect(0, 0, size*pix, size*pix, colorBorder);
+			g.drawRect(0, 0, size-1, size-1, colorBorder);
+			g.finishPixelMode();
 		}
 		
-		private void updateHover(float x, float y, float pix) {
+		protected void updateHover(float x, float y, float pix) {
 			int size = getBoxSize(pix);
 			hoverx = (int)(x/pix);
 			if(hoverx<0)
@@ -114,14 +115,10 @@ public class UIColorView extends UIContainer {
 				hovery = size;
 		}
 		
-		private void pickColor(float pix) {
+		protected void pickColor(float pix) {
 			int size = getBoxSize(pix);
-			float s = hoverx/(float)size;
-			float v = 1f - hovery/(float)size;
-			int prev = getRGB();
-			int next = setColor(getHue(), s, v);
-			if(prev!=next)
-				onColorChange(next);
+			if(setColor(getColorAtHover(size)))
+				onColorChanged();
 		}
 		
 		@Override
@@ -160,54 +157,75 @@ public class UIColorView extends UIContainer {
 		}
 	}
 	
-	private final ColorBox box;
-	private float[] hsv = {0, 0, 0};
-	private int rgb;
+	public final ColorBox box;
+	public final UIColorSlider slider;
+	
+	private float[] hsb = {0, 0, 0};
+	private Color color = Color.BLACK;
 	
 	public UIColorView(UIContainer parent) {
 		super(parent);
 		box = new ColorBox();
+		slider = new UIColorSlider(this, true) {
+			@Override
+			public Color getSliderColorAt(float sz) {
+				return UIColorView.this.getSliderColorAt(sz);
+			}
+			@Override
+			public void onChanged() {
+				hsb[0] = getValue();
+				if(setColor(new Color(Color.HSBtoRGB(getHue(), getSaturation(), getBrightness()))))
+					onColorChanged();
+				repaint();
+			}
+		};
 	}
 
 	public float getHue() {
-		return hsv[0];
+		return hsb[0];
 	}
 	
 	public float getSaturation() {
-		return hsv[1];
+		return hsb[1];
 	}
 	
-	public float getValue() {
-		return hsv[2];
+	public float getBrightness() {
+		return hsb[2];
 	}
 	
-	public int getRGB() {
-		return rgb;
+	public Color getBoxColorAt(float sx, float sy) {
+		float s = sx;
+		float v = 1f - sy;
+		return new Color(Color.HSBtoRGB(getHue(), s, v));
+	}
+
+	public Color getSliderColorAt(float sz) {
+		return new Color(Color.HSBtoRGB(sz, 1f, 1f));
+	}
+
+	public Color getColor() {
+		return color;
 	}
 	
-	public int setColor(float h, float s, float v) {
-		this.hsv[0] = h;
-		this.hsv[1] = s;
-		this.hsv[2] = v;
-		this.rgb = Color.HSBtoRGB(h, s, v) & 0xffffff;
-		return this.rgb;
+	public boolean setColor(Color color) {
+		if(color.equals(this.color))
+			return false;
+		this.color = color;
+		Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), this.hsb);
+		return true;
 	}
 	
-	public void setColor(int rgb) {
-		this.rgb = rgb;
-		Color c = new Color(rgb);
-		Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), this.hsv);
-	}
-	
-	public void onColorChange(int rgb) {
-		System.out.printf("#%06x\n", rgb);
+	public void onColorChanged() {
+		System.out.printf("#%06x\n", color.getRGB()&0xffffff);
 	}
 	
 	@Override
 	public void layout() {
 		box.setLocation(0, 0);
-		float boxSize = Math.min(getWidth(), getHeight());
+		float boxSize = Math.min(getWidth()-UIColorSlider.defaultWidth, getHeight());
 		box.setSize(boxSize, boxSize);
+		slider.setLocation(boxSize, 0);
+		slider.setSize(UIColorSlider.defaultWidth, boxSize);
 		super.layout();
 	}
 	
