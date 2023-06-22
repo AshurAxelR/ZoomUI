@@ -61,7 +61,11 @@ public class UIFileBrowser extends UIContainer {
 			}
 			@Override
 			public void onFileSelected(File file) {
-				txtFileName.editor.setText(file.getName());
+				if(file.isFile()) {
+					txtFileName.editor.setText(file.getName());
+					txtFileName.editor.deselect();
+					txtFileName.editor.setCursor(txtFileName.editor.getText().length());
+				}
 			}
 		};
 		
@@ -156,7 +160,8 @@ public class UIFileBrowser extends UIContainer {
 			@Override
 			public void onAction() {
 				if(resultHandler!=null) {
-					File result = new File(view.getDirectory(), txtFileName.editor.getText());
+					String name = txtFileName.editor.getText();
+					File result = name.isEmpty() ? view.getDirectory() : new File(view.getDirectory(), name);
 					resultHandler.onResult(result);
 				}
 			}

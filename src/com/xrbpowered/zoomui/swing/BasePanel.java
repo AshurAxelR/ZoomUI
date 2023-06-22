@@ -1,5 +1,6 @@
 package com.xrbpowered.zoomui.swing;
 
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -16,6 +17,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -27,6 +29,8 @@ import com.xrbpowered.zoomui.UIWindow;
 
 public class BasePanel extends JPanel {
 
+	private static Cursor blankCursor = null;
+	
 	public final UIWindow window;
 	
 	public BasePanel(final UIWindow window) {
@@ -141,6 +145,21 @@ public class BasePanel extends JPanel {
 		pt.setLocation(0, y);
 		SwingUtilities.convertPointFromScreen(pt, this);
 		return pt.y;
+	}
+	
+	@Override
+	public void setCursor(Cursor cursor) {
+		if(cursor==null) {
+			if(blankCursor==null) {
+				blankCursor = getToolkit().createCustomCursor(
+					new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB),
+					new Point(),
+					null
+				);
+			}
+			cursor = blankCursor;
+		}
+		super.setCursor(cursor);
 	}
 	
 	private static Button getMouseButton(MouseEvent e) {

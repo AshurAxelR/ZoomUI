@@ -560,7 +560,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 		cursor.col = searchCol(cursorX/pixelScale-x0);
 	}
 	
-	protected void deselect() {
+	public void deselect() {
 		selStart = null;
 		selEnd = null;
 		updateSelRange();
