@@ -16,6 +16,8 @@ public abstract class UIColorSlider extends UIElement {
 
 	public static int defaultWidth = 32;
 	public static int margin = 8;
+	
+	public static float floatThreshold = 0.001f;
 
 	public static Color colorBorder = UIListBox.colorBorder;
 
@@ -55,7 +57,7 @@ public abstract class UIColorSlider extends UIElement {
 		float old = this.value;
 		this.value = v;
 		checkRange();
-		return old!=this.value;
+		return Math.abs(old-this.value)>floatThreshold;
 	}
 
 	public abstract Color getSliderColorAt(float sz);

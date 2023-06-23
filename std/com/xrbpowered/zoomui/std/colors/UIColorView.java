@@ -16,11 +16,14 @@ public class UIColorView extends UIContainer {
 
 	public static Color colorBorder = UIListBox.colorBorder;
 	public static int colorDotRadius = 8;
+	public static float floatThreshold = UIColorSlider.floatThreshold;
 	
 	private class ColorBox extends UIElement {
 		private int hoverx, hovery;
 		private BufferedImage buffer = null;
-		private float bufferHue = -1f;
+		
+		protected float valuex = 0f;
+		protected float valuey = 1f;
 		
 		protected DragActor dragActor = new DragPointActor(this) {
 			@Override
@@ -58,7 +61,6 @@ public class UIColorView extends UIContainer {
 			if(size<=0)
 				return;
 			buffer = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
-			bufferHue = getHue();
 			Graphics2D g = (Graphics2D) buffer.getGraphics();
 			for(int x=0; x<size; x++)
 				for(int y=0; y<size; y++) {
@@ -75,15 +77,21 @@ public class UIColorView extends UIContainer {
 		public void paint(GraphAssist g) {
 			float pix = g.startPixelMode(this);
 			int size = getBoxSize(pix);
-			if(buffer==null || bufferHue!=getHue() || buffer.getWidth()!=size)
+			if(buffer==null || buffer.getWidth()!=size)
 				updateBuffer(size);
 			if(buffer!=null)
 				g.graph.drawImage(buffer, 0, 0, null);
-			if(this.hoverx>=0 && hovery>=0) {
-				g.pushClip(0, 0, size, size);
-				g.pushAntialiasing(true);
-				g.pushPureStroke(true);
-				int r = (int)(colorDotRadius/pix);
+			
+			g.pushClip(0, 0, size, size);
+			g.pushAntialiasing(true);
+			g.pushPureStroke(true);
+
+			int r = (int)(colorDotRadius/pix);
+			g.resetStroke();
+			g.setColor(getBrightness()<0.67f ? Color.WHITE : Color.BLACK);
+			g.graph.drawOval((int)(valuex*size)-r, (int)(valuey*size)-r, r*2, r*2);
+			
+			if(hoverx>=0 && hovery>=0) {
 				g.setStroke(3f/pix);
 				g.setColor(new Color(0x77000000, true));
 				g.graph.drawOval(hoverx-r, hovery-r, r*2, r*2);
@@ -92,10 +100,12 @@ public class UIColorView extends UIContainer {
 				g.resetStroke();
 				g.setColor(Color.WHITE);
 				g.graph.drawOval(hoverx-r, hovery-r, r*2, r*2);
-				g.popAntialiasing();
-				g.popPureStroke();
-				g.popClip();
 			}
+			
+			g.popPureStroke();
+			g.popAntialiasing();
+			g.popClip();
+
 			g.resetStroke();
 			g.drawRect(0, 0, size-1, size-1, colorBorder);
 			g.finishPixelMode();
@@ -117,8 +127,14 @@ public class UIColorView extends UIContainer {
 		
 		protected void pickColor(float pix) {
 			int size = getBoxSize(pix);
-			if(setColor(getColorAtHover(size)))
+			float sx = hoverx/(float)size;
+			float sy = hovery/(float)size;
+			if(Math.abs(sx-valuex)>floatThreshold || Math.abs(sy-valuey)>floatThreshold) {
+				valuex = sx;
+				valuey = sy;
+				updateColor();
 				onColorChanged();
+			}
 		}
 		
 		@Override
@@ -160,7 +176,6 @@ public class UIColorView extends UIContainer {
 	public final ColorBox box;
 	public final UIColorSlider slider;
 	
-	private float[] hsb = {0, 0, 0};
 	private Color color = Color.BLACK;
 	
 	public UIColorView(UIContainer parent) {
@@ -173,26 +188,26 @@ public class UIColorView extends UIContainer {
 			}
 			@Override
 			public void onChanged() {
-				hsb[0] = getValue();
-				if(setColor(new Color(Color.HSBtoRGB(getHue(), getSaturation(), getBrightness()))))
-					onColorChanged();
+				box.buffer = null;
+				updateColor();
+				onColorChanged();
 				repaint();
 			}
 		};
 	}
 
 	public float getHue() {
-		return hsb[0];
+		return slider.getValue();
 	}
 	
 	public float getSaturation() {
-		return hsb[1];
+		return box.valuex;
 	}
 	
 	public float getBrightness() {
-		return hsb[2];
+		return 1f-box.valuey;
 	}
-	
+
 	public Color getBoxColorAt(float sx, float sy) {
 		float s = sx;
 		float v = 1f - sy;
@@ -207,16 +222,27 @@ public class UIColorView extends UIContainer {
 		return color;
 	}
 	
-	public boolean setColor(Color color) {
-		if(color.equals(this.color))
-			return false;
-		this.color = color;
-		Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), this.hsb);
+	public void updateColor() {
+		this.color = new Color(Color.HSBtoRGB(getHue(), getSaturation(), getBrightness()));
+	}
+	
+	protected boolean setValues(float sx, float sy, float sz) {
+		if(slider.setValue(sz))
+			box.buffer = null;
+		box.valuex = sx;
+		box.valuey = sy;
+		updateColor();
 		return true;
 	}
 	
+	public boolean setColor(Color color) {
+		if(color.equals(this.color))
+			return false;
+		float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+		return setValues(hsb[1], 1f-hsb[2], hsb[0]);
+	}
+	
 	public void onColorChanged() {
-		System.out.printf("#%06x\n", color.getRGB()&0xffffff);
 	}
 	
 	@Override
@@ -227,11 +253,6 @@ public class UIColorView extends UIContainer {
 		slider.setLocation(boxSize, 0);
 		slider.setSize(UIColorSlider.defaultWidth, boxSize);
 		super.layout();
-	}
-	
-	@Override
-	protected void paintSelf(GraphAssist g) {
-		g.fill(this, Color.WHITE);
 	}
 	
 }
