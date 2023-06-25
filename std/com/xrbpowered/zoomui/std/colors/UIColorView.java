@@ -77,6 +77,11 @@ public class UIColorView extends UIContainer {
 		public void paint(GraphAssist g) {
 			float pix = g.startPixelMode(this);
 			int size = getBoxSize(pix);
+			if(size<8) {
+				g.finishPixelMode();
+				return;
+			}
+			
 			if(buffer==null || buffer.getWidth()!=size)
 				updateBuffer(size);
 			if(buffer!=null)
@@ -209,9 +214,7 @@ public class UIColorView extends UIContainer {
 	}
 
 	public Color getBoxColorAt(float sx, float sy) {
-		float s = sx;
-		float v = 1f - sy;
-		return new Color(Color.HSBtoRGB(getHue(), s, v));
+		return new Color(Color.HSBtoRGB(getHue(), sx, 1f-sy));
 	}
 
 	public Color getSliderColorAt(float sz) {
@@ -234,12 +237,16 @@ public class UIColorView extends UIContainer {
 		updateColor();
 		return true;
 	}
-	
+
+	public boolean setColor(float h, float s, float b) {
+		return setValues(s, 1f-b, h);
+	}
+
 	public boolean setColor(Color color) {
 		if(color.equals(this.color))
 			return false;
 		float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
-		return setValues(hsb[1], 1f-hsb[2], hsb[0]);
+		return setColor(hsb[0], hsb[1], hsb[2]);
 	}
 	
 	public void onColorChanged() {

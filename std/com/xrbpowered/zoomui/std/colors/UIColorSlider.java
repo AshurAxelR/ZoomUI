@@ -14,14 +14,15 @@ import com.xrbpowered.zoomui.std.UIListBox;
 
 public abstract class UIColorSlider extends UIElement {
 
-	public static int defaultWidth = 32;
-	public static int margin = 8;
+	public static int defaultWidth = 40;
+	public static int defaultMargin = 8;
 	
 	public static float floatThreshold = 0.001f;
 
 	public static Color colorBorder = UIListBox.colorBorder;
 
 	public final boolean vertical;
+	public int margin;
 	
 	protected float value = 0f;
 	
@@ -40,6 +41,12 @@ public abstract class UIColorSlider extends UIElement {
 	public UIColorSlider(UIContainer parent, boolean vertical) {
 		super(parent);
 		this.vertical = vertical;
+		setMargin(defaultMargin);
+	}
+	
+	public UIColorSlider setMargin(int margin) {
+		this.margin = margin;
+		return this;
 	}
 	
 	private void checkRange() {
@@ -69,7 +76,7 @@ public abstract class UIColorSlider extends UIElement {
 		Graphics2D g = (Graphics2D) buffer.getGraphics();
 		for(int x=0; x<w; x++)
 			for(int y=0; y<h; y++) {
-				float sz = vertical ? y/(float)h : x/(float)w;
+				float sz = vertical ? (h-y-1)/(float)h : x/(float)w;
 				g.setColor(getSliderColorAt(sz));
 				g.fillRect(x, y, 1, 1);
 			}
@@ -78,14 +85,14 @@ public abstract class UIColorSlider extends UIElement {
 	protected int getBoxWidth(float pix) {
 		int w = (int)(getWidth()/pix);
 		if(vertical)
-			w -= margin*2;
+			w -= (int)(margin/pix)*2;
 		return w;
 	}
 
 	protected int getBoxHeight(float pix) {
 		int h = (int)(getHeight()/pix);
 		if(!vertical)
-			h -= margin*2;
+			h -= (int)(margin/pix)*2;
 		return h;
 	}
 
@@ -94,8 +101,8 @@ public abstract class UIColorSlider extends UIElement {
 		float pix = g.startPixelMode(this);
 		int w = getBoxWidth(pix);
 		int h = getBoxHeight(pix);
-		int mx = vertical ? margin : 0;
-		int my = !vertical ? margin : 0;
+		int mx = vertical ? (int)(margin/pix) : 0;
+		int my = !vertical ? (int)(margin/pix) : 0;
 		if(buffer==null || buffer.getWidth()!=w || buffer.getHeight()!=h)
 			updateBuffer(w, h);
 		if(buffer!=null)
@@ -106,21 +113,23 @@ public abstract class UIColorSlider extends UIElement {
 		
 		g.setColor(Color.BLACK);
 		if(vertical) {
-			int y = (int)(getValue()*h*pix);
-			UIArrowButton.drawRightArrow(g, mx/2, y);
-			UIArrowButton.drawLeftArrow(g, (int)(getWidth()-mx/2), y);
+			int y = (int)((1f-getValue())*h*pix);
+			int mx2 = (int)(mx*pix/2);
+			UIArrowButton.drawRightArrow(g, mx2, y);
+			UIArrowButton.drawLeftArrow(g, (int)(getWidth()-mx2), y);
 		}
 		else {
 			int x = (int)(getValue()*w*pix);
-			UIArrowButton.drawDownArrow(g, x, my/2);
-			UIArrowButton.drawDownArrow(g, x, (int)(getHeight()-my/2));
+			int my2 = (int)(my*pix/2);
+			UIArrowButton.drawDownArrow(g, x, my2);
+			UIArrowButton.drawDownArrow(g, x, (int)(getHeight()-my2));
 		}
 	}
 
 	protected void pickValue(float x, float y, float pix) {
 		if(vertical) {
 			int h = getBoxHeight(pix);
-			if(setValue(y/(float)h/pix))
+			if(setValue(1f-y/(float)h/pix))
 				onChanged();
 		}
 		else {
