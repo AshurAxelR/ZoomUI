@@ -69,17 +69,27 @@ public abstract class UIColorSlider extends UIElement {
 
 	public abstract Color getSliderColorAt(float sz);
 	
-	protected void updateBuffer(int w, int h) {
+	protected void updateBuffer(int w, int h, float pix) {
 		if(w<=0 || h<=0)
 			return;
 		buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = (Graphics2D) buffer.getGraphics();
-		for(int x=0; x<w; x++)
+		g.setPaint(UIColorBox.getTransparencyPaint(pix));
+		g.fillRect(0, 0, w, h);
+		if(vertical) {
 			for(int y=0; y<h; y++) {
-				float sz = vertical ? (h-y-1)/(float)h : x/(float)w;
+				float sz = (h-y-1)/(float)h;
 				g.setColor(getSliderColorAt(sz));
-				g.fillRect(x, y, 1, 1);
+				g.fillRect(0, y, w, 1);
 			}
+		}
+		else {
+			for(int x=0; x<w; x++) {
+				float sz = x/(float)w;
+				g.setColor(getSliderColorAt(sz));
+				g.fillRect(x, 0, 1, h);
+			}
+		}
 	}
 	
 	protected int getBoxWidth(float pix) {
@@ -96,6 +106,29 @@ public abstract class UIColorSlider extends UIElement {
 		return h;
 	}
 
+	public void resetBuffer() {
+		buffer = null;
+	}
+	
+	protected void paintMarker(GraphAssist g) {
+		float pix = getPixelScale();
+		g.setColor(Color.BLACK);
+		if(vertical) {
+			int h = getBoxHeight(pix);
+			int y = (int)((1f-getValue())*h*pix);
+			int mx2 = margin/2;
+			UIArrowButton.drawRightArrow(g, mx2, y);
+			UIArrowButton.drawLeftArrow(g, (int)(getWidth()-mx2), y);
+		}
+		else {
+			int w = getBoxWidth(pix);
+			int x = (int)(getValue()*w*pix);
+			int my2 = margin/2;
+			UIArrowButton.drawDownArrow(g, x, my2);
+			UIArrowButton.drawUpArrow(g, x, (int)(getHeight()-my2));
+		}
+	}
+	
 	@Override
 	public void paint(GraphAssist g) {
 		float pix = g.startPixelMode(this);
@@ -104,26 +137,14 @@ public abstract class UIColorSlider extends UIElement {
 		int mx = vertical ? (int)(margin/pix) : 0;
 		int my = !vertical ? (int)(margin/pix) : 0;
 		if(buffer==null || buffer.getWidth()!=w || buffer.getHeight()!=h)
-			updateBuffer(w, h);
+			updateBuffer(w, h, pix);
 		if(buffer!=null)
 			g.graph.drawImage(buffer, mx, my, null);
 		g.resetStroke();
 		g.drawRect(mx, my, w-1, h-1, colorBorder);
 		g.finishPixelMode();
 		
-		g.setColor(Color.BLACK);
-		if(vertical) {
-			int y = (int)((1f-getValue())*h*pix);
-			int mx2 = (int)(mx*pix/2);
-			UIArrowButton.drawRightArrow(g, mx2, y);
-			UIArrowButton.drawLeftArrow(g, (int)(getWidth()-mx2), y);
-		}
-		else {
-			int x = (int)(getValue()*w*pix);
-			int my2 = (int)(my*pix/2);
-			UIArrowButton.drawDownArrow(g, x, my2);
-			UIArrowButton.drawDownArrow(g, x, (int)(getHeight()-my2));
-		}
+		paintMarker(g);
 	}
 
 	protected void pickValue(float x, float y, float pix) {

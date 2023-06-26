@@ -18,7 +18,7 @@ public class UIColorView extends UIContainer {
 	public static int colorDotRadius = 8;
 	public static float floatThreshold = UIColorSlider.floatThreshold;
 	
-	private class ColorBox extends UIElement {
+	public class ColorBox extends UIElement {
 		private int hoverx, hovery;
 		private BufferedImage buffer = null;
 		
@@ -57,6 +57,10 @@ public class UIColorView extends UIContainer {
 			return getBoxColorAt(hoverx/size, hovery/size);
 		}
 		
+		public void resetBuffer() {
+			buffer = null;
+		}
+
 		protected void updateBuffer(int size) {
 			if(size<=0)
 				return;
@@ -98,7 +102,7 @@ public class UIColorView extends UIContainer {
 			
 			if(hoverx>=0 && hovery>=0) {
 				g.setStroke(3f/pix);
-				g.setColor(new Color(0x77000000, true));
+				g.setColor(new Color(0x55000000, true));
 				g.graph.drawOval(hoverx-r, hovery-r, r*2, r*2);
 				g.setColor(getColorAtHover(size));
 				g.graph.fillOval(hoverx-r, hovery-r, r*2, r*2);
@@ -231,7 +235,7 @@ public class UIColorView extends UIContainer {
 	
 	protected boolean setValues(float sx, float sy, float sz) {
 		if(slider.setValue(sz))
-			box.buffer = null;
+			box.resetBuffer();
 		box.valuex = sx;
 		box.valuey = sy;
 		updateColor();

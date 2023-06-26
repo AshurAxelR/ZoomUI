@@ -6,17 +6,22 @@ import java.io.File;
 
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
+import com.xrbpowered.zoomui.UIModalWindow;
 import com.xrbpowered.zoomui.UIModalWindow.ResultHandler;
+import com.xrbpowered.zoomui.UIWindowFactory;
 import com.xrbpowered.zoomui.base.History;
 import com.xrbpowered.zoomui.base.UIButtonBase;
 import com.xrbpowered.zoomui.std.UIButton;
 import com.xrbpowered.zoomui.std.UIMessageBox;
-import com.xrbpowered.zoomui.std.UIToolButton;
 import com.xrbpowered.zoomui.std.UIMessageBox.MessageResult;
+import com.xrbpowered.zoomui.std.UIToolButton;
 import com.xrbpowered.zoomui.std.text.UITextBox;
 
 public class UIFileBrowser extends UIContainer {
 
+	public static int defaultWidth = 840;
+	public static int defaultHeight = 480;
+	
 	public static String rootPathLabel = "This computer";
 	
 	public static Font font = UIButton.font;
@@ -174,7 +179,13 @@ public class UIFileBrowser extends UIContainer {
 			}
 		};
 		
-		view.setDirectory(new File("."));
+		setDirectory(null, false);
+	}
+	
+	public void setDirectory(File dir, boolean clearHistory) {
+		if(clearHistory)
+			history.clear();
+		view.setDirectory(dir);
 		history.push();
 	}
 	
@@ -231,5 +242,23 @@ public class UIFileBrowser extends UIContainer {
 		g.setColor(colorText);
 		g.drawString("File:", 52, txtFileName.getY()+txtFileName.getHeight()/2f,
 				GraphAssist.RIGHT, GraphAssist.CENTER);
+	}
+	
+	public static UIModalWindow<File> createDialog(String title, File dir, int w, int h, boolean canResize, ResultHandler<File> onResult) {
+		if(w<=0)
+			w = defaultWidth;
+		if(h<=0)
+			h = defaultHeight;
+		UIModalWindow<File> dlg = UIWindowFactory.instance.createModal(title, w, h, canResize, onResult);
+		new UIFileBrowser(dlg.getContainer(), dlg.wrapInResultHandler()).setDirectory(dir, true);
+		return dlg;
+	}
+
+	public static UIModalWindow<File> createDialog(String title, File dir, ResultHandler<File> onResult) {
+		return createDialog(title, dir, 0, 0, true, onResult);
+	}
+	
+	public static UIModalWindow<File> createDialog(String title, ResultHandler<File> onResult) {
+		return createDialog(title, new File("."), 0, 0, true, onResult);
 	}
 }
