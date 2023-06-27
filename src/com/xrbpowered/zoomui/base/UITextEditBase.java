@@ -157,6 +157,8 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 
 	public boolean autoIndent = true;
 	public final boolean singleLine;
+	public boolean autoSelect = false;
+	public boolean hideSelection = true;
 	
 	protected String text;
 	protected ArrayList<L> lines = new ArrayList<>();
@@ -191,6 +193,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 	public UITextEditBase(UIPanView parent, boolean singleLine) {
 		super(parent);
 		this.singleLine = singleLine;
+		this.autoSelect = singleLine;
 		setText("");
 	}
 	
@@ -400,7 +403,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 		ls.line = line;
 		ls.lineStart = lineStart;
 		ls.s = 0;
-		if(selMin==null || lineIndex<selMin.line || lineIndex>selMax.line) {
+		if(selMin==null || lineIndex<selMin.line || lineIndex>selMax.line || hideSelection && !isFocused()) {
 			drawText(g, ls, lineStart, lineEnd, bg, null);
 			drawRemainder(g, ls.x, ls.y, bg);
 		}
@@ -855,7 +858,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 	public boolean onKeyPressed(char c, int code, int modifiers) {
 		switch(code) {
 			case KeyEvent.VK_LEFT:
-				checkPushHistory(HistoryAction.unspecified);
+				checkPushHistory();
 				if((modifiers&UIElement.modShiftMask)>0)
 					startSelection();
 				else {
@@ -881,7 +884,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 				break;
 				
 			case KeyEvent.VK_RIGHT:
-				checkPushHistory(HistoryAction.unspecified);
+				checkPushHistory();
 				if((modifiers&UIElement.modShiftMask)>0)
 					startSelection();
 				else {
@@ -905,7 +908,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 				break;
 				
 			case KeyEvent.VK_UP:
-				checkPushHistory(HistoryAction.unspecified);
+				checkPushHistory();
 				if(modifiers==UIElement.modCtrlMask) {
 					panView().pan(0, lineHeight);
 				}
@@ -925,7 +928,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 				break;
 				
 			case KeyEvent.VK_DOWN:
-				checkPushHistory(HistoryAction.unspecified);
+				checkPushHistory();
 				if(modifiers==UIElement.modCtrlMask) {
 					panView().pan(0, -lineHeight);
 				}
@@ -945,7 +948,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 				break;
 				
 			case KeyEvent.VK_PAGE_UP:
-				checkPushHistory(HistoryAction.unspecified);
+				checkPushHistory();
 				if(modifiers==UIElement.modShiftMask)
 					startSelection();
 				else
@@ -961,7 +964,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 				break;
 				
 			case KeyEvent.VK_PAGE_DOWN:
-				checkPushHistory(HistoryAction.unspecified);
+				checkPushHistory();
 				if(modifiers==UIElement.modShiftMask)
 					startSelection();
 				else
@@ -977,7 +980,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 				break;
 				
 			case KeyEvent.VK_HOME:
-				checkPushHistory(HistoryAction.unspecified);
+				checkPushHistory();
 				if((modifiers&UIElement.modShiftMask)>0)
 					startSelection();
 				else
@@ -993,7 +996,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 				break;
 				
 			case KeyEvent.VK_END:
-				checkPushHistory(HistoryAction.unspecified);
+				checkPushHistory();
 				if((modifiers&UIElement.modShiftMask)>0)
 					startSelection();
 				else
@@ -1054,13 +1057,11 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 					scrollToCursor();
 				}
 				else {
-					checkPushHistory(HistoryAction.unspecified);
 					getBase().resetFocus();
 				}
 				break;
 
 			case KeyEvent.VK_ESCAPE:
-				checkPushHistory(HistoryAction.unspecified);
 				getBase().resetFocus();
 				break;
 				
@@ -1075,12 +1076,15 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 						}
 					}
 					else {
-						checkPushHistory(HistoryAction.unspecified);
+						checkPushHistory();
 						if(modifiers==UIElement.modShiftMask)
 							unindentSelection();
 						else
 							indentSelection("\t");
 					}
+				}
+				else {
+					return false;
 				}
 				break;
 				
@@ -1111,6 +1115,8 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 							checkPushHistory();
 							history.redo();
 							break;
+						default:
+							return false;
 					}
 				}
 				else {
@@ -1146,7 +1152,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 			if(!isFocused())
 				getBase().setFocus(this);
 			else 
-				checkPushHistory(HistoryAction.unspecified);
+				checkPushHistory();
 			deselect();
 			cursorToMouse(x, y);
 			repaint();
@@ -1164,17 +1170,16 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 			return null;
 	}
 	
-	public boolean isFocused() {
-		return getBase().getFocus()==this;
-	}
-	
 	@Override
 	public void onFocusGained() {
+		if(autoSelect)
+			selectAll();
 		repaint();
 	}
 
 	@Override
 	public void onFocusLost() {
+		checkPushHistory();
 		repaint();
 	}
 }

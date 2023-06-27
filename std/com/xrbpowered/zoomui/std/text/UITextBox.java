@@ -36,13 +36,11 @@ public class UITextBox extends UIPanView {
 			public boolean onKeyPressed(char c, int code, int modifiers) {
 				switch(code) {
 					case KeyEvent.VK_ENTER:
-						checkPushHistory(HistoryAction.unspecified);
 						if(onEnter())
 							getBase().resetFocus();
 						repaint();
 						return true;
 					case KeyEvent.VK_ESCAPE:
-						checkPushHistory(HistoryAction.unspecified);
 						if(onEscape())
 							getBase().resetFocus();
 						repaint();

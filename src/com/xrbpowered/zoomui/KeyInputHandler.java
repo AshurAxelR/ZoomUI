@@ -6,4 +6,10 @@ public interface KeyInputHandler {
 	public void onFocusGained();
 	public void onFocusLost();
 	
+	public default boolean isFocused() {
+		if(this instanceof UIElement)
+			return ((UIElement) this).getBase().getFocus()==this;
+		else
+			return false;
+	}
 }
