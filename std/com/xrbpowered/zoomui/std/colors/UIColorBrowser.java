@@ -87,11 +87,38 @@ public class UIColorBrowser extends UIContainer {
 			@Override
 			public boolean onEnter() {
 				try {
-					long rgb = Long.parseLong(txtColor.editor.getText(), 16) & 0xffffffffL;
-					if(rgb<0L) rgb = 0L;
-					if(rgb>0xffffffffL) rgb = 0xffffffffL;
-					view.setColor(new Color((int)rgb, alpha));
-					view.onColorChanged();
+					if(intMode) {
+						long rgb;
+						String s = txtColor.editor.getText();
+						if(pickAlpha && s.length()>6) {
+							rgb = Long.parseLong(s, 16) & 0xffffffffL;
+							if(rgb<0L) rgb = 0L;
+							if(rgb>0xffffffffL) rgb = 0xffffffffL;
+						}
+						else {
+							rgb = Long.parseLong(s, 16) & 0xffffffL;
+							if(rgb<0L) rgb = 0L;
+							if(rgb>0xffffffL) rgb = 0xffffffL;
+							rgb |= 0xff000000;
+						}
+						setColor(new Color((int)rgb, true));
+					}
+					else {
+						String[] ss = txtColor.editor.getText().split(",\\s*", 5);
+						float[] vs = new float[4];
+						float last = 0f;
+						for(int i=0; i<4; i++) {
+							float v = i>=ss.length ? (i==3 ? 1f : last) : Float.parseFloat(ss[i]);
+							if(v<0f) v = 0f;
+							if(v>1f) v = 1f;
+							vs[i] = v;
+							last = v;
+						}
+						if(!pickAlpha)
+							vs[3] = 1f;
+						setColor(new Color(vs[0], vs[1], vs[2], vs[3]));
+					}
+					updateText();
 					return true;
 				}
 				catch (NumberFormatException e) {
