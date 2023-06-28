@@ -5,7 +5,7 @@ import java.awt.RenderingHints;
 
 import com.xrbpowered.zoomui.base.UILayersContainer;
 
-public class BaseContainer extends UILayersContainer implements Measurable, KeyInputHandler {
+public class BaseContainer extends UILayersContainer implements Measurable {
 
 	public static class ModalBaseContainer<A> extends BaseContainer {
 		protected ModalBaseContainer(UIModalWindow<A> window, float scale) {
@@ -18,6 +18,8 @@ public class BaseContainer extends UILayersContainer implements Measurable, KeyI
 		}
 	}
 	
+	public final TabIndex tabIndex;
+	
 	private float baseScale;
 	private UIWindow window;
 	
@@ -25,6 +27,7 @@ public class BaseContainer extends UILayersContainer implements Measurable, KeyI
 		super(null);
 		this.baseScale = scale;
 		this.window = window;
+		this.tabIndex = new TabIndex(this);
 	}
 	
 	@Override
@@ -70,20 +73,11 @@ public class BaseContainer extends UILayersContainer implements Measurable, KeyI
 		invalidLayout = true;
 	}
 
-	@Override
-	public void onFocusGained() {
-	}
-	
-	@Override
-	public void onFocusLost() {
-	}
-	
-	@Override
 	public boolean onKeyPressed(char c, int code, int mods) {
-		if(uiFocused!=null)
-			return uiFocused.onKeyPressed(c, code, mods);
+		if(uiFocused!=null && uiFocused.onKeyPressed(c, code, mods))
+			return true;
 		else
-			return false;
+			return tabIndex.onKeyPressed(c, code, mods);
 	}
 	
 	@Override
@@ -164,11 +158,13 @@ public class BaseContainer extends UILayersContainer implements Measurable, KeyI
 	public void resetFocus() {
 		if(uiFocused!=null)
 			uiFocused.onFocusLost();
-		KeyInputHandler e = null;
+		// TODO sticky focus?
+		/*KeyInputHandler e = null;
 		for(UIElement c : children)
 			if(c instanceof KeyInputHandler)
 				e = (KeyInputHandler) c;
-		uiFocused = e;
+		uiFocused = e;*/
+		uiFocused = null;
 	}
 
 	public void setFocus(KeyInputHandler handler) {

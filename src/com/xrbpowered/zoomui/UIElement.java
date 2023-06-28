@@ -99,6 +99,13 @@ public abstract class UIElement {
 		this.visible = visible;
 	}
 	
+	public boolean isParentVisible() {
+		if(parent!=null)
+			return parent.isVisible() && parent.isParentVisible();
+		else
+			return true;
+	}
+	
 	public boolean isVisible(Rectangle clip) {
 		return visible &&
 			!(clip.x-x>getWidth() || clip.x-x+clip.width<0 ||

@@ -83,9 +83,11 @@ public class UIFileBrowser extends UIContainer {
 			@Override
 			public void onFocusLost() {
 				navPath.setVisible(true);
+				this.setVisible(false);
 				super.onFocusLost();
 			}
 		};
+		txtPath.setVisible(false);
 		navPath = new UINavPath(this) {
 			@Override
 			public void setPath(File path) {
@@ -95,6 +97,7 @@ public class UIFileBrowser extends UIContainer {
 			public boolean onMouseDown(float x, float y, Button button, int mods) {
 				if(button==Button.left) {
 					this.setVisible(false);
+					txtPath.setVisible(true);
 					getBase().setFocus(txtPath.editor);
 					txtPath.editor.selectAll();
 					repaint();

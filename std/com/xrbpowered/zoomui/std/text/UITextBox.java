@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.event.KeyEvent;
 
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.KeyInputHandler;
+import com.xrbpowered.zoomui.TabIndex;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.base.UIPanView;
 import com.xrbpowered.zoomui.base.UITextEdit;
@@ -32,9 +34,19 @@ public class UITextBox extends UIPanView {
 	}
 	
 	protected UITextEdit createEditor() {
-		return new UITextEdit(this, true) {
+		UITextEdit e = new UITextEdit(this, true) {
 			public boolean onKeyPressed(char c, int code, int modifiers) {
 				switch(code) {
+					case KeyEvent.VK_TAB: {
+							KeyInputHandler tab = getBase().tabIndex.selectTab(TabIndex.getDir(modifiers));
+							if(tab!=this) {
+								if(!onEnter())
+									onEscape();
+								getBase().setFocus(tab);
+								repaint();
+							}
+						}
+						return true;
 					case KeyEvent.VK_ENTER:
 						if(onEnter())
 							getBase().resetFocus();
@@ -60,6 +72,8 @@ public class UITextBox extends UIPanView {
 				super.onFocusLost();
 			}
 		};
+		getBase().tabIndex.add(e);
+		return e;
 	}
 
 	public void onFocusGained() {
