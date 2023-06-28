@@ -4,8 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.JFrame;
 import javax.swing.JPopupMenu;
 import javax.swing.UIManager;
 import javax.swing.event.PopupMenuEvent;
@@ -21,6 +24,7 @@ public class SwingPopup extends UIPopupWindow {
 
 	public SwingPopup(SwingWindowFactory factory) {
 		super(factory);
+		// consume click that caused popup to close so it doesn't act on other components below
 		UIManager.put("PopupMenu.consumeEventOnClose", Boolean.TRUE);
 		
 		popup = new JPopupMenu();
@@ -81,6 +85,26 @@ public class SwingPopup extends UIPopupWindow {
 	@Override
 	public void show(UIWindow invoker, float x, float y) {
 		BasePanel panel = SwingWindowFactory.getBasePanel(invoker);
+		
+		if(panel==null) {
+			// required to catch non-client clicks if invoker is null
+			JFrame f = new JFrame();
+			f.setType(JFrame.Type.UTILITY);
+			f.setUndecorated(true);
+			f.setOpacity(0.0f);
+			f.addFocusListener(new FocusListener() {
+				@Override
+				public void focusGained(FocusEvent e) {
+				}
+				@Override
+				public void focusLost(FocusEvent e) {
+					if(popup.isVisible())
+						SwingPopup.this.close();
+					f.dispose();
+				}
+			});
+			f.setVisible(true);
+		}
 		popup.show(panel, (int)x, (int)y);
 	}
 
