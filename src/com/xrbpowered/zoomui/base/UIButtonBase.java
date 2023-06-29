@@ -1,9 +1,10 @@
 package com.xrbpowered.zoomui.base;
 
+import com.xrbpowered.zoomui.ActionHandler;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
 
-public abstract class UIButtonBase extends UIHoverElement {
+public abstract class UIButtonBase extends UIHoverElement implements ActionHandler {
 
 	public boolean down = false;
 	private boolean enabled = true;
@@ -12,6 +13,7 @@ public abstract class UIButtonBase extends UIHoverElement {
 		super(parent);
 	}
 	
+	@Override
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -29,6 +31,7 @@ public abstract class UIButtonBase extends UIHoverElement {
 		return this;
 	}
 	
+	@Override
 	public void onAction() {
 	}
 	

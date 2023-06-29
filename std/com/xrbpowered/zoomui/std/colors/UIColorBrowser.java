@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 import java.text.NumberFormat;
 
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.HotKeyMap;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIModalWindow;
 import com.xrbpowered.zoomui.UIModalWindow.ResultHandler;
@@ -171,6 +172,9 @@ public class UIColorBrowser extends UIContainer {
 					resultHandler.onCancel();
 			}
 		};
+		getBase().hotKeys = new HotKeyMap()
+				.addOk(btnOk)
+				.addCancel(btnCancel);
 		
 		view.onColorChanged();
 	}

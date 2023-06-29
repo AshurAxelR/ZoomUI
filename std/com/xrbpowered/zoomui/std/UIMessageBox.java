@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 
 import com.xrbpowered.zoomui.BaseContainer.ModalBaseContainer;
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.HotKeyMap;
 import com.xrbpowered.zoomui.KeyInputHandler;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIModalWindow;
@@ -61,6 +62,7 @@ public class UIMessageBox extends UIContainer implements KeyInputHandler {
 		this.options = options;
 		this.icon = icon;
 		
+		HotKeyMap hotKeys = new HotKeyMap();
 		this.buttons = new UIButton[options.length];
 		for(int i=0; i<buttons.length; i++) {
 			final MessageResult res = options[i];
@@ -70,7 +72,9 @@ public class UIMessageBox extends UIContainer implements KeyInputHandler {
 					notifyResult(res);
 				}
 			};
+			hotKeys.add(res.keyCode, 0, buttons[i]);
 		}
+		getBase().hotKeys = hotKeys;
 			
 		this.label = new UIFormattedLabel(this, message);
 		this.label.setSize(0, 0);

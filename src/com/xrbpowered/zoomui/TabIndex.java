@@ -7,6 +7,7 @@ public class TabIndex {
 
 	public final BaseContainer base;
 	
+	// FIXME may violate consistency, should use base.children?
 	protected ArrayList<KeyInputHandler> list = new ArrayList<>();
 	
 	public TabIndex(BaseContainer base) {

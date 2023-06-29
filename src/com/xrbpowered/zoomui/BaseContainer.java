@@ -19,6 +19,7 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 	}
 	
 	public final TabIndex tabIndex;
+	public HotKeyMap hotKeys = null;
 	
 	private float baseScale;
 	private UIWindow window;
@@ -75,6 +76,8 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 
 	public boolean onKeyPressed(char c, int code, int mods) {
 		if(uiFocused!=null && uiFocused.onKeyPressed(c, code, mods))
+			return true;
+		else if(hotKeys!=null && hotKeys.onKeyPressed(c, code, mods))
 			return true;
 		else
 			return tabIndex.onKeyPressed(c, code, mods);
