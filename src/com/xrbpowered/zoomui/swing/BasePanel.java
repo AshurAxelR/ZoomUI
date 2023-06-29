@@ -162,7 +162,7 @@ public class BasePanel extends JPanel {
 		super.setCursor(cursor);
 	}
 	
-	private static Button getMouseButton(MouseEvent e) {
+	public static Button getMouseButton(MouseEvent e) {
 		switch(e.getButton()) {
 			case MouseEvent.BUTTON1:
 				return Button.left;
@@ -175,7 +175,7 @@ public class BasePanel extends JPanel {
 		}
 	}
 	
-	private static int getModifiers(InputEvent e) {
+	public static int getModifiers(InputEvent e) {
 		int mods = 0;
 		if(e.isControlDown())
 			mods |= UIElement.modCtrlMask;
