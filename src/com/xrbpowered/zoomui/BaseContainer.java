@@ -2,6 +2,7 @@ package com.xrbpowered.zoomui;
 
 import java.awt.Color;
 import java.awt.RenderingHints;
+import java.security.InvalidParameterException;
 
 import com.xrbpowered.zoomui.base.UILayersContainer;
 
@@ -160,7 +161,7 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 	
 	public void resetFocus() {
 		if(uiFocused!=null)
-			uiFocused.onFocusLost();
+			uiFocused.asElement().onFocusLost();
 		// TODO sticky focus?
 		/*KeyInputHandler e = null;
 		for(UIElement c : children)
@@ -171,11 +172,15 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 	}
 
 	public void setFocus(KeyInputHandler handler) {
+		if(handler.asElement()==null)
+			throw new InvalidParameterException();
+		
 		if(uiFocused!=null && uiFocused!=handler)
 			resetFocus();
 		uiFocused = handler;
+		tabIndex.updateLastSelected(uiFocused);
 		if(uiFocused!=null)
-			uiFocused.onFocusGained();
+			uiFocused.asElement().onFocusGained();
 	}
 	
 	public KeyInputHandler getFocus() {

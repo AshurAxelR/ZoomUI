@@ -17,7 +17,6 @@ import java.util.HashMap;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
-import com.xrbpowered.zoomui.base.UIHoverElement;
 import com.xrbpowered.zoomui.icons.SvgIcon;
 import com.xrbpowered.zoomui.std.UIArrowButton;
 import com.xrbpowered.zoomui.std.UIButton;
@@ -72,7 +71,7 @@ public class UIFileView extends UIScrollContainer {
 		return !(Character.isLetter(ch) || Character.isDigit(ch)) && ch!='_';
 	}
 
-	private class FileListItem extends UIHoverElement {
+	private class FileListItem extends UIElement {
 		public final File file;
 		
 		public final String info;
@@ -83,6 +82,7 @@ public class UIFileView extends UIScrollContainer {
 		
 		public FileListItem(UIContainer parent, File file) {
 			super(parent);
+			repaintOnHover = true;
 			this.file = file;
 			if(file.isFile())
 				info = dateFmt.format(file.lastModified()) + ", "+formatFileSize(file.length());
@@ -165,7 +165,10 @@ public class UIFileView extends UIScrollContainer {
 			this.title = title;
 			this.order = order;
 			
-			this.header = new UIHoverElement(this) {
+			this.header = new UIElement(this) {
+				{
+					repaintOnHover = true;
+				}
 				@Override
 				public void paint(GraphAssist g) {
 					Color bgColor = hover ? colorHighlight : colorBackground;

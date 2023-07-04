@@ -8,7 +8,6 @@ import java.io.File;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
-import com.xrbpowered.zoomui.base.UIHoverElement;
 import com.xrbpowered.zoomui.std.UIArrowButton;
 import com.xrbpowered.zoomui.std.UIButton;
 import com.xrbpowered.zoomui.std.UIListItem;
@@ -23,12 +22,13 @@ public class UINavPath extends UIContainer {
 	public static Color colorBorder = UITextBox.colorBorder;
 	public static Color colorHighlight = UIListItem.colorHighlight;
 
-	protected class PathItem extends UIHoverElement {
+	protected class PathItem extends UIElement {
 		public final int index;
 		public final String item;
 		
 		public PathItem(UIContainer parent, int index, String item) {
 			super(parent);
+			repaintOnHover = true;
 			this.index = index;
 			this.item = item;
 		}

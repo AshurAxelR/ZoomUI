@@ -9,13 +9,14 @@ public class TabIndex {
 	
 	// FIXME may violate consistency, should use base.children?
 	protected ArrayList<KeyInputHandler> list = new ArrayList<>();
+	protected int lastSelectedIndex = 0;
 	
 	public TabIndex(BaseContainer base) {
 		this.base = base;
 	}
 	
 	public void add(KeyInputHandler tab) {
-		if(tab!=null)
+		if(tab!=null && tab.asElement()!=null)
 			list.add(tab);
 	}
 	
@@ -26,14 +27,22 @@ public class TabIndex {
 			return list.indexOf(tab);
 	}
 	
+	public void updateLastSelected(KeyInputHandler tab) {
+		int index = findIndex(tab);
+		if(index>=0)
+			lastSelectedIndex = index;
+	}
+	
 	public KeyInputHandler selectTab(int index, int d) {
 		int num = list.size();
 		for(int i=0; i<num; i++) {
-			index = (index>=0) ? (index+num+d) % num : 0;
+			index = (index>=0) ? (index+num+d) % num : lastSelectedIndex;
 			KeyInputHandler tab = list.get(index);
-			UIElement e = (UIElement) tab;
-			if(e.isVisible() && e.isParentVisible())
+			UIElement e = tab.asElement();
+			if(tab.isEnabled() && e.isVisible() && e.isParentVisible()) {
+				lastSelectedIndex = index;
 				return tab;
+			}
 		}
 		return null;
 	}

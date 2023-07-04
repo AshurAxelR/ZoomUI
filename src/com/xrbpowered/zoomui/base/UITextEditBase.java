@@ -23,7 +23,7 @@ import com.xrbpowered.zoomui.UIElement;
 import com.xrbpowered.zoomui.std.UIListItem;
 import com.xrbpowered.zoomui.std.text.UITextBox;
 
-public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverElement implements KeyInputHandler {
+public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement implements KeyInputHandler {
 
 	public static final Pattern newlineRegex = Pattern.compile("\\r?\\n");
 	public static final Pattern indentRegex = Pattern.compile("\\s*");
@@ -192,6 +192,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIHoverEle
 	
 	public UITextEditBase(UIPanView parent, boolean singleLine) {
 		super(parent);
+		repaintOnHover = true;
 		this.singleLine = singleLine;
 		this.autoSelect = singleLine;
 		setText("");

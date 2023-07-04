@@ -4,13 +4,14 @@ import com.xrbpowered.zoomui.ActionHandler;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
 
-public abstract class UIButtonBase extends UIHoverElement implements ActionHandler {
+public abstract class UIButtonBase extends UIElement implements ActionHandler {
 
 	public boolean down = false;
 	private boolean enabled = true;
-	
+
 	public UIButtonBase(UIContainer parent) {
 		super(parent);
+		repaintOnHover = true;
 	}
 	
 	@Override
@@ -30,7 +31,7 @@ public abstract class UIButtonBase extends UIHoverElement implements ActionHandl
 		setEnabled(false);
 		return this;
 	}
-	
+
 	@Override
 	public void onAction() {
 	}

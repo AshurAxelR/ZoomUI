@@ -19,6 +19,9 @@ public abstract class UIElement {
 	private float x, y;
 	private float width, height;
 	
+	public boolean hover = false;
+	public boolean repaintOnHover = false;
+
 	public UIElement(UIContainer parent) {
 		this.parent = parent;
 		this.base = (parent!=null) ? parent.getBase() : null;
@@ -171,9 +174,15 @@ public abstract class UIElement {
 	}
 
 	public void onMouseIn() {
+		hover = true;
+		if(repaintOnHover)
+			repaint();
 	}
 	
 	public void onMouseOut() {
+		hover = false;
+		if(repaintOnHover)
+			repaint();
 	}
 	
 	public void onMouseReleased() {
@@ -192,6 +201,16 @@ public abstract class UIElement {
 	
 	public boolean onMouseScroll(float x, float y, float delta, int mods) {
 		return false;
+	}
+	
+	public void onFocusGained() {
+	}
+
+	public void onFocusLost() {
+	}
+	
+	public boolean isFocused() {
+		return getBase().getFocus()==this;
 	}
 	
 }

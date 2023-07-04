@@ -7,13 +7,14 @@ import com.xrbpowered.zoomui.UIElement;
 
 public abstract class UIScrollBarBase extends UIContainer {
 
-	public class Thumb extends UIHoverElement {
+	public class Thumb extends UIElement {
 		public int span = 0;
 		public float top, bottom;
 		public boolean down = false;
 		
 		public Thumb() {
 			super(UIScrollBarBase.this);
+			repaintOnHover = true;
 		}
 		
 		public void updateLocation() {
