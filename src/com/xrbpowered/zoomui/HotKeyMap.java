@@ -3,7 +3,7 @@ package com.xrbpowered.zoomui;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
-public class HotKeyMap {
+public class HotKeyMap implements KeyInputHandler {
 	
 	private HashMap<Integer, ActionHandler> map = new HashMap<>();
 

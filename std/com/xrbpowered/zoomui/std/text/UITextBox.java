@@ -34,11 +34,11 @@ public class UITextBox extends UIPanView {
 	}
 	
 	protected UITextEdit createEditor() {
-		UITextEdit e = new UITextEdit(this, true) {
+		return new UITextEdit(this, true) {
 			public boolean onKeyPressed(char c, int code, int modifiers) {
 				switch(code) {
 					case KeyEvent.VK_TAB: {
-							KeyInputHandler tab = getBase().tabIndex.selectTab(TabIndex.getDir(modifiers));
+							KeyInputHandler tab = getBase().tabIndex().selectTab(TabIndex.getDir(modifiers));
 							if(tab!=this) {
 								if(!onEnter())
 									onEscape();
@@ -72,8 +72,6 @@ public class UITextBox extends UIPanView {
 				super.onFocusLost();
 			}
 		};
-		getBase().tabIndex.add(e);
-		return e;
 	}
 
 	public void onFocusGained() {

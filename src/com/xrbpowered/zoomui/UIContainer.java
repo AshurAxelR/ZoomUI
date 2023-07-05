@@ -14,16 +14,20 @@ public abstract class UIContainer extends UIElement {
 	protected void addChild(UIElement c) {
 		children.add(c);
 		invalidateLayout();
+		invalidateTabIndex();
 	}
 	
 	public void removeChild(UIElement c) {
-		if(children.remove(c))
+		if(children.remove(c)) {
 			invalidateLayout();
+			invalidateTabIndex();
+		}
 	}
 	
 	public void removeAllChildren() {
 		children.clear();
 		invalidateLayout();
+		invalidateTabIndex();
 	}
 	
 	@Override

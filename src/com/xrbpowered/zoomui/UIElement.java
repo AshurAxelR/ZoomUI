@@ -87,6 +87,10 @@ public abstract class UIElement {
 			parent.repaint();
 	}
 	
+	public void invalidateTabIndex() {
+		getBase().tabIndex().invalidate();
+	}
+	
 	public void invalidateLayout() {
 		getBase().invalidateLayout();
 	}

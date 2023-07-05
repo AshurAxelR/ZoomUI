@@ -2,7 +2,6 @@ package com.xrbpowered.zoomui;
 
 import java.awt.Color;
 import java.awt.RenderingHints;
-import java.security.InvalidParameterException;
 
 import com.xrbpowered.zoomui.base.UILayersContainer;
 
@@ -19,17 +18,23 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 		}
 	}
 	
-	public final TabIndex tabIndex;
-	public HotKeyMap hotKeys = null;
+	public KeyInputHandler hotKeys = null;
 	
 	private float baseScale;
 	private UIWindow window;
+	private TabIndex tabIndex;
 	
 	protected BaseContainer(UIWindow window, float scale) {
 		super(null);
 		this.baseScale = scale;
 		this.window = window;
 		this.tabIndex = new TabIndex(this);
+	}
+
+	public BaseContainer replaceTabIndex(TabIndex tabIndex) {
+		tabIndex.copyState(this.tabIndex);
+		this.tabIndex = tabIndex;
+		return this;
 	}
 	
 	@Override
@@ -41,8 +46,11 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 		return window;
 	}
 	
+	public TabIndex tabIndex() {
+		return tabIndex;
+	}
+	
 	private UIElement uiUnderMouse = null;
-	private KeyInputHandler uiFocused = null;
 	
 	private DragActor drag = null;
 	private UIElement uiInitiator = null;
@@ -76,7 +84,8 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 	}
 
 	public boolean onKeyPressed(char c, int code, int mods) {
-		if(uiFocused!=null && uiFocused.onKeyPressed(c, code, mods))
+		tabIndex.validate();
+		if(tabIndex.hasFocus() && tabIndex.getFocus().onKeyPressed(c, code, mods))
 			return true;
 		else if(hotKeys!=null && hotKeys.onKeyPressed(c, code, mods))
 			return true;
@@ -160,31 +169,15 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 	}
 	
 	public void resetFocus() {
-		if(uiFocused!=null)
-			uiFocused.asElement().onFocusLost();
-		// TODO sticky focus?
-		/*KeyInputHandler e = null;
-		for(UIElement c : children)
-			if(c instanceof KeyInputHandler)
-				e = (KeyInputHandler) c;
-		uiFocused = e;*/
-		uiFocused = null;
+		tabIndex.resetFocus();
 	}
 
 	public void setFocus(KeyInputHandler handler) {
-		if(handler.asElement()==null)
-			throw new InvalidParameterException();
-		
-		if(uiFocused!=null && uiFocused!=handler)
-			resetFocus();
-		uiFocused = handler;
-		tabIndex.updateLastSelected(uiFocused);
-		if(uiFocused!=null)
-			uiFocused.asElement().onFocusGained();
+		tabIndex.setFocus(handler);
 	}
 	
 	public KeyInputHandler getFocus() {
-		return uiFocused;
+		return tabIndex.getFocus();
 	}
 
 	public float getBaseScale() {
