@@ -112,7 +112,7 @@ public abstract class UIWindow {
 	}
 	
 	public void confirmClosing() {
-		UIMessageBox.show(factory, "Exit", "Do you want to close the application?",
+		UIMessageBox.show("Exit", "Do you want to close the application?",
 			UIMessageBox.iconQuestion, new MessageResult[] {MessageResult.ok, MessageResult.cancel},
 			new MessageResultHandler() {
 				@Override

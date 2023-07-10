@@ -202,7 +202,7 @@ public class UIFileBrowser extends UIContainer {
 			return true;
 		}
 		else {
-			UIMessageBox.show(getBase().getWindow().getFactory(), "Error", "Cannot open directory "+path,
+			UIMessageBox.show("Error", "Cannot open directory "+path,
 					UIMessageBox.iconError, new MessageResult[] {MessageResult.ok}, null);
 			txtPath.editor.selectAll();
 			return false;

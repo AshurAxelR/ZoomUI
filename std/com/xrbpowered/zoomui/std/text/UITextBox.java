@@ -74,9 +74,11 @@ public class UITextBox extends UIPanView {
 		};
 	}
 
+	@Override
 	public void onFocusGained() {
 	}
 
+	@Override
 	public void onFocusLost() {
 	}
 	

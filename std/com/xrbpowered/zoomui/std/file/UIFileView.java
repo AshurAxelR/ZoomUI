@@ -419,7 +419,7 @@ public class UIFileView extends UIScrollContainer {
 				if(setDirectory(selectedFile))
 					onBrowse();
 				else
-					UIMessageBox.show(getBase().getWindow().getFactory(), "Error", "Access denied.", UIMessageBox.iconError, new MessageResult[] {MessageResult.ok}, null);
+					UIMessageBox.show("Error", "Access denied.", UIMessageBox.iconError, new MessageResult[] {MessageResult.ok}, null);
 			}
 			else
 				onSelectedFileClicked();

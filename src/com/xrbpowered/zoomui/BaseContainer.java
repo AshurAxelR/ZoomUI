@@ -185,13 +185,13 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 	}
 	
 	public void setBaseScale(float scale) {
-		this.baseScale = (scale>0f) ? scale :getWindow().getFactory().getBaseScale();
+		this.baseScale = (scale>0f) ? scale : getWindow().getFactory().getBaseScale();
 		invalidateLayout();
 	}
 	
 	@Override
 	public float getPixelScale() {
-		return 1f / baseScale;
+		return getWindow().getFactory().globalPixelScale() / baseScale;
 	}
 	
 	@Override

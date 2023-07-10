@@ -23,6 +23,10 @@ public abstract class UIWindowFactory {
 		baseScale = (scale > 0f) ? scale : getSystemScale();
 	}
 	
+	public float globalPixelScale() {
+		return 1f;
+	}
+	
 	public static float getSystemScale() {
 		return Toolkit.getDefaultToolkit().getScreenResolution() / 96f;
 	}

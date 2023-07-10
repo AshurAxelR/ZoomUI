@@ -8,6 +8,7 @@ import com.xrbpowered.zoomui.UIElement;
 import com.xrbpowered.zoomui.UIWindow;
 import com.xrbpowered.zoomui.base.UIZoomView;
 import com.xrbpowered.zoomui.icons.SvgIcon;
+import com.xrbpowered.zoomui.overlays.OverlayWindowFactory;
 import com.xrbpowered.zoomui.std.UIButton;
 import com.xrbpowered.zoomui.std.UIFormattedLabel;
 import com.xrbpowered.zoomui.std.UIListBox;
@@ -150,6 +151,7 @@ public class ZoomViewTest extends UIZoomView {
 			}
 		};
 		new ZoomViewTop(frame.getContainer());
+		new OverlayWindowFactory(frame.getContainer()).use();
 		frame.show();
 	}
 }
