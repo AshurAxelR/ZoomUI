@@ -1,6 +1,7 @@
 package com.xrbpowered.zoomui.icons;
 
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
@@ -59,12 +60,14 @@ public class SvgFile {
 		double dy2 = (y0 - y) / 2.0f;
 		// Convert theta from degrees to radians
 		theta = Math.toRadians(theta % 360f);
+		double cosTheta = Math.cos(theta);
+        double sinTheta = Math.sin(theta);
 
 		//
 		// Step 1 : Compute (x1, y1)
 		//
-		double x1 = Math.cos(theta) * dx2 + Math.sin(theta) * dy2;
-		double y1 = -Math.sin(theta) * dx2 + Math.cos(theta) * dy2;
+		double x1 = cosTheta * dx2 + sinTheta * dy2;
+		double y1 = -sinTheta * dx2 + cosTheta * dy2;
 		// Ensure radii are large enough
 		rx = Math.abs(rx);
 		ry = Math.abs(ry);
@@ -93,8 +96,8 @@ public class SvgFile {
 		//
 		double sx2 = (x0 + x) / 2.0f;
 		double sy2 = (y0 + y) / 2.0f;
-		double cx = sx2 + (Math.cos(theta) * cx1 - Math.sin(theta) * cy1);
-		double cy = sy2 + (Math.sin(theta) * cx1 + Math.cos(theta) * cy1);
+		double cx = sx2 + (cosTheta * cx1 - sinTheta * cy1);
+		double cy = sy2 + (sinTheta * cx1 + cosTheta * cy1);
 
 		//
 		// Step 4 : Compute the angleStart (theta1) and the angleExtent (dtheta)
@@ -129,7 +132,12 @@ public class SvgFile {
 		arc.height = ry * 2.0f;
 		arc.start = -angleStart;
 		arc.extent = -angleExtent;
-		path.append(arc, true);
+		
+		AffineTransform t = AffineTransform.getRotateInstance
+            (theta, arc.getCenterX(), arc.getCenterY());
+        Shape s = t.createTransformedShape(arc);
+	        
+		path.append(s, true);
 	}
 	
 	private Path2D createPath(String d, double scale) {
