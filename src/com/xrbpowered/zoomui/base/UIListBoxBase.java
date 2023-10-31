@@ -1,5 +1,8 @@
 package com.xrbpowered.zoomui.base;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
 
@@ -8,22 +11,40 @@ public abstract class UIListBoxBase<T extends UIElement> extends UIScrollContain
 	protected UIElement[] listItems;
 	
 	private int selectedIndex = -1;
-	
-	public UIListBoxBase(UIContainer parent, Object[] objects) {
+
+	public UIListBoxBase(UIContainer parent, List<?> objects) {
 		super(parent);
 		setItems(objects);
 	}
-	
-	public void setItems(Object[] objects) {
+
+	public UIListBoxBase(UIContainer parent, Object[] objects) {
+		this(parent, Arrays.asList(objects));
+	}
+
+	public UIListBoxBase(UIContainer parent) {
+		this(parent, (List<?>) null);
+	}
+
+	public void setItems(List<?> objects) {
 		getView().removeAllChildren();
-		int num = objects==null ? 0 : objects.length;
-		listItems = new UIElement[num];
-		for(int i=0; i<num; i++) {
-			listItems[i] = createItem(i, objects[i]);
+		if(objects==null) {
+			listItems = new UIElement[0];
+		}
+		else {
+			listItems = new UIElement[objects.size()];
+			int i = 0;
+			for(Object obj : objects) {
+				listItems[i] = createItem(i, obj);
+				i++;
+			}
 		}
 		deselect();
 	}
-	
+
+	public void setItems(Object[] objects) {
+		setItems(objects==null ? null : Arrays.asList(objects));
+	}
+
 	protected abstract T createItem(int index, Object object);
 	
 	public int getSelectedIndex() {

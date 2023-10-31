@@ -1,6 +1,8 @@
 package com.xrbpowered.zoomui.std;
 
 import java.awt.Color;
+import java.util.Arrays;
+import java.util.List;
 
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
@@ -12,9 +14,18 @@ public class UIListBox extends UIListBoxBase<UIListItem> {
 	public static Color colorBorder = UITextBox.colorBorder;
 	public static Color colorBackground = UITextBox.colorBackground;
 
-	public UIListBox(UIContainer parent, Object[] objects) {
+	public UIListBox(UIContainer parent, List<?> objects) {
 		super(parent, objects);
 	}
+
+	public UIListBox(UIContainer parent, Object[] objects) {
+		this(parent, Arrays.asList(objects));
+	}
+
+	public UIListBox(UIContainer parent) {
+		this(parent, (List<?>) null);
+	}
+
 
 	@Override
 	protected UIScrollBar createScroll() {

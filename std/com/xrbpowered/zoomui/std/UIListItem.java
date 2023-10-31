@@ -38,7 +38,11 @@ public class UIListItem extends UIElement {
 		g.fill(this, sel ? colorSelection : hover ? colorHighlight : Color.WHITE);
 		g.setColor(sel ? colorSelectedText : colorText);
 		g.setFont(font);
-		g.drawString(object.toString(), 8, getHeight()/2f, GraphAssist.LEFT, GraphAssist.CENTER);
+		g.drawString(getLabel(), 8, getHeight()/2f, GraphAssist.LEFT, GraphAssist.CENTER);
+	}
+	
+	protected String getLabel() {
+		return object.toString();
 	}
 	
 	@Override
