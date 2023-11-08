@@ -11,6 +11,10 @@ public abstract class UIContainer extends UIElement {
 		super(parent);
 	}
 	
+	public Iterable<UIElement> getChildren() {
+		return children;
+	}
+	
 	protected void addChild(UIElement c) {
 		children.add(c);
 		invalidateLayout();

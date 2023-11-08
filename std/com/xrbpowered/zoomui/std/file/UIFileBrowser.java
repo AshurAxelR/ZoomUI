@@ -7,6 +7,7 @@ import java.io.File;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.HotKeyMap;
 import com.xrbpowered.zoomui.UIContainer;
+import com.xrbpowered.zoomui.UIElement;
 import com.xrbpowered.zoomui.UIModalWindow;
 import com.xrbpowered.zoomui.UIModalWindow.ResultHandler;
 import com.xrbpowered.zoomui.UIWindowFactory;
@@ -192,8 +193,14 @@ public class UIFileBrowser extends UIContainer {
 	public void setDirectory(File dir, boolean clearHistory) {
 		if(clearHistory)
 			history.clear();
+		
+		File prev = view.getDirectory();
 		view.setDirectory(dir);
-		history.push();
+
+		if(clearHistory ||
+				!(prev==null && dir==null) &&
+				!(prev!=null && dir!=null && dir.equals(prev)))
+			history.push(); // push after clear history or if dir has changed
 	}
 	
 	private boolean setPath(String path) {
@@ -249,6 +256,14 @@ public class UIFileBrowser extends UIContainer {
 		g.setColor(colorText);
 		g.drawString("File:", 52, txtFileName.getY()+txtFileName.getHeight()/2f,
 				GraphAssist.RIGHT, GraphAssist.CENTER);
+	}
+	
+	public static UIFileBrowser fromDialog(UIModalWindow<?> dlg) {
+		for(UIElement e : dlg.getContainer().getChildren()) {
+			if(e instanceof UIFileBrowser)
+				return (UIFileBrowser) e;
+		}
+		return null;
 	}
 	
 	public static UIModalWindow<File> createDialog(String title, File dir, int w, int h, boolean canResize, ResultHandler<File> onResult) {
