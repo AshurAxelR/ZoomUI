@@ -126,7 +126,7 @@ public class TabIndex {
 	public void setFocus(KeyInputHandler handler) {
 		if(stickyFocus!=null)
 			handler = stickyFocus;
-		else if(handler.asElement()==null)
+		else if(handler!=null && handler.asElement()==null)
 			throw new InvalidParameterException();
 		
 		if(uiFocused!=null && uiFocused!=handler)
