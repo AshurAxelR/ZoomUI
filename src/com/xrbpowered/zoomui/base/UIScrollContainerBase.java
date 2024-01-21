@@ -2,7 +2,6 @@ package com.xrbpowered.zoomui.base;
 
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.UIContainer;
-import com.xrbpowered.zoomui.std.UIScrollBar;
 
 public abstract class UIScrollContainerBase extends UIContainer {
 
@@ -10,7 +9,7 @@ public abstract class UIScrollContainerBase extends UIContainer {
 	public int wheelStep = 3*scrollStep;
 	
 	private UIPanView view;
-	private UIScrollBar scroll;
+	private UIScrollBarBase scroll;
 	
 	public UIScrollContainerBase(UIContainer parent) {
 		super(parent);
@@ -18,9 +17,9 @@ public abstract class UIScrollContainerBase extends UIContainer {
 		scroll = createScroll();
 	}
 	
-	protected abstract UIScrollBar createScroll();
+	protected abstract UIScrollBarBase createScroll();
 	
-	public void updateScrollRange(UIScrollBar scroll) {
+	public void updateScrollRange(UIScrollBarBase scroll) {
 		if(view.getMaxPanY()>0) {
 			scroll.setThumbSpan(Math.round(getHeight()));
 			scroll.setRange(0, view.getMaxPanY(), scrollStep);

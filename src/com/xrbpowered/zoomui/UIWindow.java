@@ -4,10 +4,6 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.FontMetrics;
 
-import com.xrbpowered.zoomui.std.UIMessageBox;
-import com.xrbpowered.zoomui.std.UIMessageBox.MessageResult;
-import com.xrbpowered.zoomui.std.UIMessageBox.MessageResultHandler;
-
 public abstract class UIWindow {
 
 	protected final UIWindowFactory factory;
@@ -112,6 +108,8 @@ public abstract class UIWindow {
 	}
 	
 	public void confirmClosing() {
+		// FIXME confirmation dialog independent from Std components
+		/*
 		UIMessageBox.show("Exit", "Do you want to close the application?",
 			UIMessageBox.iconQuestion, new MessageResult[] {MessageResult.ok, MessageResult.cancel},
 			new MessageResultHandler() {
@@ -121,6 +119,8 @@ public abstract class UIWindow {
 						close();
 				}
 			});
+		*/
+		close();
 	}
 	
 }

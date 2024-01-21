@@ -20,8 +20,6 @@ import com.xrbpowered.zoomui.DragActor;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.KeyInputHandler;
 import com.xrbpowered.zoomui.UIElement;
-import com.xrbpowered.zoomui.std.UIListItem;
-import com.xrbpowered.zoomui.std.text.UITextBox;
 
 public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement implements KeyInputHandler {
 
@@ -29,14 +27,14 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 	public static final Pattern indentRegex = Pattern.compile("\\s*");
 	public static String newline = System.lineSeparator();
 
-	protected Font font = UITextBox.font;
-	protected float fontSizeUnscaled = UITextBox.font.getSize();
+	protected Font font = new Font("Tahoma", Font.PLAIN, GraphAssist.ptToPixels(9f));
+	protected float fontSizeUnscaled = font.getSize();
 
-	public Color colorBackground = UITextBox.colorBackground;
-	public Color colorHighlight = UIListItem.colorHighlight;
-	public Color colorText = UITextBox.colorText;
-	public Color colorSelection = UITextBox.colorSelection;
-	public Color colorSelectedText = UITextBox.colorSelectedText;
+	public Color colorBackground = Color.WHITE;
+	public Color colorHighlight = new Color(0xe8f0ff);
+	public Color colorText = Color.BLACK;
+	public Color colorSelection = new Color(0x0077dd);
+	public Color colorSelectedText = Color.WHITE;
 	
 	public static class Position {
 		public int line;

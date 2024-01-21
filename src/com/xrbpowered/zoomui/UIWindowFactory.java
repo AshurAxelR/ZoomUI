@@ -3,7 +3,6 @@ package com.xrbpowered.zoomui;
 import java.awt.Toolkit;
 
 import com.xrbpowered.zoomui.UIModalWindow.ResultHandler;
-import com.xrbpowered.zoomui.swing.SwingWindowFactory;
 
 public abstract class UIWindowFactory {
 
@@ -11,7 +10,7 @@ public abstract class UIWindowFactory {
 		System.setProperty("sun.java2d.uiScale", "1.0");
 	}
 	
-	public static UIWindowFactory instance = new SwingWindowFactory();
+	public static UIWindowFactory instance = null;
 	
 	private float baseScale = getSystemScale();
 	
