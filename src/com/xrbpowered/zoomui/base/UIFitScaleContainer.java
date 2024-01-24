@@ -38,13 +38,13 @@ public class UIFitScaleContainer extends UIContainer {
 	}
 	
 	@Override
-	protected float parentToLocalX(float x) {
-		return super.parentToLocalX(x)/scale;
+	protected float parentToLocalX(float px) {
+		return super.parentToLocalX(px)/scale;
 	}
 
 	@Override
-	protected float parentToLocalY(float y) {
-		return super.parentToLocalY(y)/scale;
+	protected float parentToLocalY(float py) {
+		return super.parentToLocalY(py)/scale;
 	}
 	
 	@Override

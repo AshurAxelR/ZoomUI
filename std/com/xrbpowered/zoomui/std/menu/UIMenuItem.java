@@ -69,7 +69,7 @@ public class UIMenuItem extends UIButtonBase {
 	}
 	
 	@Override
-	public boolean onMouseDown(float x, float y, Button button, int mods) {
+	public boolean onMouseDown(float px, float py, Button button, int mods) {
 		if(button==Button.left) {
 			if(isEnabled()) {
 				onAction();
@@ -81,7 +81,7 @@ public class UIMenuItem extends UIButtonBase {
 	}
 	
 	@Override
-	public boolean onMouseUp(float x, float y, Button button, int mods, UIElement initiator) {
+	public boolean onMouseUp(float px, float py, Button button, int mods, UIElement initiator) {
 		if(initiator!=this)
 			return false;
 		return true;

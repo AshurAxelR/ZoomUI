@@ -94,13 +94,13 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 	}
 	
 	@Override
-	public UIElement notifyMouseDown(float x, float y, Button button, int mods) {
+	public UIElement notifyMouseDown(float px, float py, Button button, int mods) {
 		if(drag==null) {
-			prevMouseX = getWindow().baseToScreenX(x);
-			prevMouseY = getWindow().baseToScreenY(y);
+			prevMouseX = getWindow().baseToScreenX(px);
+			prevMouseY = getWindow().baseToScreenY(py);
 			initiatorButton = button;
 			initiatorMods = mods;
-			UIElement ui = super.notifyMouseDown(x, y, button, mods);
+			UIElement ui = super.notifyMouseDown(px, py, button, mods);
 			if(ui!=uiInitiator && uiInitiator!=null)
 				uiInitiator.onMouseReleased();
 			uiInitiator = ui;
@@ -111,14 +111,14 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 	}
 	
 	@Override
-	public UIElement notifyMouseUp(float x, float y, Button button, int mods, UIElement initiator) {
+	public UIElement notifyMouseUp(float px, float py, Button button, int mods, UIElement initiator) {
 		if(drag!=null) {
-			UIElement ui = getElementAt(x, y);
-			if(drag.notifyMouseUp(x, y, button, mods, ui))
+			UIElement ui = getElementAt(px, py);
+			if(drag.notifyMouseUp(px, py, button, mods, ui))
 				drag = null;
 		}
 		else {
-			if(super.notifyMouseUp(x, y, button, mods, uiInitiator)!=uiInitiator && uiInitiator!=null)
+			if(super.notifyMouseUp(px, py, button, mods, uiInitiator)!=uiInitiator && uiInitiator!=null)
 				uiInitiator.onMouseReleased(); // FIXME release for multi-button scenarios
 		}
 		return this;
@@ -195,13 +195,13 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 	}
 	
 	@Override
-	protected float parentToLocalX(float x) {
-		return x / baseScale;
+	protected float parentToLocalX(float px) {
+		return px / baseScale;
 	}
 	
 	@Override
-	protected float parentToLocalY(float y) {
-		return y / baseScale;
+	protected float parentToLocalY(float py) {
+		return py / baseScale;
 	}
 	
 	@Override
@@ -267,7 +267,7 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 	}
 	
 	@Override
-	public boolean isInside(float x, float y) {
+	public boolean isInside(float px, float py) {
 		return true;
 	}
 	

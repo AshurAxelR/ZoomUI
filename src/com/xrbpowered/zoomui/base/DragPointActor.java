@@ -25,20 +25,20 @@ public class DragPointActor implements DragActor {
 	}
 
 	@Override
-	public boolean notifyMouseMove(float dx, float dy) {
+	public boolean notifyMouseMove(float dbx, float dby) {
 		prevx = posx;
 		prevy = posy;
-		posx += dx*pixelScale;
-		posy += dy*pixelScale;
+		posx += dbx*pixelScale;
+		posy += dby*pixelScale;
 		return true;
 	}
 
 	@Override
-	public boolean notifyMouseUp(float x, float y, Button button, int mods, UIElement target) {
+	public boolean notifyMouseUp(float bx, float by, Button button, int mods, UIElement target) {
 		prevx = posx;
 		prevy = posy;
-		posx = ui.baseToLocalX(x);
-		posy = ui.baseToLocalY(y);
+		posx = ui.baseToLocalX(bx);
+		posy = ui.baseToLocalY(by);
 		return true;
 	}
 

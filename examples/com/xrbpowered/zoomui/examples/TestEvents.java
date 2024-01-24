@@ -65,7 +65,7 @@ public class TestEvents {
 			repaint();
 		}
 		@Override
-		public boolean onMouseDown(float x, float y, Button button, int mods) {
+		public boolean onMouseDown(float px, float py, Button button, int mods) {
 			System.out.printf("%d: down[%s]\n", id, buttonsToString(button, mods));
 			if(button==Button.left) {
 				down = true;
@@ -74,7 +74,7 @@ public class TestEvents {
 			return true;
 		}
 		@Override
-		public boolean onMouseUp(float x, float y, Button button, int mods, UIElement initiator) {
+		public boolean onMouseUp(float px, float py, Button button, int mods, UIElement initiator) {
 			if(initiator!=this)
 				return false;
 			System.out.printf("%d: up[%s]\n", id, buttonsToString(button, mods));

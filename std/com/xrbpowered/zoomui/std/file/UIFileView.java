@@ -137,7 +137,7 @@ public class UIFileView extends UIScrollContainer {
 		}
 		
 		@Override
-		public boolean onMouseDown(float x, float y, Button button, int mods) {
+		public boolean onMouseDown(float px, float py, Button button, int mods) {
 			if(button==Button.left) {
 				if(selectedFile==file)
 					onSelectionClicked();
@@ -193,7 +193,7 @@ public class UIFileView extends UIScrollContainer {
 				}
 				
 				@Override
-				public boolean onMouseDown(float x, float y, Button button, int mods) {
+				public boolean onMouseDown(float px, float py, Button button, int mods) {
 					if(button==Button.left) {
 						toggleView();
 						repaint();

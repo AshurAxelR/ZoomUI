@@ -49,7 +49,7 @@ public abstract class UIScrollBarBase extends UIContainer {
 		}
 		
 		@Override
-		public boolean onMouseDown(float x, float y, Button button, int mods) {
+		public boolean onMouseDown(float px, float py, Button button, int mods) {
 			if(button==Button.left) {
 				down = true;
 				repaint();
@@ -60,7 +60,7 @@ public abstract class UIScrollBarBase extends UIContainer {
 		}
 		
 		@Override
-		public boolean onMouseUp(float x, float y, Button button, int mods, UIElement initiator) {
+		public boolean onMouseUp(float px, float py, Button button, int mods, UIElement initiator) {
 			if(initiator==this) {
 				down = false;
 				repaint();
@@ -89,8 +89,8 @@ public abstract class UIScrollBarBase extends UIContainer {
 		}
 
 		@Override
-		public boolean notifyMouseMove(float dx, float dy) {
-			pos += (vertical ? dy : dx) * getPixelScale();
+		public boolean notifyMouseMove(float dbx, float dby) {
+			pos += (vertical ? dby : dbx) * getPixelScale();
 			float s = (pos-thumb.top) / (thumb.bottom-thumb.top);
 			if(setValue(Math.round(min + s*(max-min+thumb.span))))
 				onChanged();
@@ -99,7 +99,7 @@ public abstract class UIScrollBarBase extends UIContainer {
 		}
 
 		@Override
-		public boolean notifyMouseUp(float x, float y, Button button, int mods, UIElement target) {
+		public boolean notifyMouseUp(float bx, float by, Button button, int mods, UIElement target) {
 			thumb.down = false;
 			repaint();
 			return true;

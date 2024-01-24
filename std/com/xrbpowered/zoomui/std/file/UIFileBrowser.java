@@ -96,7 +96,7 @@ public class UIFileBrowser extends UIContainer {
 				super.setPath(path==null ? rootPathLabel : path.getAbsolutePath());
 			}
 			@Override
-			public boolean onMouseDown(float x, float y, Button button, int mods) {
+			public boolean onMouseDown(float px, float py, Button button, int mods) {
 				if(button==Button.left) {
 					this.setVisible(false);
 					txtPath.setVisible(true);

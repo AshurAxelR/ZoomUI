@@ -43,12 +43,12 @@ public abstract class UIElement {
 		return base;
 	}
 	
-	protected float parentToLocalX(float x) {
-		return x - this.x;
+	protected float parentToLocalX(float px) {
+		return px - this.x;
 	}
 
-	protected float parentToLocalY(float y) {
-		return y - this.y;
+	protected float parentToLocalY(float py) {
+		return py - this.y;
 	}
 	
 	protected float localToParentX(float x) {
@@ -59,12 +59,12 @@ public abstract class UIElement {
 		return y + this.y;
 	}
 
-	public float baseToLocalX(float x) {
-		return parentToLocalX(parent==null ? x : parent.baseToLocalX(x));
+	public float baseToLocalX(float bx) {
+		return parentToLocalX(parent==null ? bx : parent.baseToLocalX(bx));
 	}
 
-	public float baseToLocalY(float y) {
-		return parentToLocalY(parent==null ? y : parent.baseToLocalY(y));
+	public float baseToLocalY(float by) {
+		return parentToLocalY(parent==null ? by : parent.baseToLocalY(by));
 	}
 	
 	public float localToBaseX(float x) {
@@ -114,9 +114,9 @@ public abstract class UIElement {
 	}
 	
 	public boolean isVisible(Rectangle clip) {
-		return visible &&
+		return visible && (clip==null ||
 			!(clip.x-x>getWidth() || clip.x-x+clip.width<0 ||
-			clip.y-y>getHeight() || clip.y-y+clip.height<0);
+			clip.y-y>getHeight() || clip.y-y+clip.height<0));
 	}
 	
 	public float getX() {
@@ -135,8 +135,8 @@ public abstract class UIElement {
 		return height;
 	}
 	
-	public boolean isInside(float x, float y) {
-		return isVisible() && x>=getX() && y>=getY() && x<=getX()+getWidth() && y<=getY()+getHeight();
+	public boolean isInside(float px, float py) {
+		return isVisible() && px>=getX() && py>=getY() && px<=getX()+getWidth() && py<=getY()+getHeight();
 	}
 	
 	public UIContainer getParent() {
@@ -149,29 +149,29 @@ public abstract class UIElement {
 		return null;
 	}
 
-	public UIElement getElementAt(float x, float y) {
-		if(isInside(x, y))
+	public UIElement getElementAt(float px, float py) {
+		if(isInside(px, py))
 			return this;
 		else
 			return null;
 	}
 	
-	public UIElement notifyMouseDown(float x, float y, Button button, int mods) {
-		if(isInside(x, y) && onMouseDown(x, y, button, mods))
+	public UIElement notifyMouseDown(float px, float py, Button button, int mods) {
+		if(isInside(px, py) && onMouseDown(px, py, button, mods))
 			return this;
 		else
 			return null;
 	}
 	
-	public UIElement notifyMouseUp(float x, float y, Button button, int mods, UIElement initiator) {
-		if(isInside(x, y) && onMouseUp(x, y, button, mods, initiator))
+	public UIElement notifyMouseUp(float px, float py, Button button, int mods, UIElement initiator) {
+		if(isInside(px, py) && onMouseUp(px, py, button, mods, initiator))
 			return this;
 		else
 			return null;
 	}
 	
-	public UIElement notifyMouseScroll(float x, float y, float delta, int mods) {
-		if(isInside(x, y) && onMouseScroll(x, y, delta, mods))
+	public UIElement notifyMouseScroll(float px, float py, float delta, int mods) {
+		if(isInside(px, py) && onMouseScroll(px, py, delta, mods))
 			return this;
 		else
 			return null;
@@ -195,15 +195,18 @@ public abstract class UIElement {
 	public void onMouseMoved(float x, float y, int mods) {
 	}
 	
-	public boolean onMouseDown(float x, float y, Button button, int mods) {
+	public boolean onMouseDown(float px, float py, Button button, int mods) {
+		// px, py are in parent space
 		return false;
 	}
 	
-	public boolean onMouseUp(float x, float y, Button button, int mods, UIElement initiator) {
+	public boolean onMouseUp(float px, float py, Button button, int mods, UIElement initiator) {
+		// px, py are in parent space
 		return false;
 	}
 	
-	public boolean onMouseScroll(float x, float y, float delta, int mods) {
+	public boolean onMouseScroll(float px, float py, float delta, int mods) {
+		// px, py are in parent space
 		return false;
 	}
 	

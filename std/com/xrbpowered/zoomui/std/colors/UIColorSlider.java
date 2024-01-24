@@ -30,8 +30,8 @@ public abstract class UIColorSlider extends UIElement {
 
 	protected DragActor dragActor = new DragPointActor(this) {
 		@Override
-		public boolean notifyMouseMove(float dx, float dy) {
-			super.notifyMouseMove(dx, dy);
+		public boolean notifyMouseMove(float dbx, float dby) {
+			super.notifyMouseMove(dbx, dby);
 			pickValue(posx, posy, pixelScale);
 			repaint();
 			return true;
@@ -172,9 +172,9 @@ public abstract class UIColorSlider extends UIElement {
 	}
 	
 	@Override
-	public boolean onMouseDown(float x, float y, Button button, int mods) {
+	public boolean onMouseDown(float px, float py, Button button, int mods) {
 		float pix = getPixelScale();
-		pickValue(x, y, pix);
+		pickValue(px, py, pix);
 		return true;
 	}
 }

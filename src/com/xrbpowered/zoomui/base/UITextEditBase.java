@@ -100,9 +100,9 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 		}
 
 		@Override
-		public boolean notifyMouseMove(float dx, float dy) {
-			x += dx * getPixelScale();
-			y += dy * getPixelScale();
+		public boolean notifyMouseMove(float dbx, float dby) {
+			x += dbx * getPixelScale();
+			y += dby * getPixelScale();
 			cursorToMouse(this.x, this.y);
 			scrollToCursor();
 			modifySelection(true);
@@ -111,7 +111,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 		}
 
 		@Override
-		public boolean notifyMouseUp(float x, float y, Button button, int mods, UIElement target) {
+		public boolean notifyMouseUp(float bx, float by, Button button, int mods, UIElement target) {
 			return true;
 		}
 	};
@@ -1148,14 +1148,14 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 	}
 	
 	@Override
-	public boolean onMouseDown(float x, float y, Button button, int mods) {
+	public boolean onMouseDown(float px, float py, Button button, int mods) {
 		if(button==Button.left) {
 			if(!isFocused())
 				getBase().setFocus(this);
 			else 
 				checkPushHistory();
 			deselect();
-			cursorToMouse(x, y);
+			cursorToMouse(px, py);
 			repaint();
 			return true;
 		}

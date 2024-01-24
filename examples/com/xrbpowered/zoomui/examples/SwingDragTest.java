@@ -52,8 +52,8 @@ public class SwingDragTest extends UIContainer {
 	}
 
 	@Override
-	public boolean onMouseDown(float x, float y, Button button, int mods) {
-		return isInside(x, y) && dragActor.isTrigger(button, mods);
+	public boolean onMouseDown(float px, float py, Button button, int mods) {
+		return isInside(px, py) && dragActor.isTrigger(button, mods);
 	}
 	
 	public static void main(String[] args) {

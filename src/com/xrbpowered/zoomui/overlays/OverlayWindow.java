@@ -28,19 +28,19 @@ public class OverlayWindow<A> extends UIModalWindow<A> {
 		}
 		
 		@Override
-		public boolean onMouseDown(float x, float y, Button button, int mods) {
+		public boolean onMouseDown(float px, float py, Button button, int mods) {
 			if(dismissable)
 				close();
 			return true;
 		}
 		
 		@Override
-		public boolean onMouseUp(float x, float y, Button button, int mods, UIElement initiator) {
+		public boolean onMouseUp(float px, float py, Button button, int mods, UIElement initiator) {
 			return true;
 		}
 		
 		@Override
-		public boolean onMouseScroll(float x, float y, float delta, int mods) {
+		public boolean onMouseScroll(float px, float py, float delta, int mods) {
 			return true;
 		}
 		

@@ -69,30 +69,30 @@ public class OverlayBaseContainer<A> extends ModalBaseContainer<A> {
 	}
 	
 	@Override
-	public UIElement getElementAt(float x, float y) {
-		return super.getElementAt(x-boxX, y-boxY);
+	public UIElement getElementAt(float px, float py) {
+		return super.getElementAt(px-boxX, py-boxY);
 	}
 	
 	@Override
-	public UIElement notifyMouseDown(float x, float y, Button button, int mods) {
-		if(isInsideBox(x, y))
-			return super.notifyMouseDown(x-boxX, y-boxY, button, mods);
+	public UIElement notifyMouseDown(float px, float py, Button button, int mods) {
+		if(isInsideBox(px, py))
+			return super.notifyMouseDown(px-boxX, py-boxY, button, mods);
 		else
 			return null;
 	}
 	
 	@Override
-	public UIElement notifyMouseUp(float x, float y, Button button, int mods, UIElement initiator) {
-		if(isInsideBox(x, y))
-			return super.notifyMouseUp(x-boxX, y-boxY, button, mods, initiator);
+	public UIElement notifyMouseUp(float px, float py, Button button, int mods, UIElement initiator) {
+		if(isInsideBox(px, py))
+			return super.notifyMouseUp(px-boxX, py-boxY, button, mods, initiator);
 		else
 			return null;
 	}
 	
 	@Override
-	public UIElement notifyMouseScroll(float x, float y, float delta, int mods) {
-		if(isInsideBox(x, y))
-			return super.notifyMouseScroll(x-boxX, y-boxY, delta, mods);
+	public UIElement notifyMouseScroll(float px, float py, float delta, int mods) {
+		if(isInsideBox(px, py))
+			return super.notifyMouseScroll(px-boxX, py-boxY, delta, mods);
 		else
 			return null;
 	}

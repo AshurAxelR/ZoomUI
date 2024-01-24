@@ -19,16 +19,16 @@ public abstract class UISplitContainerBase extends UIContainer {
 		}
 
 		@Override
-		public boolean notifyMouseMove(float dx, float dy) {
+		public boolean notifyMouseMove(float dbx, float dby) {
 			float pix = getPixelScale();
-			float delta = vertical ? (dy*pix)/getHeight() : (dx*pix)/getWidth();
+			float delta = vertical ? (dby*pix)/getHeight() : (dbx*pix)/getWidth();
 			setSplitRatio(splitRatio + delta);
 			repaint();
 			return true;
 		}
 
 		@Override
-		public boolean notifyMouseUp(float x, float y, Button button, int mods, UIElement target) {
+		public boolean notifyMouseUp(float bx, float by, Button button, int mods, UIElement target) {
 			return true;
 		}
 	};
@@ -63,7 +63,7 @@ public abstract class UISplitContainerBase extends UIContainer {
 		}
 		
 		@Override
-		public boolean onMouseDown(float x, float y, Button button, int mods) {
+		public boolean onMouseDown(float px, float py, Button button, int mods) {
 			if(button==Button.left)
 				return true;
 			return false;

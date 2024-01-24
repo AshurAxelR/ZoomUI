@@ -47,7 +47,7 @@ public class UIMenu extends UIContainer implements Measurable {
 	}
 	
 	@Override
-	public boolean onMouseDown(float x, float y, Button button, int mods) {
+	public boolean onMouseDown(float px, float py, Button button, int mods) {
 		return true;
 	}
 	

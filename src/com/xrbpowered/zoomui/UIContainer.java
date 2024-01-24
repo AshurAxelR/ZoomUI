@@ -63,59 +63,59 @@ public abstract class UIContainer extends UIElement {
 	}
 	
 	@Override
-	public UIElement getElementAt(float x, float y) {
+	public UIElement getElementAt(float px, float py) {
 		if(!isVisible())
 			return null;
-		float cx = parentToLocalX(x);
-		float cy = parentToLocalY(y);
+		float cx = parentToLocalX(px);
+		float cy = parentToLocalY(py);
 		for(int i=children.size()-1; i>=0; i--) {
 			UIElement e = children.get(i).getElementAt(cx, cy);
 			if(e!=null)
 				return e;
 		}
-		return super.getElementAt(x, y);
+		return super.getElementAt(px, py);
 	}
 	
 	@Override
-	public UIElement notifyMouseDown(float x, float y, Button button, int mods) {
+	public UIElement notifyMouseDown(float px, float py, Button button, int mods) {
 		if(!isVisible())
 			return null;
-		float cx = parentToLocalX(x);
-		float cy = parentToLocalY(y);
+		float cx = parentToLocalX(px);
+		float cy = parentToLocalY(py);
 		for(int i=children.size()-1; i>=0; i--) {
 			UIElement e = children.get(i).notifyMouseDown(cx, cy, button, mods);
 			if(e!=null)
 				return e;
 		}
-		return super.notifyMouseDown(x, y, button, mods);
+		return super.notifyMouseDown(px, py, button, mods);
 	}
 	
 	@Override
-	public UIElement notifyMouseUp(float x, float y, Button button, int mods, UIElement initiator) {
+	public UIElement notifyMouseUp(float px, float py, Button button, int mods, UIElement initiator) {
 		if(!isVisible())
 			return null;
-		float cx = parentToLocalX(x);
-		float cy = parentToLocalY(y);
+		float cx = parentToLocalX(px);
+		float cy = parentToLocalY(py);
 		for(int i=children.size()-1; i>=0; i--) {
 			UIElement e = children.get(i).notifyMouseUp(cx, cy, button, mods, initiator);
 			if(e!=null)
 				return e;
 		}
-		return super.notifyMouseUp(x, y, button, mods, initiator);
+		return super.notifyMouseUp(px, py, button, mods, initiator);
 	}
 	
 	@Override
-	public UIElement notifyMouseScroll(float x, float y, float delta, int mods) {
+	public UIElement notifyMouseScroll(float px, float py, float delta, int mods) {
 		if(!isVisible())
 			return null;
-		float cx = parentToLocalX(x);
-		float cy = parentToLocalY(y);
+		float cx = parentToLocalX(px);
+		float cy = parentToLocalY(py);
 		for(int i=children.size()-1; i>=0; i--) {
 			UIElement e = children.get(i).notifyMouseScroll(cx, cy, delta, mods);
 			if(e!=null)
 				return e;
 		}
-		return super.notifyMouseScroll(x, y, delta, mods);
+		return super.notifyMouseScroll(px, py, delta, mods);
 	}
 	
 }

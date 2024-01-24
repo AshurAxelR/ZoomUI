@@ -58,7 +58,7 @@ public class UIListItem extends UIElement {
 	}
 	
 	@Override
-	public boolean onMouseDown(float x, float y, Button button, int mods) {
+	public boolean onMouseDown(float px, float py, Button button, int mods) {
 		if(button==Button.left) {
 			if(list.getSelectedIndex()==index)
 				list.onClickSelected();

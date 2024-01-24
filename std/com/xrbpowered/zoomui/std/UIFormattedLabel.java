@@ -166,7 +166,7 @@ public class UIFormattedLabel extends UIContainer {
 							repaint();
 						}
 						@Override
-						public boolean onMouseDown(float x, float y, Button button, int mods) {
+						public boolean onMouseDown(float px, float py, Button button, int mods) {
 							if(button==Button.left && mods==UIElement.modNone) {
 								container.onHrefClicked(href);
 								return true;

@@ -59,7 +59,7 @@ public abstract class UIScrollContainerBase extends UIContainer {
 	}
 	
 	@Override
-	public boolean onMouseScroll(float x, float y, float delta, int modifiers) {
+	public boolean onMouseScroll(float px, float py, float delta, int modifiers) {
 		if(modifiers==modNone) {
 			view.pan(0, -delta*wheelStep);
 			repaint();

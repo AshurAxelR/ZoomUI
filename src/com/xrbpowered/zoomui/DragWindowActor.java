@@ -27,13 +27,13 @@ public class DragWindowActor implements DragActor {
 	}
 
 	@Override
-	public boolean notifyMouseMove(float dx, float dy) {
-		element.getBase().getWindow().move((int)dx, (int)dy);
+	public boolean notifyMouseMove(float dbx, float dby) {
+		element.getBase().getWindow().move((int)dbx, (int)dby);
 		return true;
 	}
 
 	@Override
-	public boolean notifyMouseUp(float x, float y, Button button, int mods, UIElement target) {
+	public boolean notifyMouseUp(float bx, float by, Button button, int mods, UIElement target) {
 		return true;
 	}
 }
