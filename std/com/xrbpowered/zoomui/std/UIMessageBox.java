@@ -3,7 +3,7 @@ package com.xrbpowered.zoomui.std;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
-import com.xrbpowered.zoomui.BaseContainer.ModalBaseContainer;
+import com.xrbpowered.zoomui.RootContainer.ModalBaseContainer;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.HotKeyMap;
 import com.xrbpowered.zoomui.KeyInputHandler;
@@ -74,7 +74,7 @@ public class UIMessageBox extends UIContainer implements KeyInputHandler {
 			};
 			hotKeys.add(res.keyCode, 0, buttons[i]);
 		}
-		getBase().hotKeys = hotKeys;
+		getRoot().hotKeys = hotKeys;
 			
 		this.label = new UIFormattedLabel(this, message);
 		this.label.setSize(0, 0);
@@ -82,7 +82,7 @@ public class UIMessageBox extends UIContainer implements KeyInputHandler {
 	
 	@SuppressWarnings("unchecked")
 	public void notifyResult(MessageResult res) {
-		((ModalBaseContainer<MessageResult>) getBase()).getWindow().closeWithResult(res);
+		((ModalBaseContainer<MessageResult>) getRoot()).getWindow().closeWithResult(res);
 	}
 	
 	@Override
@@ -111,13 +111,13 @@ public class UIMessageBox extends UIContainer implements KeyInputHandler {
 	public void layout() {
 		float x = (icon==null) ? 0 : iconSize+12; 
 		float h = Math.max(label.getHeight(), (icon==null) ? 0 : iconSize+8);
-		label.setLocation(x+16, (h-label.getHeight())/2f+8);
+		label.setPosition(x+16, (h-label.getHeight())/2f+8);
 		label.setSize(getWidth()-x-32, label.getHeight());
 		label.layout();
 		
 		float y = getHeight()-8-UIButton.defaultHeight;
 		for(int i=0; i<buttons.length; i++)
-			buttons[i].setLocation(getWidth()-4-(UIButton.defaultWidth+4)*(buttons.length-i), y);
+			buttons[i].setPosition(getWidth()-4-(UIButton.defaultWidth+4)*(buttons.length-i), y);
 	}
 	
 	@Override
@@ -130,14 +130,14 @@ public class UIMessageBox extends UIContainer implements KeyInputHandler {
 			icon.paint(g.graph, 0, 16, 12, iconSize, getPixelScale(), true);
 		
 		if(hlabel!=label.getHeight()) {
-			UIWindow window = getBase().getWindow();
+			UIWindow window = getRoot().getWindow();
 			window.setClientSize((int)getWidth(), (int)(h+UIButton.defaultHeight+40));
 			window.center(); // FIXME message box centering 
 		}
 	}
 	
 	@Override
-	protected void paintSelf(GraphAssist g) {
+	protected void paintBackground(GraphAssist g) {
 		float w = getWidth();
 		float y = getHeight()-16-UIButton.defaultHeight;
 		g.fillRect(0, 0, w, y, Color.WHITE);

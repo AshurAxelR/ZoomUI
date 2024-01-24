@@ -100,7 +100,7 @@ public class UIFileBrowser extends UIContainer {
 				if(button==Button.left) {
 					this.setVisible(false);
 					txtPath.setVisible(true);
-					getBase().setFocus(txtPath.editor);
+					getRoot().setFocus(txtPath.editor);
 					txtPath.editor.selectAll();
 					repaint();
 				}
@@ -183,7 +183,7 @@ public class UIFileBrowser extends UIContainer {
 					resultHandler.onCancel();
 			}
 		};
-		getBase().hotKeys = new HotKeyMap()
+		getRoot().hotKeys = new HotKeyMap()
 				.addOk(btnOk)
 				.addCancel(btnCancel);
 		
@@ -222,27 +222,27 @@ public class UIFileBrowser extends UIContainer {
 		float h = getHeight();
 		float top = txtFileName.getHeight()+16;
 		float viewh = h-24-UIButton.defaultHeight*2-top;
-		view.setLocation(56, top);
+		view.setPosition(56, top);
 		view.setSize(w-56, viewh);
-		txtFileName.setLocation(56, h-UIButton.defaultHeight*2-16);
+		txtFileName.setPosition(56, h-UIButton.defaultHeight*2-16);
 		txtFileName.setSize(w-56-8, txtFileName.getHeight());
-		txtPath.setLocation(56, 8);
+		txtPath.setPosition(56, 8);
 		txtPath.setSize(w-56-4-28, txtFileName.getHeight());
-		navPath.setLocation(txtPath.getX(), txtPath.getY());
+		navPath.setPosition(txtPath.getX(), txtPath.getY());
 		navPath.setSize(txtPath.getWidth(), txtPath.getHeight());
-		btnBack.setLocation(28-22, 8);
-		btnFwd.setLocation(28+2, 8);
-		btnRefresh.setLocation(w-28, 8);
-		btnUp.setLocation(4, top+4);
-		btnHome.setLocation(4, top+viewh-48*2-4);
-		btnRoots.setLocation(4, top+viewh-48-4);
-		btnOk.setLocation(w-UIButton.defaultWidth*2-12, h-UIButton.defaultHeight-8);
-		btnCancel.setLocation(w-UIButton.defaultWidth-8, h-UIButton.defaultHeight-8);
+		btnBack.setPosition(28-22, 8);
+		btnFwd.setPosition(28+2, 8);
+		btnRefresh.setPosition(w-28, 8);
+		btnUp.setPosition(4, top+4);
+		btnHome.setPosition(4, top+viewh-48*2-4);
+		btnRoots.setPosition(4, top+viewh-48-4);
+		btnOk.setPosition(w-UIButton.defaultWidth*2-12, h-UIButton.defaultHeight-8);
+		btnCancel.setPosition(w-UIButton.defaultWidth-8, h-UIButton.defaultHeight-8);
 		super.layout();
 	}
 	
 	@Override
-	protected void paintSelf(GraphAssist g) {
+	protected void paintBackground(GraphAssist g) {
 		int w = (int)getWidth();
 		int h = (int)getHeight();
 		int top = (int)(txtFileName.getHeight()+16);

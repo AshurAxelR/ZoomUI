@@ -20,7 +20,7 @@ public class UIArrowButton extends UIArrowButtonBase {
 
 	@Override
 	public void paint(GraphAssist g) {
-		if(down || hover)
+		if(down || isHover())
 			g.fill(this, down ? UIButton.colorDown : colorHover);
 		g.setColor(isEnabled() ? colorArrow : colorArrowDisabled);
 		drawArrow(g);

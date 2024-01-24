@@ -82,7 +82,6 @@ public class UIFileView extends UIScrollContainer {
 		
 		public FileListItem(UIContainer parent, File file) {
 			super(parent);
-			repaintOnHover = true;
 			this.file = file;
 			if(file.isFile())
 				info = dateFmt.format(file.lastModified()) + ", "+formatFileSize(file.length());
@@ -94,12 +93,17 @@ public class UIFileView extends UIScrollContainer {
 		}
 		
 		@Override
+		public boolean repaintOnHover() {
+			return true;
+		}
+		
+		@Override
 		public void paint(GraphAssist g) {
 			int w = (int)getWidth();
 			int h = (int)getHeight();
 			
 			boolean sel = file==selectedFile;
-			Color bgColor = sel ? colorSelection : hover ? colorHighlight : colorBackground;
+			Color bgColor = sel ? colorSelection : isHover() ? colorHighlight : colorBackground;
 			g.fill(this, bgColor);
 
 			String fileName = file.getName();
@@ -166,12 +170,9 @@ public class UIFileView extends UIScrollContainer {
 			this.order = order;
 			
 			this.header = new UIElement(this) {
-				{
-					repaintOnHover = true;
-				}
 				@Override
 				public void paint(GraphAssist g) {
-					Color bgColor = hover ? colorHighlight : colorBackground;
+					Color bgColor = isHover() ? colorHighlight : colorBackground;
 					g.fill(this, bgColor);
 					
 					boolean open = body.isVisible();
@@ -190,6 +191,11 @@ public class UIFileView extends UIScrollContainer {
 					
 					g.setColor(colorBorderLight);
 					g.line(textWidth+28, y, getWidth()-8, y);
+				}
+				
+				@Override
+				public boolean repaintOnHover() {
+					return true;
 				}
 				
 				@Override
@@ -217,7 +223,7 @@ public class UIFileView extends UIScrollContainer {
 							x = 0f;
 							y += h;
 						}
-						e.setLocation(x, y);
+						e.setPosition(x, y);
 						e.setSize(w, h);
 						x += w;
 					}
@@ -239,10 +245,10 @@ public class UIFileView extends UIScrollContainer {
 		@Override
 		public void layout() {
 			float w = getWidth();
-			header.setLocation(0, 0);
+			header.setPosition(0, 0);
 			header.setSize(w, font.getSize()+8);
 			if(body.isVisible()) {
-				body.setLocation(0, header.getHeight());
+				body.setPosition(0, header.getHeight());
 				body.setSize(w, 0);
 				body.layout();
 				setSize(w, body.getHeight()+header.getHeight()+8);
@@ -390,7 +396,7 @@ public class UIFileView extends UIScrollContainer {
 		float w = getWidth();
 		float y = 0f;
 		for(FileGroupBox grp : groups) {
-			grp.setLocation(0, y);
+			grp.setPosition(0, y);
 			grp.setSize(w, 0);
 			grp.layout();
 			y += grp.getHeight();
@@ -427,7 +433,7 @@ public class UIFileView extends UIScrollContainer {
 	}
 	
 	@Override
-	protected void paintSelf(GraphAssist g) {
+	protected void paintBackground(GraphAssist g) {
 		g.fill(this, colorBackground);
 	}
 	

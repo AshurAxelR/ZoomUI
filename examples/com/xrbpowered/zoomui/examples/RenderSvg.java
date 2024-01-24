@@ -33,7 +33,7 @@ public class RenderSvg extends UIZoomView {
 	}
 	
 	@Override
-	protected void paintSelf(GraphAssist g) {
+	protected void paintBackground(GraphAssist g) {
 		g.fill(this, Color.WHITE);
 	}
 

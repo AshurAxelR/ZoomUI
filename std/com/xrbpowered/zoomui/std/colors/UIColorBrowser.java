@@ -172,7 +172,7 @@ public class UIColorBrowser extends UIContainer {
 					resultHandler.onCancel();
 			}
 		};
-		getBase().hotKeys = new HotKeyMap()
+		getRoot().hotKeys = new HotKeyMap()
 				.addOk(btnOk)
 				.addCancel(btnCancel);
 		
@@ -306,7 +306,7 @@ public class UIColorBrowser extends UIContainer {
 				txtChan[1][3].editor.setText(a);
 			}
 		}
-		getBase().resetFocus();
+		getRoot().resetFocus();
 		colorBox.color = new Color(getRGB(), pickAlpha);
 		if(pickAlpha)
 			alphaSlider.resetBuffer();
@@ -318,17 +318,17 @@ public class UIColorBrowser extends UIContainer {
 
 	@Override
 	public void layout() {
-		view.setLocation(8, 8);
+		view.setPosition(8, 8);
 		view.setSize(
 			Math.min(256+UIColorSlider.defaultWidth, getWidth()-btnOk.getWidth()-96),
 			Math.min(256, pickAlpha ? getHeight()-16-UIColorSlider.defaultWidth : getHeight()-24)
 		);
 		view.layout();
 		if(pickAlpha) {
-			alphaSlider.setLocation(8, view.getY()+view.getHeight());
+			alphaSlider.setPosition(8, view.getY()+view.getHeight());
 			alphaSlider.setSize(view.box.getWidth(), UIColorSlider.defaultWidth);
 		}
-		colorBox.setLocation(view.getX()+view.getWidth(), 8);
+		colorBox.setPosition(view.getX()+view.getWidth(), 8);
 		
 		float th = txtColor.getHeight();
 		float x0 =view.getX()+view.getWidth()+24;
@@ -336,26 +336,26 @@ public class UIColorBrowser extends UIContainer {
 		float w = getWidth()-8-x0;
 		float cw = (w+40)/2;
 		optMode.setSize(w, th);
-		optMode.setLocation(x0, y0-th*2-20);
+		optMode.setPosition(x0, y0-th*2-20);
 		txtColor.setSize(w, th);
-		txtColor.setLocation(x0, y0-th-16);
+		txtColor.setPosition(x0, y0-th-16);
 		for(int i=0; i<2; i++)
 			for(int j=0; j<numChan(); j++) {
 				UITextBox txt = txtChan[i][j];
 				txt.setSize(cw-40, txtColor.getHeight());
 				float y = y0+j*(th+4);
 				if(j==3) y += 4;
-				txt.setLocation(x0+i*cw, y);
+				txt.setPosition(x0+i*cw, y);
 			}
 		
-		btnOk.setLocation(getWidth()-btnOk.getWidth()-8, 8);
-		btnCancel.setLocation(btnOk.getX(), 12+btnOk.getHeight());
+		btnOk.setPosition(getWidth()-btnOk.getWidth()-8, 8);
+		btnCancel.setPosition(btnOk.getX(), 12+btnOk.getHeight());
 	}
 	
 	@Override
-	protected void paintSelf(GraphAssist g) {
+	protected void paintBackground(GraphAssist g) {
 		g.fill(this, new Color(0xf2f2f2));
-		if(getParent()==getBase())
+		if(getParent()==getRoot())
 			g.hborder(this, GraphAssist.TOP, UIColorView.colorBorder);
 		
 		g.setFont(font);

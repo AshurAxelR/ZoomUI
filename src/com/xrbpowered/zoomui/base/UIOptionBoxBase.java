@@ -30,9 +30,9 @@ public abstract class UIOptionBoxBase<T> extends UIContainer {
 	public void setSize(float width, float height) {
 		super.setSize(width, height);
 		left.setSize(left.getWidth(), getHeight());
-		left.setLocation(0, 0);
+		left.setPosition(0, 0);
 		right.setSize(right.getWidth(), getHeight());
-		right.setLocation(getWidth()-right.getWidth(), 0);
+		right.setPosition(getWidth()-right.getWidth(), 0);
 	}
 	
 	public int getSelectedIndex() {

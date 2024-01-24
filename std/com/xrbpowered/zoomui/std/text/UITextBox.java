@@ -38,23 +38,23 @@ public class UITextBox extends UIPanView {
 			public boolean onKeyPressed(char c, int code, int modifiers) {
 				switch(code) {
 					case KeyEvent.VK_TAB: {
-							KeyInputHandler tab = getBase().tabIndex().selectTab(TabIndex.getDir(modifiers));
+							KeyInputHandler tab = getRoot().tabIndex().selectTab(TabIndex.getDir(modifiers));
 							if(tab!=this) {
 								if(!onEnter())
 									onEscape();
-								getBase().setFocus(tab);
+								getRoot().setFocus(tab);
 								repaint();
 							}
 						}
 						return true;
 					case KeyEvent.VK_ENTER:
 						if(onEnter())
-							getBase().resetFocus();
+							getRoot().resetFocus();
 						repaint();
 						return true;
 					case KeyEvent.VK_ESCAPE:
 						if(onEscape())
-							getBase().resetFocus();
+							getRoot().resetFocus();
 						repaint();
 						return true;
 					default:
@@ -92,14 +92,14 @@ public class UITextBox extends UIPanView {
 	
 	@Override
 	public void layout() {
-		editor.setLocation(0, 0);
+		editor.setPosition(0, 0);
 		editor.updateSize();
 	}
 	
 	@Override
 	protected void paintChildren(GraphAssist g) {
 		super.paintChildren(g);
-		g.border(this, editor.isFocused() ? colorSelection : editor.hover ? colorText : colorBorder);
+		g.border(this, editor.isFocused() ? colorSelection : editor.isHover() ? colorText : colorBorder);
 	}
 	
 }

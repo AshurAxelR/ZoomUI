@@ -28,14 +28,18 @@ public class UINavPath extends UIContainer {
 		
 		public PathItem(UIContainer parent, int index, String item) {
 			super(parent);
-			repaintOnHover = true;
 			this.index = index;
 			this.item = item;
 		}
 		
 		@Override
+		public boolean repaintOnHover() {
+			return true;
+		}
+
+		@Override
 		public void paint(GraphAssist g) {
-			Color bgColor = hover ? colorHighlight : colorBackground;
+			Color bgColor = isHover() ? colorHighlight : colorBackground;
 			g.fill(this, bgColor);
 			
 			g.setFont(font);
@@ -63,8 +67,6 @@ public class UINavPath extends UIContainer {
 		}
 	}
 	
-	protected boolean hover = false;
-	
 	protected PathItem[] items = null;
 	
 	private boolean measure = false;
@@ -73,6 +75,11 @@ public class UINavPath extends UIContainer {
 	public UINavPath(UIContainer parent) {
 		super(parent);
 		setSize(UITextBox.defaultWidth, UITextBox.defaultHeight);
+	}
+	
+	@Override
+	public boolean repaintOnHover() {
+		return true;
 	}
 
 	public void setPath(String[] items) {
@@ -102,19 +109,7 @@ public class UINavPath extends UIContainer {
 	}
 	
 	@Override
-	public void onMouseIn() {
-		hover = true;
-		repaint();
-	}
-	
-	@Override
-	public void onMouseOut() {
-		hover = false;
-		repaint();
-	}
-	
-	@Override
-	protected void paintSelf(GraphAssist g) {
+	protected void paintBackground(GraphAssist g) {
 		g.fill(this, colorBackground);
 	}
 	
@@ -139,7 +134,7 @@ public class UINavPath extends UIContainer {
 				float x = oversize ? 16 : 0;
 				for(UIElement c : children) {
 					if(c.isVisible()) {
-						c.setLocation(x, 0);
+						c.setPosition(x, 0);
 						x += c.getWidth();
 					}
 				}
@@ -152,6 +147,6 @@ public class UINavPath extends UIContainer {
 			g.drawString("...", 8, getHeight()/2, GraphAssist.CENTER, GraphAssist.CENTER);
 		}
 		super.paintChildren(g);
-		g.border(this, hover ? colorText : colorBorder);
+		g.border(this, isHover() ? colorText : colorBorder);
 	}
 }

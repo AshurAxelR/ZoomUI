@@ -28,7 +28,7 @@ public class DragWindowActor implements DragActor {
 
 	@Override
 	public boolean notifyMouseMove(float dx, float dy) {
-		element.getBase().getWindow().move((int)dx, (int)dy);
+		element.getRoot().getWindow().move((int)dx, (int)dy);
 		return true;
 	}
 

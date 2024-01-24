@@ -92,7 +92,7 @@ public abstract class UIListBoxBase<T extends UIElement> extends UIScrollContain
 		float w = getView().getWidth();
 		float y = 0;
 		for(int i=0; i<listItems.length; i++) {
-			listItems[i].setLocation(0, y);
+			listItems[i].setPosition(0, y);
 			float h = listItems[i].getHeight();
 			listItems[i].setSize(w, h);
 			y += h;

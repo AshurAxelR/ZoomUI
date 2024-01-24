@@ -11,7 +11,11 @@ public abstract class UIButtonBase extends UIElement implements ActionHandler {
 
 	public UIButtonBase(UIContainer parent) {
 		super(parent);
-		repaintOnHover = true;
+	}
+	
+	@Override
+	public boolean repaintOnHover() {
+		return true;
 	}
 	
 	@Override
@@ -22,7 +26,7 @@ public abstract class UIButtonBase extends UIElement implements ActionHandler {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 		if(!enabled) {
-			hover = false;
+			resetHover();
 			down = false;
 		}
 	}

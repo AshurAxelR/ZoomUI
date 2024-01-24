@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class TabIndex {
 
-	public final BaseContainer base;
+	public final RootContainer base;
 
 	private KeyInputHandler uiFocused = null;
 	
@@ -15,7 +15,7 @@ public class TabIndex {
 	protected int lastSelectedIndex = 0;
 	protected boolean invalidList = true;
 	
-	public TabIndex(BaseContainer base) {
+	public TabIndex(RootContainer base) {
 		this.base = base;
 	}
 	

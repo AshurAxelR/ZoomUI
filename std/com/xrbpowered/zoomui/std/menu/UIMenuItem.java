@@ -32,7 +32,7 @@ public class UIMenuItem extends UIButtonBase {
 	}
 	
 	public float getMinWidth() {
-		FontMetrics fm = getBase().getWindow().getFontMetrics(font, font.getSize(), getPixelScale());
+		FontMetrics fm = getRoot().getWindow().getFontMetrics(font, font.getSize(), getPixelScale());
 		return fm.stringWidth(label)+getTotalMargins();
 	}
 
@@ -49,7 +49,7 @@ public class UIMenuItem extends UIButtonBase {
 	}
 	
 	public boolean isActive() {
-		return hover;
+		return isHover();
 	}
 	
 	@Override

@@ -33,7 +33,7 @@ public class UIMenu extends UIContainer implements Measurable {
 		}
 		float y = 0f;
 		for(UIElement c : children) {
-			c.setLocation(0, y);
+			c.setPosition(0, y);
 			float h = c.getHeight();
 			c.setSize(max, h);
 			y += h;
@@ -42,7 +42,7 @@ public class UIMenu extends UIContainer implements Measurable {
 	}
 	
 	@Override
-	protected void paintSelf(GraphAssist g) {
+	protected void paintBackground(GraphAssist g) {
 		g.fill(this, colorBackground);
 	}
 	
@@ -79,8 +79,8 @@ public class UIMenu extends UIContainer implements Measurable {
 	}
 	
 	public void onItemAction() {
-		UIWindow window = getBase().getWindow();
-		if(getParent()==getBase() && (window instanceof UIPopupWindow))
+		UIWindow window = getRoot().getWindow();
+		if(getParent()==getRoot() && (window instanceof UIPopupWindow))
 			window.close();
 
 	}

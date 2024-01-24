@@ -42,7 +42,7 @@ public class UIListBox extends UIListBoxBase<UIListItem> {
 	}
 
 	@Override
-	protected void paintSelf(GraphAssist g) {
+	protected void paintBackground(GraphAssist g) {
 		g.fill(this, UIListBox.colorBackground);
 	}
 }

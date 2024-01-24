@@ -17,8 +17,8 @@ public class DragPointActor implements DragActor {
 	@Override
 	public boolean notifyMouseDown(float x, float y, Button button, int mods) {
 		pixelScale = ui.getPixelScale();
-		posx = ui.baseToLocalX(x);
-		posy = ui.baseToLocalY(y);
+		posx = ui.rootToLocalX(x);
+		posy = ui.rootToLocalY(y);
 		prevx = posx;
 		prevy = posy;
 		return true;
@@ -37,8 +37,8 @@ public class DragPointActor implements DragActor {
 	public boolean notifyMouseUp(float x, float y, Button button, int mods, UIElement target) {
 		prevx = posx;
 		prevy = posy;
-		posx = ui.baseToLocalX(x);
-		posy = ui.baseToLocalY(y);
+		posx = ui.rootToLocalX(x);
+		posy = ui.rootToLocalY(y);
 		return true;
 	}
 

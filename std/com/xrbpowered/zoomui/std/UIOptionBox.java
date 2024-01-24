@@ -50,7 +50,7 @@ public class UIOptionBox<T> extends UIOptionBoxBase<T> {
 	}
 	
 	@Override
-	public void paintSelf(GraphAssist g) {
+	public void paintBackground(GraphAssist g) {
 		g.fill(this, colorBackground);
 		
 		g.setColor(colorText);

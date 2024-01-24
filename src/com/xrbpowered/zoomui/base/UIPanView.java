@@ -109,13 +109,13 @@ public class UIPanView extends UIContainer {
 	}
 	
 	@Override
-	protected float parentToLocalX(float x) {
-		return super.parentToLocalX(x)+panX;
+	protected float parentToLocalX(float px) {
+		return super.parentToLocalX(px)+panX;
 	}
 
 	@Override
-	protected float parentToLocalY(float y) {
-		return super.parentToLocalY(y)+panY;
+	protected float parentToLocalY(float py) {
+		return super.parentToLocalY(py)+panY;
 	}
 	
 	@Override
@@ -144,33 +144,33 @@ public class UIPanView extends UIContainer {
 	}
 	
 	@Override
-	public UIElement getElementAt(float x, float y) {
-		if(isInside(x, y))
-			return super.getElementAt(x, y);
+	public UIElement getElementAt(float px, float py) {
+		if(isInside(px, py))
+			return super.getElementAt(px, py);
 		else
 			return null;
 	}
 	
 	@Override
-	public UIElement notifyMouseDown(float x, float y, Button button, int mods) {
-		if(isInside(x, y))
-			return super.notifyMouseDown(x, y, button, mods);
+	public UIElement notifyMouseDown(float px, float py, Button button, int mods) {
+		if(isInside(px, py))
+			return super.notifyMouseDown(px, py, button, mods);
 		else
 			return null;
 	}
 	
 	@Override
-	public UIElement notifyMouseUp(float x, float y, Button button, int mods, UIElement initiator) {
-		if(isInside(x, y))
-			return super.notifyMouseUp(x, y, button, mods, initiator);
+	public UIElement notifyMouseUp(float px, float py, Button button, int mods, UIElement initiator) {
+		if(isInside(px, py))
+			return super.notifyMouseUp(px, py, button, mods, initiator);
 		else
 			return null;
 	}
 
 	@Override
-	public UIElement notifyMouseScroll(float x, float y, float delta, int mods) {
-		if(isInside(x, y))
-			return super.notifyMouseScroll(x, y, delta, mods);
+	public UIElement notifyMouseScroll(float px, float py, float delta, int mods) {
+		if(isInside(px, py))
+			return super.notifyMouseScroll(px, py, delta, mods);
 		else
 			return null;
 	}

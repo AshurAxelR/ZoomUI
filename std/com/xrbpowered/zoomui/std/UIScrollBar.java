@@ -34,8 +34,8 @@ public class UIScrollBar extends UIScrollBarBase {
 	}
 	
 	@Override
-	protected void paintSelf(GraphAssist g) {
-		super.paintSelf(g);
+	protected void paintBackground(GraphAssist g) {
+		super.paintBackground(g);
 		g.fill(this, colorBackground);
 		g.border(this, colorBorder);
 	}
@@ -46,7 +46,7 @@ public class UIScrollBar extends UIScrollBarBase {
 				new GradientPaint(0, 0, UIButton.colorGradTop, thumb.getWidth(), 0, UIButton.colorGradBottom) :
 				new GradientPaint(0, 0, UIButton.colorGradTop, 0, thumb.getHeight(), UIButton.colorGradBottom));
 		g.fill(thumb);
-		g.border(thumb, thumb.hover ? UIButton.colorText : UIButton.colorBorder);
+		g.border(thumb, thumb.isHover() ? UIButton.colorText : UIButton.colorBorder);
 	}
 
 }

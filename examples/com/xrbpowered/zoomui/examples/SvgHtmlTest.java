@@ -54,13 +54,13 @@ public class SvgHtmlTest extends UIZoomView {
 	
 	@Override
 	public void layout() {
-		label.setLocation(10, 10);
+		label.setPosition(10, 10);
 		label.setSize(getWidth()-20, getHeight()-20);
 		label.layout();
 	}
 
 	@Override
-	public void paintSelf(GraphAssist g) {
+	public void paintBackground(GraphAssist g) {
 		g.fill(this, new Color(0xfff6e6));
 	}
 

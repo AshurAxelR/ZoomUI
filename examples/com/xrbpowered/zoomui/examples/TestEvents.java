@@ -106,14 +106,14 @@ public class TestEvents {
 		public void layout() {
 			float w = getWidth()/2;
 			float h = getHeight();
-			left.setLocation(5, 5);
+			left.setPosition(5, 5);
 			left.setSize(w-10, h-10);
-			right.setLocation(w+5, 5);
+			right.setPosition(w+5, 5);
 			right.setSize(w-10, h-10);
 			super.layout();
 		}
 		@Override
-		protected void paintSelf(GraphAssist g) {
+		protected void paintBackground(GraphAssist g) {
 			if(level<MAX_LEVEL) {
 				g.setStroke(getPixelScale());
 				g.setColor(Color.RED);

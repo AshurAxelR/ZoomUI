@@ -5,9 +5,9 @@ import java.awt.RenderingHints;
 
 import com.xrbpowered.zoomui.base.UILayersContainer;
 
-public class BaseContainer extends UILayersContainer implements Measurable {
+public class RootContainer extends UILayersContainer implements Measurable {
 
-	public static class ModalBaseContainer<A> extends BaseContainer {
+	public static class ModalBaseContainer<A> extends RootContainer {
 		protected ModalBaseContainer(UIModalWindow<A> window, float scale) {
 			super(window, scale);
 		}
@@ -24,21 +24,21 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 	private UIWindow window;
 	private TabIndex tabIndex;
 	
-	protected BaseContainer(UIWindow window, float scale) {
+	protected RootContainer(UIWindow window, float scale) {
 		super(null);
 		this.baseScale = scale;
 		this.window = window;
 		this.tabIndex = new TabIndex(this);
 	}
 
-	public BaseContainer replaceTabIndex(TabIndex tabIndex) {
+	public RootContainer replaceTabIndex(TabIndex tabIndex) {
 		tabIndex.copyState(this.tabIndex);
 		this.tabIndex = tabIndex;
 		return this;
 	}
 	
 	@Override
-	public BaseContainer getBase() {
+	public RootContainer getRoot() {
 		return this;
 	}
 	
@@ -94,13 +94,13 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 	}
 	
 	@Override
-	public UIElement notifyMouseDown(float x, float y, Button button, int mods) {
+	public UIElement notifyMouseDown(float px, float py, Button button, int mods) {
 		if(drag==null) {
-			prevMouseX = getWindow().baseToScreenX(x);
-			prevMouseY = getWindow().baseToScreenY(y);
+			prevMouseX = getWindow().baseToScreenX(px);
+			prevMouseY = getWindow().baseToScreenY(py);
 			initiatorButton = button;
 			initiatorMods = mods;
-			UIElement ui = super.notifyMouseDown(x, y, button, mods);
+			UIElement ui = super.notifyMouseDown(px, py, button, mods);
 			if(ui!=uiInitiator && uiInitiator!=null)
 				uiInitiator.onMouseReleased();
 			uiInitiator = ui;
@@ -111,14 +111,14 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 	}
 	
 	@Override
-	public UIElement notifyMouseUp(float x, float y, Button button, int mods, UIElement initiator) {
+	public UIElement notifyMouseUp(float px, float py, Button button, int mods, UIElement initiator) {
 		if(drag!=null) {
-			UIElement ui = getElementAt(x, y);
-			if(drag.notifyMouseUp(x, y, button, mods, ui))
+			UIElement ui = getElementAt(px, py);
+			if(drag.notifyMouseUp(px, py, button, mods, ui))
 				drag = null;
 		}
 		else {
-			if(super.notifyMouseUp(x, y, button, mods, uiInitiator)!=uiInitiator && uiInitiator!=null)
+			if(super.notifyMouseUp(px, py, button, mods, uiInitiator)!=uiInitiator && uiInitiator!=null)
 				uiInitiator.onMouseReleased(); // FIXME release for multi-button scenarios
 		}
 		return this;
@@ -149,7 +149,7 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 		if(drag==null) {
 			updateMouseMove(x, y);
 			if(uiUnderMouse!=null && uiUnderMouse!=this)
-				uiUnderMouse.onMouseMoved(uiUnderMouse.baseToLocalX(x), uiUnderMouse.baseToLocalY(y), mods);
+				uiUnderMouse.onMouseMoved(uiUnderMouse.rootToLocalX(x), uiUnderMouse.rootToLocalY(y), mods);
 		}
 	}
 	
@@ -195,13 +195,13 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 	}
 	
 	@Override
-	protected float parentToLocalX(float x) {
-		return x / baseScale;
+	protected float parentToLocalX(float px) {
+		return px / baseScale;
 	}
 	
 	@Override
-	protected float parentToLocalY(float y) {
-		return y / baseScale;
+	protected float parentToLocalY(float py) {
+		return py / baseScale;
 	}
 	
 	@Override
@@ -267,7 +267,7 @@ public class BaseContainer extends UILayersContainer implements Measurable {
 	}
 	
 	@Override
-	public boolean isInside(float x, float y) {
+	public boolean isInside(float px, float py) {
 		return true;
 	}
 	

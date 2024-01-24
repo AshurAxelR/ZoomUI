@@ -170,12 +170,12 @@ public class UIColorView extends UIContainer {
 		
 		@Override
 		public void onMouseIn() {
-			getBase().getWindow().setCursor(null);
+			getRoot().getWindow().setCursor(null);
 		}
 		
 		@Override
 		public void onMouseOut() {
-			getBase().getWindow().setCursor(Cursor.getDefaultCursor());
+			getRoot().getWindow().setCursor(Cursor.getDefaultCursor());
 			hoverx = -1;
 			hovery = -1;
 			repaint();
@@ -258,10 +258,10 @@ public class UIColorView extends UIContainer {
 	
 	@Override
 	public void layout() {
-		box.setLocation(0, 0);
+		box.setPosition(0, 0);
 		float boxSize = Math.min(getWidth()-UIColorSlider.defaultWidth, getHeight());
 		box.setSize(boxSize, boxSize);
-		slider.setLocation(boxSize, 0);
+		slider.setPosition(boxSize, 0);
 		slider.setSize(UIColorSlider.defaultWidth, boxSize);
 		super.layout();
 	}

@@ -24,13 +24,13 @@ public class UIMenuBar extends UIContainer {
 			for(UIElement c : children) {
 				UIMenuItem mi = (UIMenuItem) c;
 				float w = mi.getMinWidth();
-				mi.setLocation(x, 0);
+				mi.setPosition(x, 0);
 				mi.setSize(w, getHeight());
 				x += w;
 			}
 		}
 		@Override
-		protected void paintSelf(GraphAssist g) {
+		protected void paintBackground(GraphAssist g) {
 			g.fill(this, UIMenuBar.colorBackground);
 		}
 	}
@@ -77,9 +77,9 @@ public class UIMenuBar extends UIContainer {
 			// otherwise the same click even will dismiss the popup and instantly call onAction() to reopen it again
 			// FIXME still interferes with RMB-drag
 			if(popup.setClientSizeToContent()) {
-				float bx = localToBaseX(0);
-				float by = localToBaseY(getHeight());
-				popup.show(getBase().getWindow(), bx, by);
+				float bx = localToRootX(0);
+				float by = localToRootY(getHeight());
+				popup.show(getRoot().getWindow(), bx, by);
 				active = this;
 			}
 		}
@@ -104,9 +104,9 @@ public class UIMenuBar extends UIContainer {
 	public void layout() {
 		float y = bar.getHeight();
 		bar.setSize(getWidth(), y);
-		bar.setLocation(0, 0);
+		bar.setPosition(0, 0);
 		content.setSize(getWidth(), getHeight()-y);
-		content.setLocation(0, y);
+		content.setPosition(0, y);
 		super.layout();
 	}
 

@@ -37,10 +37,10 @@ public abstract class UIScrollContainerBase extends UIContainer {
 	public
 	final void layout() {
 		scroll.setLength(getHeight());
-		scroll.setLocation(getWidth()-scroll.getWidth(), 0);
+		scroll.setPosition(getWidth()-scroll.getWidth(), 0);
 		scroll.layout();
 		
-		view.setLocation(0, 0);
+		view.setPosition(0, 0);
 		view.setSize(getWidth()-scroll.getWidth(), getHeight());
 		view.setPanRangeForClient(0, layoutView());
 		view.layout();

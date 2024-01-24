@@ -88,8 +88,8 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 		public boolean notifyMouseDown(float x, float y, Button button, int mods) {
 			if(button==Button.left) {
 				checkPushHistory(HistoryAction.unspecified);
-				this.x = baseToLocalX(x);
-				this.y = baseToLocalY(y);
+				this.x = rootToLocalX(x);
+				this.y = rootToLocalY(y);
 				cursorToMouse(this.x, this.y);
 				startSelection();
 				return true;
@@ -190,10 +190,14 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 	
 	public UITextEditBase(UIPanView parent, boolean singleLine) {
 		super(parent);
-		repaintOnHover = true;
 		this.singleLine = singleLine;
 		this.autoSelect = singleLine;
 		setText("");
+	}
+	
+	@Override
+	public boolean repaintOnHover() {
+		return true;
 	}
 	
 	public void updateSize() {
@@ -1056,12 +1060,12 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 					scrollToCursor();
 				}
 				else {
-					getBase().resetFocus();
+					getRoot().resetFocus();
 				}
 				break;
 
 			case KeyEvent.VK_ESCAPE:
-				getBase().resetFocus();
+				getRoot().resetFocus();
 				break;
 				
 			case KeyEvent.VK_TAB:
@@ -1135,13 +1139,13 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 
 	@Override
 	public void onMouseIn() {
-		getBase().getWindow().setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		getRoot().getWindow().setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 		super.onMouseIn();
 	}
 	
 	@Override
 	public void onMouseOut() {
-		getBase().getWindow().setCursor(Cursor.getDefaultCursor());
+		getRoot().getWindow().setCursor(Cursor.getDefaultCursor());
 		super.onMouseOut();
 	}
 	
@@ -1149,7 +1153,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 	public boolean onMouseDown(float x, float y, Button button, int mods) {
 		if(button==Button.left) {
 			if(!isFocused())
-				getBase().setFocus(this);
+				getRoot().setFocus(this);
 			else 
 				checkPushHistory();
 			deselect();

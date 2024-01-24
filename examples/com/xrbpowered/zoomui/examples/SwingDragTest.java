@@ -24,7 +24,7 @@ public class SwingDragTest extends UIContainer {
 		btnClose = new UIButton(this, "Close") {
 			@Override
 			public void onAction() {
-				getBase().getWindow().close();
+				getRoot().getWindow().close();
 			}
 		};
 		
@@ -33,13 +33,13 @@ public class SwingDragTest extends UIContainer {
 
 	@Override
 	public void layout() {
-		btnClose.setLocation((getWidth()-btnClose.getWidth())/2f, getHeight()-btnClose.getHeight()-16);
-		label.setLocation(16, 32);
+		btnClose.setPosition((getWidth()-btnClose.getWidth())/2f, getHeight()-btnClose.getHeight()-16);
+		label.setPosition(16, 32);
 		label.setSize(getWidth()-32, 0);
 	}
 	
 	@Override
-	public void paintSelf(GraphAssist g) {
+	public void paintBackground(GraphAssist g) {
 		g.pixelBorder(this, 2, Color.WHITE, Color.BLACK);
 	}
 

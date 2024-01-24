@@ -35,7 +35,7 @@ public class UIButton extends UIButtonBase {
 	public void paint(GraphAssist g) {
 		g.setPaint(isEnabled() ? (down ? colorDown : new GradientPaint(0, 0, colorGradTop, 0, getHeight(), colorGradBottom)) : colorDisabled);
 		g.fill(this);
-		g.border(this, hover ? colorText : colorBorder);
+		g.border(this, isHover() ? colorText : colorBorder);
 		g.setColor(isEnabled() ? colorText : colorTextDisabled);
 		g.setFont(font);
 		g.drawString(label, getWidth()/2f, getHeight()/2f, GraphAssist.CENTER, GraphAssist.CENTER);

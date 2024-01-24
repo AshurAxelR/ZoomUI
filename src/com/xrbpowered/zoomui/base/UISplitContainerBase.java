@@ -46,12 +46,12 @@ public abstract class UISplitContainerBase extends UIContainer {
 		
 		@Override
 		public void onMouseIn() {
-			getBase().getWindow().setCursor(cursor);
+			getRoot().getWindow().setCursor(cursor);
 		}
 		
 		@Override
 		public void onMouseOut() {
-			getBase().getWindow().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			getRoot().getWindow().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		}
 		
 		@Override
@@ -106,20 +106,20 @@ public abstract class UISplitContainerBase extends UIContainer {
 		if(vertical) {
 			float split = getHeight() * splitRatio; 
 			first.setSize(getWidth(), split);
-			first.setLocation(0, 0);
+			first.setPosition(0, 0);
 			second.setSize(getWidth(), getHeight()-split);
-			second.setLocation(0, split);
+			second.setPosition(0, split);
 			splitter.setSize(getWidth(), splitter.getHeight());
-			splitter.setLocation(0, split-splitter.getHeight()/2);
+			splitter.setPosition(0, split-splitter.getHeight()/2);
 		}
 		else {
 			float split = getWidth() * splitRatio; 
 			first.setSize(split, getHeight());
-			first.setLocation(0, 0);
+			first.setPosition(0, 0);
 			second.setSize(getWidth()-split, getHeight());
-			second.setLocation(split, 0);
+			second.setPosition(split, 0);
 			splitter.setSize(splitter.getWidth(), getHeight());
-			splitter.setLocation(split-splitter.getWidth()/2, 0);
+			splitter.setPosition(split-splitter.getWidth()/2, 0);
 		}
 		super.layout();
 	}

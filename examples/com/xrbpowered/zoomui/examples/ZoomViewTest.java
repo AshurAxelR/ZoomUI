@@ -92,24 +92,24 @@ public class ZoomViewTest extends UIZoomView {
 	
 	@Override
 	public void layout() {
-		btn1.setLocation(16, 16);
-		btn2.setLocation(16, 16+24);
-		btn3.setLocation(16+88+4, 16+24);
-		list.setLocation(16, 16+48);
+		btn1.setPosition(16, 16);
+		btn2.setPosition(16, 16+24);
+		btn3.setPosition(16+88+4, 16+24);
+		list.setPosition(16, 16+48);
 		list.setSize(88*2+4, 120);
 		list.layout();
-		text.setLocation(16, 32+48+120);
+		text.setPosition(16, 32+48+120);
 		text.setSize(list.getWidth(), text.getHeight());
-		toolBtn.setLocation(-40, list.getY());
-		options.setLocation(16, 56+48+120);
+		toolBtn.setPosition(-40, list.getY());
+		options.setPosition(16, 56+48+120);
 		options.setSize(list.getWidth(), options.getHeight());
 		
-		html.setLocation(16, 88+48+120);
+		html.setPosition(16, 88+48+120);
 		html.setSize(list.getWidth(), 0);
 	}
 	
 	@Override
-	protected void paintSelf(GraphAssist g) {
+	protected void paintBackground(GraphAssist g) {
 		g.fill(this, Color.WHITE);
 	}
 
@@ -134,9 +134,9 @@ public class ZoomViewTest extends UIZoomView {
 		@Override
 		public void layout() {
 			bottom.setSize(getWidth(), 100);
-			bottom.setLocation(0, getHeight() - bottom.getHeight());
+			bottom.setPosition(0, getHeight() - bottom.getHeight());
 			top.setSize(getWidth(), bottom.getY());
-			top.setLocation(0, 0);
+			top.setPosition(0, 0);
 			top.layout();
 		}
 	}

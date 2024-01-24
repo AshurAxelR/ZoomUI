@@ -154,14 +154,14 @@ public class UIFormattedLabel extends UIContainer {
 						@Override
 						public void onMouseIn() {
 							hoverHref = href;
-							getBase().getWindow().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+							getRoot().getWindow().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 							container.onHrefMouseIn(href);
 							repaint();
 						}
 						@Override
 						public void onMouseOut() {
 							hoverHref = null;
-							getBase().getWindow().setCursor(Cursor.getDefaultCursor());
+							getRoot().getWindow().setCursor(Cursor.getDefaultCursor());
 							container.onHrefMouseOut(href);
 							repaint();
 						}
@@ -179,7 +179,7 @@ public class UIFormattedLabel extends UIContainer {
 						}
 					};
 					hrefMap.put("href", ui);
-					ui.setLocation(rect.x / scale, rect.y / scale);
+					ui.setPosition(rect.x / scale, rect.y / scale);
 					ui.setSize(rect.width / scale, rect.height / scale);
 				}
 				super.paint(g, a);
@@ -367,7 +367,7 @@ public class UIFormattedLabel extends UIContainer {
 	}
 
 	@Override
-	public void paintSelf(GraphAssist g) {
+	public void paintBackground(GraphAssist g) {
 		float h = drawFormattedString(g, html, getPixelScale(), getX(), getY(), getWidth());
 		setSize(getWidth(), h);
 	}

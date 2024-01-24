@@ -12,7 +12,7 @@ public class UILayersContainer extends UIContainer {
 	@Override
 	public void layout() {
 		for(UIElement c : children) {
-			c.setLocation(0, 0);
+			c.setPosition(0, 0);
 			c.setSize(getWidth(), getHeight());
 			c.layout();
 		}

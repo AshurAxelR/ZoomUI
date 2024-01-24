@@ -54,12 +54,12 @@ public class UIToolButton extends UIButtonBase {
 		int w = (int)getWidth();
 		int h = (int)getHeight();
 		
-		Color bgColor = down ? colorDown : hover ? colorHover : null;
+		Color bgColor = down ? colorDown : isHover() ? colorHover : null;
 		if(bgColor!=null) {
 			g.setColor(bgColor);
 			g.fillRect(0, 0, w, h);
 		}
-		if(hover) {
+		if(isHover()) {
 			g.setColor(colorBorder);
 			g.drawRect(0, 0, w, h);
 		}

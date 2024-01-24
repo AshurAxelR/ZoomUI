@@ -14,9 +14,13 @@ public abstract class UIScrollBarBase extends UIContainer {
 		
 		public Thumb() {
 			super(UIScrollBarBase.this);
-			repaintOnHover = true;
 		}
-		
+
+		@Override
+		public boolean repaintOnHover() {
+			return true;
+		}
+
 		public void updateLocation() {
 			top = decButton==null ? 0 : (vertical ? decButton.getHeight() : decButton.getWidth());
 			bottom = vertical ? (incButton==null ? getParent().getHeight() : incButton.getY()) : (incButton==null ? getParent().getWidth() : incButton.getX());
@@ -31,11 +35,11 @@ public abstract class UIScrollBarBase extends UIContainer {
 				
 				if(vertical) {
 					setSize(s, h);
-					setLocation(0, pos);
+					setPosition(0, pos);
 				}
 				else {
 					setSize(h, s);
-					setLocation(pos, 0);
+					setPosition(pos, 0);
 				}
 			}
 		}
@@ -197,12 +201,12 @@ public abstract class UIScrollBarBase extends UIContainer {
 	@Override
 	public void layout() {
 		float s = vertical ? getWidth() : getHeight();
-		decButton.setLocation(0, 0);
+		decButton.setPosition(0, 0);
 		decButton.setSize(s, s);
 		if(vertical)
-			incButton.setLocation(0, getHeight()-s);
+			incButton.setPosition(0, getHeight()-s);
 		else
-			incButton.setLocation(getWidth()-s, 0);
+			incButton.setPosition(getWidth()-s, 0);
 		incButton.setSize(s, s);
 	}
 	
@@ -210,7 +214,7 @@ public abstract class UIScrollBarBase extends UIContainer {
 	}
 	
 	@Override
-	protected void paintSelf(GraphAssist g) {
+	protected void paintBackground(GraphAssist g) {
 		updateRange();
 	}
 	

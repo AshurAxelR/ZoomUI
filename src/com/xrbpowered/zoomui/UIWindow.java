@@ -7,7 +7,7 @@ import java.awt.FontMetrics;
 public abstract class UIWindow {
 
 	protected final UIWindowFactory factory;
-	protected final BaseContainer container;
+	protected final RootContainer container;
 
 	protected boolean exitOnClose = false;
 	
@@ -20,11 +20,11 @@ public abstract class UIWindow {
 		return factory;
 	}
 	
-	protected BaseContainer createContainer() {
-		return new BaseContainer(this, factory.getBaseScale());
+	protected RootContainer createContainer() {
+		return new RootContainer(this, factory.getBaseScale());
 	}
 	
-	public BaseContainer getContainer() {
+	public RootContainer getContainer() {
 		return this.container;
 	}
 
