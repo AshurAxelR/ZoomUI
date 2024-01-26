@@ -33,8 +33,8 @@ public class UIFitScaleContainer extends UIContainer {
 	}
 
 	@Override
-	public float getPixelScale() {
-		return super.getPixelScale()/scale;
+	public float getPixelSize() {
+		return super.getPixelSize()/scale;
 	}
 	
 	@Override

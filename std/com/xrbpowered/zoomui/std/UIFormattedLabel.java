@@ -368,7 +368,7 @@ public class UIFormattedLabel extends UIContainer {
 
 	@Override
 	public void paintBackground(GraphAssist g) {
-		float h = drawFormattedString(g, html, getPixelScale(), getX(), getY(), getWidth());
+		float h = drawFormattedString(g, html, getPixelSize(), getX(), getY(), getWidth());
 		setSize(getWidth(), h);
 	}
 

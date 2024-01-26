@@ -111,7 +111,7 @@ public abstract class UIColorSlider extends UIElement {
 	}
 	
 	protected void paintMarker(GraphAssist g) {
-		float pix = getPixelScale();
+		float pix = getPixelSize();
 		g.setColor(Color.BLACK);
 		if(vertical) {
 			int h = getBoxHeight(pix);
@@ -173,8 +173,9 @@ public abstract class UIColorSlider extends UIElement {
 	
 	@Override
 	public boolean onMouseDown(float x, float y, Button button, int mods) {
-		float pix = getPixelScale();
+		float pix = getPixelSize();
 		pickValue(x, y, pix);
+		repaint();
 		return true;
 	}
 }

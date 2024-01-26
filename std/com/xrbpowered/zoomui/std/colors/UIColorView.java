@@ -156,15 +156,16 @@ public class UIColorView extends UIContainer {
 		
 		@Override
 		public boolean onMouseDown(float x, float y, Button button, int mods) {
-			float pix = getPixelScale();
+			float pix = getPixelSize();
 			updateHover(x, y, pix);
 			pickColor(pix);
+			repaint();
 			return true;
 		}
 		
 		@Override
 		public void onMouseMoved(float x, float y, int mods) {
-			updateHover(x, y, getPixelScale());
+			updateHover(x, y, getPixelSize());
 			repaint();
 		}
 		

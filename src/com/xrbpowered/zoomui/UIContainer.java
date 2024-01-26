@@ -3,24 +3,89 @@ package com.xrbpowered.zoomui;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
+/**
+ * UI element that can contain other UI elements as its children.
+ * 
+ * <p>For performance reasons, it uses thread-unsafe collection to store children.
+ * Therefore, all modifications of the UI hierarchy should happen in the UI (Swing) thread.</p>
+ * 
+ * <p>Beware of concurrent modifications when adding or removing children from within
+ * mouse event handlers or paint methods.</p>
+ * 
+ * <p>Default <code>UIContainer</code> has no visual representation. Subclasses
+ * may override {@link #paintBackground(GraphAssist)} or {@link #paintForeground(GraphAssist)}
+ * to draw contents in addition to child elements.</p>
+ * 
+ * <p>Default {@link #layout()} implementation calls <code>layout()</code> for child elements, but does not actually
+ * position the children. Subclasses are expected to override this method to position child
+ * elements and then propagate the method to its children after their positions and sizes are set.
+ * (e.g., by calling <code>super.layout()</code>)</p>
+ *
+ * @see UIElement
+ */
 public abstract class UIContainer extends UIElement {
 
 	protected ArrayList<UIElement> children = new ArrayList<>();
 
+	/**
+	 * Constructor, see {@link UIElement#UIElement(UIContainer)}.
+	 * @param parent parent container
+	 */
 	public UIContainer(UIContainer parent) {
 		super(parent);
 	}
 
-	public Iterable<UIElement> getChildren() {
-		return children;
-	}
-
+	/**
+	 * Registers an element as a child element of this container.
+	 * This function is automatically called from the {@link UIElement} constructor.
+	 * @param c new child element
+	 */
 	protected void addChild(UIElement c) {
 		children.add(c);
 		invalidateLayout();
 		invalidateTabIndex();
 	}
 
+	/**
+	 * Returns the list of child elements as unmodifiable iterable.
+	 * @return iterable over children
+	 */
+	public Iterable<UIElement> getChildren() {
+		return children;
+	}
+
+	/**
+	 * Returns the number of child elements.
+	 * @return the number of children
+	 */
+	public int countChildren() {
+		return children.size();
+	}
+
+	/**
+	 * Returns a child element by its index.
+	 * 
+	 * @param index child index
+	 * @return child element
+	 * @throws ArrayIndexOutOfBoundsException if <code>index</code> is out of range
+	 * 
+	 * @see #countChildren()
+	 * @see #getChildren()
+	 */
+	public UIElement getChild(int index) {
+		return children.get(index);
+	}
+
+	/**
+	 * Removes an element from the list of children, so it no longer participates in the UI hierarchy.
+	 * Does nothing if <code>c</code> is not a child of this container.
+	 * 
+	 * <p>Changing UI hierarchy calls {@link #invalidateLayout()} and {@link #invalidateTabIndex()} automatically.</p>
+	 * 
+	 * @param c child element to remove
+	 * 
+	 * @see #removeAllChildren()
+	 */
 	public void removeChild(UIElement c) {
 		if(children.remove(c)) {
 			invalidateLayout();
@@ -28,6 +93,13 @@ public abstract class UIContainer extends UIElement {
 		}
 	}
 
+	/**
+	 * Removes all child elements from this container.
+	 * 
+	 * <p>Changing UI hierarchy calls {@link #invalidateLayout()} and {@link #invalidateTabIndex()} automatically.</p>
+	 * 
+	 * @see #removeChild(UIElement)
+	 */
 	public void removeAllChildren() {
 		children.clear();
 		invalidateLayout();

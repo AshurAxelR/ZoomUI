@@ -209,7 +209,7 @@ public class GraphAssist {
 		pushTx();
 		clearTransform();
 		translate(getTx().getTranslateX(), getTx().getTranslateY());
-		return e.getPixelScale();
+		return e.getPixelSize();
 	}
 	
 	public float startPixelMode(UIElement e) {

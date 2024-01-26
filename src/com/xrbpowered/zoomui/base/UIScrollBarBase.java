@@ -94,7 +94,7 @@ public abstract class UIScrollBarBase extends UIContainer {
 
 		@Override
 		public boolean notifyMouseMove(float dx, float dy) {
-			pos += (vertical ? dy : dx) * getPixelScale();
+			pos += (vertical ? dy : dx) * getPixelSize();
 			float s = (pos-thumb.top) / (thumb.bottom-thumb.top);
 			if(setValue(Math.round(min + s*(max-min+thumb.span))))
 				onChanged();

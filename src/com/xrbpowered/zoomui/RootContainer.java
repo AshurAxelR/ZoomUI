@@ -190,7 +190,7 @@ public class RootContainer extends UILayersContainer implements Measurable {
 	}
 	
 	@Override
-	public float getPixelScale() {
+	public float getPixelSize() {
 		return getWindow().getFactory().globalPixelScale() / baseScale;
 	}
 	

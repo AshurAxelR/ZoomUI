@@ -115,7 +115,7 @@ public class UIFileView extends UIScrollContainer {
 
 			int style = sel ? 1 : 0;
 			if(isSystem) style += 2;
-			(disk ? diskIcon : file.isFile() ? fileIcon : folderIcon).paint(g.graph, style, 20, 8, 32, getPixelScale(), true);
+			(disk ? diskIcon : file.isFile() ? fileIcon : folderIcon).paint(g.graph, style, 20, 8, 32, getPixelSize(), true);
 
 			g.setFont(font);
 			g.setColor(sel ? colorSelectedText : colorText);

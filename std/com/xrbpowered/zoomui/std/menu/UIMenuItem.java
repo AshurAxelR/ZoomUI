@@ -32,7 +32,7 @@ public class UIMenuItem extends UIButtonBase {
 	}
 	
 	public float getMinWidth() {
-		FontMetrics fm = getRoot().getWindow().getFontMetrics(font, font.getSize(), getPixelScale());
+		FontMetrics fm = getRoot().getWindow().getFontMetrics(font, font.getSize(), getPixelSize());
 		return fm.stringWidth(label)+getTotalMargins();
 	}
 

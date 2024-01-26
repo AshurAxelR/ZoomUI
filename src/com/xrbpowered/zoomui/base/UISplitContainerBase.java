@@ -20,7 +20,7 @@ public abstract class UISplitContainerBase extends UIContainer {
 
 		@Override
 		public boolean notifyMouseMove(float dx, float dy) {
-			float pix = getPixelScale();
+			float pix = getPixelSize();
 			float delta = vertical ? (dy*pix)/getHeight() : (dx*pix)/getWidth();
 			setSplitRatio(splitRatio + delta);
 			repaint();

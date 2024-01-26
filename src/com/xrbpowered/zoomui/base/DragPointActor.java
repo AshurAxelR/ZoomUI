@@ -16,7 +16,7 @@ public class DragPointActor implements DragActor {
 	
 	@Override
 	public boolean notifyMouseDown(float x, float y, Button button, int mods) {
-		pixelScale = ui.getPixelScale();
+		pixelScale = ui.getPixelSize();
 		posx = ui.rootToLocalX(x);
 		posy = ui.rootToLocalY(y);
 		prevx = posx;

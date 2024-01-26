@@ -127,7 +127,7 @@ public class UIMessageBox extends UIContainer implements KeyInputHandler {
 		
 		float h = Math.max(label.getHeight(), (icon==null) ? 0 : iconSize+8);
 		if(icon!=null)
-			icon.paint(g.graph, 0, 16, 12, iconSize, getPixelScale(), true);
+			icon.paint(g.graph, 0, 16, 12, iconSize, getPixelSize(), true);
 		
 		if(hlabel!=label.getHeight()) {
 			UIWindow window = getRoot().getWindow();

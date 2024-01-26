@@ -99,8 +99,8 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 
 		@Override
 		public boolean notifyMouseMove(float dx, float dy) {
-			x += dx * getPixelScale();
-			y += dy * getPixelScale();
+			x += dx * getPixelSize();
+			y += dy * getPixelSize();
 			cursorToMouse(this.x, this.y);
 			scrollToCursor();
 			modifySelection(true);

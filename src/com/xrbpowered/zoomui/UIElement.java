@@ -228,16 +228,13 @@ public abstract class UIElement {
 	}
 
 	/**
-	 * Changes element size.
+	 * Changes element size. Negative values are clamped to 0.
 	 * @param width new element width
 	 * @param height new element height
-	 * @throws InvalidParameterException if <code>width</code> or <code>height</code> are negative
 	 */
 	public void setSize(float width, float height) {
-		if(width<0f || height<0f)
-			throw new InvalidParameterException("negative size");
-		this.width = width;
-		this.height = height;
+		this.width = (width<0f) ? 0f : width;
+		this.height = (height<0f) ? 0f : height;
 	}
 
 	/**
@@ -384,9 +381,9 @@ public abstract class UIElement {
 	 * 
 	 * @return pixel scale
 	 */
-	public float getPixelScale() {
+	public float getPixelSize() {
 		if(parent!=null)
-			return parent.getPixelScale();
+			return parent.getPixelSize();
 		else
 			return 1f;
 	}
@@ -511,7 +508,7 @@ public abstract class UIElement {
 	 * @return UI element in the tree that handled the event, or <code>null</code> if the event was not handled
 	 */
 	UIElement notifyMouseDown(float px, float py, Button button, int mods) {
-		if(isInside(px, py) && onMouseDown(px, py, button, mods))
+		if(isInside(px, py) && onMouseDown(parentToLocalX(px), parentToLocalY(py), button, mods))
 			return this;
 		else
 			return null;
@@ -527,75 +524,116 @@ public abstract class UIElement {
 	 * @return UI element in the tree that handled the event, or <code>null</code> if the event was not handled
 	 */
 	UIElement notifyMouseUp(float px, float py, Button button, int mods, UIElement initiator) {
-		if(isInside(px, py) && onMouseUp(px, py, button, mods, initiator))
+		if(isInside(px, py) && onMouseUp(parentToLocalX(px), parentToLocalY(py), button, mods, initiator))
 			return this;
 		else
 			return null;
 	}
 
-    /**
-     * Implements propagation of a mouse-scroll event through UI hierarchy. This function is internal to ZoomUI.
-     * @param px cursor coordinate in parent space (horizontal)
-     * @param py cursor coordinate in parent space (vertical)
-     * @param delta scroll amount
+	/**
+	 * Implements propagation of a mouse-scroll event through UI hierarchy. This function is internal to ZoomUI.
+	 * @param px cursor coordinate in parent space (horizontal)
+	 * @param py cursor coordinate in parent space (vertical)
+	 * @param delta scroll amount
 	 * @param mods status of the modifier keys
-     * @return UI element in the tree that handled the event, or <code>null</code> if the event was not handled
-     */
+	 * @return UI element in the tree that handled the event, or <code>null</code> if the event was not handled
+	 */
 	UIElement notifyMouseScroll(float px, float py, float delta, int mods) {
-		if(isInside(px, py) && onMouseScroll(px, py, delta, mods))
+		if(isInside(px, py) && onMouseScroll(parentToLocalX(px), parentToLocalY(py), delta, mods))
 			return this;
 		else
 			return null;
 	}
 
-    /**
-     * Mouse-in event handler: mouse entered the element.
-     */
+	/**
+	 * Mouse-in event handler: mouse entered the element.
+	 */
 	public void onMouseIn() {
 		hover = true;
 		if(repaintOnHover())
 			repaint();
 	}
 
-    /**
-     * Mouse-out event handler: mouse left the element.
-     */
+	/**
+	 * Mouse-out event handler: mouse left the element.
+	 */
 	public void onMouseOut() {
 		hover = false;
 		if(repaintOnHover())
 			repaint();
 	}
 
-    /**
-     * Mouse-moved event handler: mouse moved within the element bounds.
-     * @param x new cursor coordinate in local space (horizontal)
-     * @param y new cursor coordinate in local space (vertical)
+	/**
+	 * Mouse-moved event handler: mouse moved within the element bounds.
+	 * @param x new cursor coordinate in local space (horizontal)
+	 * @param y new cursor coordinate in local space (vertical)
 	 * @param mods status of the modifier keys
-     */
+	 */
 	public void onMouseMoved(float x, float y, int mods) {
-        // no action
+		// no action
 	}
 
+	/**
+	 * Mouse-down event handler: a mouse button was pressed.
+	 * @param x cursor coordinate in local space (horizontal)
+	 * @param y cursor coordinate in local space (vertical)
+	 * @param button mouse button of the related mouse-down event
+	 * @param mods status of the modifier keys
+	 * @return <code>true</code> if the element handles the event,
+	 *     or <code>false</code> if the event should propagate to the parent container (fall through).
+	 */
 	public boolean onMouseDown(float x, float y, Button button, int mods) {
-		// FIXME must be in local space
+		// no action, fall through
 		return false;
 	}
 
+	/**
+	 * Mouse-up event handler: a mouse button was released.
+	 * The respective mouse-down event may have happened on a different UI element (the initiator).
+	 * 
+	 * <p><code>initiator</code> always refers to the latest mouse-down event within this zoomable UI tree,
+	 * regardless of which mouse button is pressed or released. In most cases it is enough to test
+	 * that the initiator is the same element as the one receivng this mouse-up event:</p>
+	 *<pre>
+	 *if (initiator == this) {
+	 *    // do event handling
+	 *    return true;
+	 *}
+	 *else
+	 *    return false; // or true if the event needs to be consumed anyway
+	 *</pre>
+	 * 
+	 * @param x cursor coordinate in local space (horizontal)
+	 * @param y cursor coordinate in local space (vertical)
+	 * @param button mouse button of the related mouse-up event
+	 * @param mods status of the modifier keys
+	 * @param initiator initiator element: the UI element that had received the latest mouse-down event
+	 * @return <code>true</code> if the element handles the event,
+	 *     or <code>false</code> if the event should propagate to the parent container (fall through).
+	 */
 	public boolean onMouseUp(float x, float y, Button button, int mods, UIElement initiator) {
-		// FIXME must be in local space
+		// no action, fall through
 		return false;
 	}
 
-    /**
-     * Mouse-released event handler: mouse button released elsewhere.
-     * This event is sent to the initiator element that had received the respective mouse-down event.
-     */
+	/**
+	 * Mouse-released event handler: mouse button released elsewhere.
+	 * This event is sent to the initiator element that had received the respective mouse-down event.
+	 */
 	public void onMouseReleased() {
-        // no action
+		// no action
 	}
 
+	/**
+	 * Mouse-scroll event handler: mouse wheel scrolled over the element.
+	 * @param x cursor coordinate in local space (horizontal)
+	 * @param y cursor coordinate in local space (vertical)
+	 * @param delta scroll amount
+	 * @param mods status of the modifier keys
+	 * @return <code>true</code> if the element handles the event,
+	 *     or <code>false</code> if the event should propagate to the parent container (fall through).
+	 */
 	public boolean onMouseScroll(float x, float y, float delta, int mods) {
-		// FIXME must be in local space
 		return false;
 	}
 

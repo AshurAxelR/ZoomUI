@@ -115,7 +115,7 @@ public class TestEvents {
 		@Override
 		protected void paintBackground(GraphAssist g) {
 			if(level<MAX_LEVEL) {
-				g.setStroke(getPixelScale());
+				g.setStroke(getPixelSize());
 				g.setColor(Color.RED);
 				g.drawRect(0, 0, (int)getWidth(), (int)getHeight());
 				g.setColor(new Color(0x22ff0000, true));
