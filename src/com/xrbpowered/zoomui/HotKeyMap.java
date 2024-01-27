@@ -32,8 +32,9 @@ public class HotKeyMap implements KeyInputHandler {
 		return map.remove(keyHash(code, mods));
 	}
 	
-	public boolean onKeyPressed(char c, int code, int mods) {
-		ActionHandler action = map.get(keyHash(code, mods));
+	@Override
+	public boolean onKeyPressed(char c, int code, InputInfo input) {
+		ActionHandler action = map.get(keyHash(code, input.mods));
 		if(action!=null) {
 			if(action.isEnabled())
 				action.onAction();

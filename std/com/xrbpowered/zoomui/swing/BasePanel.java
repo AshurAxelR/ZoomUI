@@ -1,5 +1,8 @@
 package com.xrbpowered.zoomui.swing;
 
+import static com.xrbpowered.zoomui.InputInfo.*;
+import static com.xrbpowered.zoomui.MouseInfo.*;
+
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -23,8 +26,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import com.xrbpowered.zoomui.GraphAssist;
-import com.xrbpowered.zoomui.UIElement;
-import com.xrbpowered.zoomui.UIElement.Button;
+import com.xrbpowered.zoomui.InputInfo;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIWindow;
 
 public class BasePanel extends JPanel {
@@ -59,7 +62,7 @@ public class BasePanel extends JPanel {
 		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(window.getContainer().onKeyPressed(e.getKeyChar(), e.getKeyCode(), getModifiers(e)))
+				if(window.getContainer().onKeyPressed(e.getKeyChar(), e.getKeyCode(), getInputInfo(e)))
 					e.consume();
 			}
 		});
@@ -67,21 +70,18 @@ public class BasePanel extends JPanel {
 		addMouseWheelListener(new MouseWheelListener() {
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent e) {
-				window.getContainer().notifyMouseScroll(e.getX(), e.getY(),
-						(float)e.getPreciseWheelRotation(), getModifiers(e));
+				window.getContainer().notifyMouseScroll(e.getX(), e.getY(), (float)e.getPreciseWheelRotation(), getMouseInfo(e));
 			}
 		});
 		
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				window.getContainer().notifyMouseDown(e.getX(), e.getY(),
-						getMouseButton(e), getModifiers(e));
+				window.getContainer().notifyMouseDown(e.getX(), e.getY(), getMouseInfo(e));
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				window.getContainer().notifyMouseUp(e.getX(), e.getY(),
-						getMouseButton(e), getModifiers(e), null);
+				window.getContainer().notifyMouseUp(e.getX(), e.getY(), getMouseInfo(e), null);
 			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -96,12 +96,12 @@ public class BasePanel extends JPanel {
 		addMouseMotionListener(new MouseAdapter() {
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				window.getContainer().onMouseDragged(e.getX(), e.getY());
+				window.getContainer().onMouseDragged(e.getX(), e.getY(), getMouseInfo(e));
 			}
 			
 			@Override
 			public void mouseMoved(MouseEvent e) {
-				window.getContainer().onMouseMoved(e.getX(), e.getY(), getModifiers(e));
+				window.getContainer().onMouseMoved(e.getX(), e.getY(), getMouseInfo(e));
 			}
 		});
 	}
@@ -162,27 +162,61 @@ public class BasePanel extends JPanel {
 		super.setCursor(cursor);
 	}
 	
-	public static Button getMouseButton(MouseEvent e) {
-		switch(e.getButton()) {
-			case MouseEvent.BUTTON1:
-				return Button.left;
-			case MouseEvent.BUTTON2:
-				return Button.middle;
-			case MouseEvent.BUTTON3:
-				return Button.right;
-			default:
-				return Button.unknown;
-		}
-	}
-	
-	public static int getModifiers(InputEvent e) {
-		int mods = 0;
-		if(e.isControlDown())
-			mods |= UIElement.modCtrlMask;
-		if(e.isAltDown())
-			mods |= UIElement.modAltMask;
-		if(e.isShiftDown())
-			mods |= UIElement.modShiftMask;
+	private static int getMods(InputEvent e) {
+		int m = e.getModifiersEx();
+		int mods = NONE;
+		if((m & InputEvent.CTRL_DOWN_MASK) != 0)
+			mods |= CTRL;
+		if((m & InputEvent.ALT_DOWN_MASK) != 0)
+			mods |= ALT;
+		if((m & InputEvent.SHIFT_DOWN_MASK) != 0)
+			mods |= SHIFT;
 		return mods;
+	}
+
+	public static InputInfo getInputInfo(InputEvent e) {
+		return new InputInfo(getMods(e));
+	}
+
+	public static MouseInfo getMouseInfo(MouseEvent e) {
+		int eventButton;
+		switch(e.getButton()) {
+			case MouseEvent.NOBUTTON:
+				eventButton = NONE;
+				break;
+			case MouseEvent.BUTTON1:
+				eventButton = LEFT;
+				break;
+			case MouseEvent.BUTTON2:
+				eventButton = MIDDLE;
+				break;
+			case MouseEvent.BUTTON3:
+				eventButton = RIGHT;
+				break;
+			case 4:
+				eventButton = BUTTON4;
+				break;
+			case 5:
+				eventButton = BUTTON5;
+				break;
+			default:
+				eventButton = UNKNOWN;
+				break;
+		}
+		
+		int m = e.getModifiersEx();
+		int buttons = NONE;
+		if((m & InputEvent.BUTTON1_DOWN_MASK) != 0)
+			buttons |= LEFT;
+		if((m & InputEvent.BUTTON2_DOWN_MASK) != 0)
+			buttons |= MIDDLE;
+		if((m & InputEvent.BUTTON3_DOWN_MASK) != 0)
+			buttons |= RIGHT;
+		if((m & InputEvent.getMaskForButton(4)) != 0)
+			buttons |= BUTTON4;
+		if((m & InputEvent.getMaskForButton(5)) != 0)
+			buttons |= BUTTON4;
+		
+		return new MouseInfo(eventButton, buttons, getMods(e), e.getClickCount());
 	}
 }

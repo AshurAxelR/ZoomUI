@@ -1,7 +1,10 @@
 package com.xrbpowered.zoomui.base;
 
+import static com.xrbpowered.zoomui.MouseInfo.LEFT;
+
 import com.xrbpowered.zoomui.DragActor;
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
 
@@ -45,16 +48,16 @@ public abstract class UIScrollBarBase extends UIContainer {
 		}
 		
 		@Override
-		public DragActor acceptDrag(float x, float y, Button button, int mods) {
-			if(dragThumbActor.notifyMouseDown(x, y, button, mods))
+		public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
+			if(dragThumbActor.notifyMouseDown(x, y, mouse))
 				return dragThumbActor;
 			else
 				return null;
 		}
 		
 		@Override
-		public boolean onMouseDown(float x, float y, Button button, int mods) {
-			if(button==Button.left) {
+		public boolean onMouseDown(float x, float y, MouseInfo mouse) {
+			if(mouse.eventButton==LEFT) {
 				down = true;
 				repaint();
 				return true;
@@ -64,7 +67,7 @@ public abstract class UIScrollBarBase extends UIContainer {
 		}
 		
 		@Override
-		public boolean onMouseUp(float x, float y, Button button, int mods, UIElement initiator) {
+		public boolean onMouseUp(float x, float y, MouseInfo mouse, UIElement initiator) {
 			if(initiator==this) {
 				down = false;
 				repaint();
@@ -83,8 +86,8 @@ public abstract class UIScrollBarBase extends UIContainer {
 	private DragActor dragThumbActor = new DragActor() {
 		private float pos;
 		@Override
-		public boolean notifyMouseDown(float x, float y, Button button, int mods) {
-			if(button==Button.left) {
+		public boolean notifyMouseDown(float x, float y, MouseInfo mouse) {
+			if(mouse.eventButton==LEFT) {
 				pos = vertical ? thumb.getY() : thumb.getX();
 				thumb.down = true;
 				return true;
@@ -93,8 +96,8 @@ public abstract class UIScrollBarBase extends UIContainer {
 		}
 
 		@Override
-		public boolean notifyMouseMove(float dx, float dy) {
-			pos += (vertical ? dy : dx) * getPixelSize();
+		public boolean notifyMouseMove(float rx, float ry, float drx, float dry, MouseInfo mouse) {
+			pos += (vertical ? dry : drx) * getPixelSize();
 			float s = (pos-thumb.top) / (thumb.bottom-thumb.top);
 			if(setValue(Math.round(min + s*(max-min+thumb.span))))
 				onChanged();
@@ -103,10 +106,9 @@ public abstract class UIScrollBarBase extends UIContainer {
 		}
 
 		@Override
-		public boolean notifyMouseUp(float x, float y, Button button, int mods, UIElement target) {
+		public void notifyMouseUp(float rx, float ry, MouseInfo mouse, UIElement target) {
 			thumb.down = false;
 			repaint();
-			return true;
 		}
 	};
 	

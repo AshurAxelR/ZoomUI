@@ -1,6 +1,7 @@
 package com.xrbpowered.zoomui.base;
 
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIContainer;
 
 public abstract class UIScrollContainerBase extends UIContainer {
@@ -58,8 +59,8 @@ public abstract class UIScrollContainerBase extends UIContainer {
 	}
 	
 	@Override
-	public boolean onMouseScroll(float x, float y, float delta, int modifiers) {
-		if(modifiers==modNone) {
+	public boolean onMouseScroll(float x, float y, float delta, MouseInfo mouse) {
+		if(mouse.mods==MouseInfo.NONE) {
 			view.pan(0, -delta*wheelStep);
 			repaint();
 			return true;

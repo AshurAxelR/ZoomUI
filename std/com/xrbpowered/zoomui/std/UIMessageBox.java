@@ -3,9 +3,10 @@ package com.xrbpowered.zoomui.std;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
-import com.xrbpowered.zoomui.RootContainer.ModalBaseContainer;
+import com.xrbpowered.zoomui.RootContainer.ModalRootContainer;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.HotKeyMap;
+import com.xrbpowered.zoomui.InputInfo;
 import com.xrbpowered.zoomui.KeyInputHandler;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIModalWindow;
@@ -57,7 +58,7 @@ public class UIMessageBox extends UIContainer implements KeyInputHandler {
 	public final MessageResult[] options;
 	public final UIButton[] buttons;
 	
-	public UIMessageBox(ModalBaseContainer<MessageResult> parent, String message, SvgIcon icon, MessageResult[] options) {
+	public UIMessageBox(ModalRootContainer<MessageResult> parent, String message, SvgIcon icon, MessageResult[] options) {
 		super(parent);
 		this.options = options;
 		this.icon = icon;
@@ -82,7 +83,7 @@ public class UIMessageBox extends UIContainer implements KeyInputHandler {
 	
 	@SuppressWarnings("unchecked")
 	public void notifyResult(MessageResult res) {
-		((ModalBaseContainer<MessageResult>) getRoot()).getWindow().closeWithResult(res);
+		((ModalRootContainer<MessageResult>) getRoot()).getWindow().closeWithResult(res);
 	}
 	
 	@Override
@@ -94,7 +95,7 @@ public class UIMessageBox extends UIContainer implements KeyInputHandler {
 	}
 	
 	@Override
-	public boolean onKeyPressed(char c, int code, int mods) {
+	public boolean onKeyPressed(char c, int code, InputInfo input) {
 		for(int i=0; i<options.length; i++)
 			if(code==options[i].keyCode) {
 				notifyResult(options[i]);

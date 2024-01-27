@@ -1,10 +1,13 @@
 package com.xrbpowered.zoomui.std.menu;
 
+import static com.xrbpowered.zoomui.MouseInfo.LEFT;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIElement;
 import com.xrbpowered.zoomui.base.UIButtonBase;
 import com.xrbpowered.zoomui.std.UIButton;
@@ -69,8 +72,8 @@ public class UIMenuItem extends UIButtonBase {
 	}
 	
 	@Override
-	public boolean onMouseDown(float x, float y, Button button, int mods) {
-		if(button==Button.left) {
+	public boolean onMouseDown(float x, float y, MouseInfo mouse) {
+		if(mouse.eventButton==LEFT) {
 			if(isEnabled()) {
 				onAction();
 				((UIMenu) getParent()).onItemAction();
@@ -81,7 +84,7 @@ public class UIMenuItem extends UIButtonBase {
 	}
 	
 	@Override
-	public boolean onMouseUp(float x, float y, Button button, int mods, UIElement initiator) {
+	public boolean onMouseUp(float x, float y, MouseInfo mouse, UIElement initiator) {
 		if(initiator!=this)
 			return false;
 		return true;

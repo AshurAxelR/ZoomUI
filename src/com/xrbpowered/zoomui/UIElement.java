@@ -18,29 +18,17 @@ import java.security.InvalidParameterException;
  * <ul>
  * <li>{@link #onMouseIn()} - mouse enters the element</li>
  * <li>{@link #onMouseOut()} - mouse leaves the element</li>
- * <li>{@link #onMouseMoved(float, float, int)} - mouse moved within the element bounds</li>
- * <li>{@link #onMouseDown(float, float, Button, int)} - mouse button pressed</li>
- * <li>{@link #onMouseUp(float, float, Button, int, UIElement)} - mouse button released.
+ * <li>{@link #onMouseMoved(float, float, MouseInfo)} - mouse moved within the element bounds</li>
+ * <li>{@link #onMouseDown(float, float, MouseInfo)} - mouse button pressed</li>
+ * <li>{@link #onMouseUp(float, float, MouseInfo, UIElement)} - mouse button released.
  *      The respective mouse-down event may have happened on a different element (initiator).</li>
  * <li>{@link #onMouseReleased()} - mouse button released elsewhere.
  *      This event is sent to the initiator element that had the respective mouse-down event.</li>
- * <li>{@link #onMouseScroll(float, float, float, int)} - mouse wheel scrolled over the element</li>
+ * <li>{@link #onMouseScroll(float, float, float, MouseInfo)} - mouse wheel scrolled over the element</li>
  * </ul>
  * 
  */
 public abstract class UIElement {
-
-	public enum Button {
-		left, right, middle, unknown
-	}
-
-	public static final int modNone = 0;
-
-	public static final int modCtrlMask = 1;
-
-	public static final int modAltMask = 2;
-
-	public static final int modShiftMask = 4;
 
 	/**
 	 * Reference to the parent UI container, can be <code>null</code>
@@ -455,23 +443,22 @@ public abstract class UIElement {
 	 * happens after the mouse is moved while a button is held down. For convenience,
 	 * the mouse position reported in <code>x</code> and <code>y</code> arguments are the position
 	 * of the initial mouse-down event before the drag. If the method returns a drag actor,
-	 * it will immediately receive {@link DragActor#notifyMouseMove(float, float)} with the updated
+	 * it will immediately receive {@link DragActor#notifyMouseMove(float, float, float, float, MouseInfo)} with the updated
 	 * mouse position.</p>
 	 * 
 	 * <p>It is not required to create a new instance of <code>DragActor</code> every time.
 	 * The method can return the same drag handler instance for every drag action.
-	 * Typically, the <code>acceptDrag</code> method should also call {@link DragActor#notifyMouseDown(float, float, Button, int)}
+	 * Typically, the <code>acceptDrag</code> method should also call {@link DragActor#notifyMouseDown(float, float, MouseInfo)}
 	 * to make sure the drag handler is accepting the drag as well.</p>
 	 * 
 	 * @param x mouse-down coordinate in local space (horizontal)
 	 * @param y mouse-down coordinate in local space (vertical)
-	 * @param button mouse button of the related mouse-down event
-	 * @param mods status of the modifier keys
+	 * @param mouse mouse button and modifier key information of the related mouse-down event
 	 * @return drag handler if the drag action started, or <code>null</code> to refuse drag action 
 	 * 
-	 * @see DragActor#notifyMouseDown(float, float, Button, int)
+	 * @see DragActor#notifyMouseDown(float, float, MouseInfo)
 	 */
-	public DragActor acceptDrag(float x, float y, Button button, int mods) {
+	public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
 		return null;
 	}
 
@@ -503,12 +490,11 @@ public abstract class UIElement {
 	 * Implements propagation of a mouse-down event through UI hierarchy. This function is internal to ZoomUI.
 	 * @param px cursor coordinate in parent space (horizontal)
 	 * @param py cursor coordinate in parent space (vertical)
-	 * @param button mouse button of the related mouse-down event
-	 * @param mods status of the modifier keys
+	 * @param mouse mouse button and modifier key information of the related mouse-down event
 	 * @return UI element in the tree that handled the event, or <code>null</code> if the event was not handled
 	 */
-	UIElement notifyMouseDown(float px, float py, Button button, int mods) {
-		if(isInside(px, py) && onMouseDown(parentToLocalX(px), parentToLocalY(py), button, mods))
+	UIElement notifyMouseDown(float px, float py, MouseInfo mouse) {
+		if(isInside(px, py) && onMouseDown(parentToLocalX(px), parentToLocalY(py), mouse))
 			return this;
 		else
 			return null;
@@ -518,13 +504,12 @@ public abstract class UIElement {
 	 * Implements propagation of a mouse-up event through UI hierarchy. This function is internal to ZoomUI.
 	 * @param px cursor coordinate in parent space (horizontal)
 	 * @param py cursor coordinate in parent space (vertical)
-	 * @param button mouse button of the related mouse-up event
-	 * @param mods status of the modifier keys
+	 * @param mouse mouse button and modifier key information of the related mouse-up event
 	 * @param initiator initiator element: the UI element that had received the respective mouse-down event
 	 * @return UI element in the tree that handled the event, or <code>null</code> if the event was not handled
 	 */
-	UIElement notifyMouseUp(float px, float py, Button button, int mods, UIElement initiator) {
-		if(isInside(px, py) && onMouseUp(parentToLocalX(px), parentToLocalY(py), button, mods, initiator))
+	UIElement notifyMouseUp(float px, float py, MouseInfo mouse, UIElement initiator) {
+		if(isInside(px, py) && onMouseUp(parentToLocalX(px), parentToLocalY(py), mouse, initiator))
 			return this;
 		else
 			return null;
@@ -535,11 +520,11 @@ public abstract class UIElement {
 	 * @param px cursor coordinate in parent space (horizontal)
 	 * @param py cursor coordinate in parent space (vertical)
 	 * @param delta scroll amount
-	 * @param mods status of the modifier keys
+	 * @param mouse mouse button state and modifier key information of the related mouse-scroll event
 	 * @return UI element in the tree that handled the event, or <code>null</code> if the event was not handled
 	 */
-	UIElement notifyMouseScroll(float px, float py, float delta, int mods) {
-		if(isInside(px, py) && onMouseScroll(parentToLocalX(px), parentToLocalY(py), delta, mods))
+	UIElement notifyMouseScroll(float px, float py, float delta, MouseInfo mouse) {
+		if(isInside(px, py) && onMouseScroll(parentToLocalX(px), parentToLocalY(py), delta, mouse))
 			return this;
 		else
 			return null;
@@ -567,9 +552,9 @@ public abstract class UIElement {
 	 * Mouse-moved event handler: mouse moved within the element bounds.
 	 * @param x new cursor coordinate in local space (horizontal)
 	 * @param y new cursor coordinate in local space (vertical)
-	 * @param mods status of the modifier keys
+	 * @param mouse mouse button state and modifier key information of the related mouse-move event
 	 */
-	public void onMouseMoved(float x, float y, int mods) {
+	public void onMouseMoved(float x, float y, MouseInfo mouse) {
 		// no action
 	}
 
@@ -577,12 +562,11 @@ public abstract class UIElement {
 	 * Mouse-down event handler: a mouse button was pressed.
 	 * @param x cursor coordinate in local space (horizontal)
 	 * @param y cursor coordinate in local space (vertical)
-	 * @param button mouse button of the related mouse-down event
-	 * @param mods status of the modifier keys
+	 * @param mouse mouse button and modifier key information of the related mouse-down event
 	 * @return <code>true</code> if the element handles the event,
 	 *     or <code>false</code> if the event should propagate to the parent container (fall through).
 	 */
-	public boolean onMouseDown(float x, float y, Button button, int mods) {
+	public boolean onMouseDown(float x, float y, MouseInfo mouse) {
 		// no action, fall through
 		return false;
 	}
@@ -605,13 +589,12 @@ public abstract class UIElement {
 	 * 
 	 * @param x cursor coordinate in local space (horizontal)
 	 * @param y cursor coordinate in local space (vertical)
-	 * @param button mouse button of the related mouse-up event
-	 * @param mods status of the modifier keys
+	 * @param mouse mouse button and modifier key information of the related mouse-up event
 	 * @param initiator initiator element: the UI element that had received the latest mouse-down event
 	 * @return <code>true</code> if the element handles the event,
 	 *     or <code>false</code> if the event should propagate to the parent container (fall through).
 	 */
-	public boolean onMouseUp(float x, float y, Button button, int mods, UIElement initiator) {
+	public boolean onMouseUp(float x, float y, MouseInfo mouse, UIElement initiator) {
 		// no action, fall through
 		return false;
 	}
@@ -629,11 +612,11 @@ public abstract class UIElement {
 	 * @param x cursor coordinate in local space (horizontal)
 	 * @param y cursor coordinate in local space (vertical)
 	 * @param delta scroll amount
-	 * @param mods status of the modifier keys
+	 * @param mouse mouse button state and modifier key information of the related mouse-scroll event
 	 * @return <code>true</code> if the element handles the event,
 	 *     or <code>false</code> if the event should propagate to the parent container (fall through).
 	 */
-	public boolean onMouseScroll(float x, float y, float delta, int mods) {
+	public boolean onMouseScroll(float x, float y, float delta, MouseInfo mouse) {
 		return false;
 	}
 

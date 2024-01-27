@@ -1,5 +1,8 @@
 package com.xrbpowered.zoomui.swing;
 
+import static com.xrbpowered.zoomui.MouseInfo.LEFT;
+import static com.xrbpowered.zoomui.MouseInfo.RIGHT;
+
 import java.awt.AWTException;
 import java.awt.Image;
 import java.awt.SystemTray;
@@ -7,7 +10,7 @@ import java.awt.TrayIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import com.xrbpowered.zoomui.UIElement.Button;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIWindow;
 import com.xrbpowered.zoomui.icons.PngIcon;
 
@@ -37,7 +40,7 @@ public class SwingTrayIcon {
 		trayIcon.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				onMouseDown(BasePanel.getMouseButton(e), e.getX(), e.getY());
+				onMouseDown(BasePanel.getMouseInfo(e), e.getX(), e.getY());
 			}
 		});
 
@@ -58,13 +61,13 @@ public class SwingTrayIcon {
 		trayIcon.setImage(icon.createImage(iconSize, -1));
 	}
 	
-	public void onMouseDown(Button button, int x, int y) {
-		switch(button) {
-			case left:
+	public void onMouseDown(MouseInfo mouse, int x, int y) {
+		switch(mouse.eventButton) {
+			case LEFT:
 				if(window!=null)
 					window.show();
 				break;
-			case right:
+			case RIGHT:
 				if(popup!=null)
 					popup.show(null, x, y); // TODO show direction
 				break;

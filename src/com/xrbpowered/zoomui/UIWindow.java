@@ -66,10 +66,10 @@ public abstract class UIWindow {
 	public abstract void show();
 	public abstract void repaint();
 	
-	public abstract int baseToScreenX(float x);
-	public abstract int baseToScreenY(float y);
-	public abstract float screenToBaseX(int x);
-	public abstract float screenToBaseY(int y);
+	public abstract int rootToScreenX(float x);
+	public abstract int rootToScreenY(float y);
+	public abstract float screenToRootX(int x);
+	public abstract float screenToRootY(int y);
 	
 	public abstract void setCursor(Cursor cursor);
 	

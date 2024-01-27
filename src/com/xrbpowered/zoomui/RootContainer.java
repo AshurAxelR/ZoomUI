@@ -7,8 +7,8 @@ import com.xrbpowered.zoomui.base.UILayersContainer;
 
 public class RootContainer extends UILayersContainer implements Measurable {
 
-	public static class ModalBaseContainer<A> extends RootContainer {
-		protected ModalBaseContainer(UIModalWindow<A> window, float scale) {
+	public static class ModalRootContainer<A> extends RootContainer {
+		protected ModalRootContainer(UIModalWindow<A> window, float scale) {
 			super(window, scale);
 		}
 		@SuppressWarnings("unchecked")
@@ -54,8 +54,7 @@ public class RootContainer extends UILayersContainer implements Measurable {
 	
 	private DragActor drag = null;
 	private UIElement uiInitiator = null;
-	private Button initiatorButton = Button.left;
-	private int initiatorMods = 0;
+	private MouseInfo initiatorInfo = null;
 	private int prevMouseX = 0;
 	private int prevMouseY = 0;
 	
@@ -83,27 +82,34 @@ public class RootContainer extends UILayersContainer implements Measurable {
 		invalidLayout = true;
 	}
 
-	public boolean onKeyPressed(char c, int code, int mods) {
+    /**
+     * Determines if there is an active mouse-drag activity.
+     * @return <code>true</code> if a drag action is in progress, otherwise <code>false</code>.
+     */
+    public boolean isDragActive() {
+        return drag != null;
+    }
+    
+	public boolean onKeyPressed(char c, int code, InputInfo input) {
 		tabIndex.validate();
-		if(tabIndex.hasFocus() && tabIndex.getFocus().onKeyPressed(c, code, mods))
+		if(tabIndex.hasFocus() && tabIndex.getFocus().onKeyPressed(c, code, input))
 			return true;
-		else if(hotKeys!=null && hotKeys.onKeyPressed(c, code, mods))
+		else if(hotKeys!=null && hotKeys.onKeyPressed(c, code, input))
 			return true;
 		else
-			return tabIndex.onKeyPressed(c, code, mods);
+			return tabIndex.onKeyPressed(c, code, input);
 	}
 	
 	@Override
-	public UIElement notifyMouseDown(float px, float py, Button button, int mods) {
-		if(drag==null) {
-			prevMouseX = getWindow().baseToScreenX(px);
-			prevMouseY = getWindow().baseToScreenY(py);
-			initiatorButton = button;
-			initiatorMods = mods;
-			UIElement ui = super.notifyMouseDown(px, py, button, mods);
+	public UIElement notifyMouseDown(float px, float py, MouseInfo mouse) {
+		if(!isDragActive()) {
+			prevMouseX = getWindow().rootToScreenX(px);
+			prevMouseY = getWindow().rootToScreenY(py);
+			UIElement ui = super.notifyMouseDown(px, py, mouse);
 			if(ui!=uiInitiator && uiInitiator!=null)
 				uiInitiator.onMouseReleased();
 			uiInitiator = ui;
+			initiatorInfo = mouse;
 			//if(uiFocused!=null && uiFocused!=uiInitiator) // FIXME better strategy for losing focus?
 			//	resetFocus();
 		}
@@ -111,29 +117,30 @@ public class RootContainer extends UILayersContainer implements Measurable {
 	}
 	
 	@Override
-	public UIElement notifyMouseUp(float px, float py, Button button, int mods, UIElement initiator) {
-		if(drag!=null) {
+	public UIElement notifyMouseUp(float px, float py, MouseInfo mouse, UIElement initiator) {
+		if(isDragActive()) {
 			UIElement ui = getElementAt(px, py);
-			if(drag.notifyMouseUp(px, py, button, mods, ui))
-				drag = null;
+			drag.notifyMouseUp(px, py, mouse, ui);
+			drag = null;
 		}
 		else {
-			if(super.notifyMouseUp(px, py, button, mods, uiInitiator)!=uiInitiator && uiInitiator!=null)
-				uiInitiator.onMouseReleased(); // FIXME release for multi-button scenarios
+			if(super.notifyMouseUp(px, py, mouse, uiInitiator)!=uiInitiator && uiInitiator!=null)
+				uiInitiator.onMouseReleased();
 		}
+		initiatorInfo = null;
 		return this;
 	}
 	
 	@Override
 	public void onMouseOut() {
-		if(drag==null && uiUnderMouse!=null) {
+		if(!isDragActive() && uiUnderMouse!=null) {
 			if(uiUnderMouse!=this)
 				uiUnderMouse.onMouseOut();
 			uiUnderMouse = null;
 		}
 	}
 	
-	private void updateMouseMove(float x, float y) {
+	private void updateMouseMove(float x, float y, MouseInfo mouse) {
 		UIElement ui = getElementAt(x, y);
 		if(ui!=uiUnderMouse) {
 			if(uiUnderMouse!=null && uiUnderMouse!=this)
@@ -142,30 +149,34 @@ public class RootContainer extends UILayersContainer implements Measurable {
 			if(uiUnderMouse!=null && uiUnderMouse!=this)
 				uiUnderMouse.onMouseIn();
 		}
+		if(!isDragActive() && uiUnderMouse!=null && uiUnderMouse!=this)
+			uiUnderMouse.onMouseMoved(uiUnderMouse.rootToLocalX(x), uiUnderMouse.rootToLocalY(y), mouse);
 	}
 	
 	@Override
-	public void onMouseMoved(float x, float y, int mods) {
-		if(drag==null) {
-			updateMouseMove(x, y);
-			if(uiUnderMouse!=null && uiUnderMouse!=this)
-				uiUnderMouse.onMouseMoved(uiUnderMouse.rootToLocalX(x), uiUnderMouse.rootToLocalY(y), mods);
-		}
+	public void onMouseMoved(float x, float y, MouseInfo mouse) {
+		if(!isDragActive())
+			updateMouseMove(x, y, mouse);
 	}
 	
-	public void onMouseDragged(float x, float y) {
-		int sx = getWindow().baseToScreenX(x);
-		int sy = getWindow().baseToScreenY(y);
-		if(drag==null && uiInitiator!=null) {
-			drag = uiInitiator.acceptDrag(getWindow().screenToBaseX(prevMouseX), getWindow().screenToBaseY(prevMouseY), initiatorButton, initiatorMods);
+	public void onMouseDragged(float x, float y, MouseInfo mouse) {
+		if(!isDragActive() && uiInitiator!=null && initiatorInfo!=null) {
+			float rx = getWindow().screenToRootX(prevMouseX);
+			float ry = getWindow().screenToRootY(prevMouseY);
+			drag = uiInitiator.acceptDrag(uiInitiator.rootToLocalX(rx), uiInitiator.rootToLocalY(ry), initiatorInfo);
 		}
-		if(drag!=null) {
-			if(!drag.notifyMouseMove(sx-prevMouseX, sy-prevMouseY))
+		if(isDragActive()) {
+			int px = prevMouseX;
+			int py = prevMouseY;
+			prevMouseX = getWindow().rootToScreenX(x);
+			prevMouseY = getWindow().rootToScreenY(y);
+
+			// (prevMouseX, prevMouseY) contains the current mouse position at this point;
+			// (px, py) is the previous position
+			if(!drag.notifyMouseMove(x, y, prevMouseX - px, prevMouseY - py, mouse))
 				drag = null;
-			prevMouseX = sx;
-			prevMouseY = sy;
 		}
-		updateMouseMove(x, y);
+		updateMouseMove(x, y, mouse);
 	}
 	
 	public void resetFocus() {

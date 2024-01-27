@@ -1,45 +1,42 @@
 package com.xrbpowered.zoomui.base;
 
 import com.xrbpowered.zoomui.DragActor;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIElement;
-import com.xrbpowered.zoomui.UIElement.Button;
 
 public class DragPointActor implements DragActor {
 	protected final UIElement ui;
 	protected float posx, posy;
 	protected float prevx, prevy;
-	protected float pixelScale;
 	
 	public DragPointActor(UIElement ui) {
 		this.ui = ui;
 	}
 	
 	@Override
-	public boolean notifyMouseDown(float x, float y, Button button, int mods) {
-		pixelScale = ui.getPixelSize();
-		posx = ui.rootToLocalX(x);
-		posy = ui.rootToLocalY(y);
+	public boolean notifyMouseDown(float x, float y, MouseInfo mouse) {
+		posx = x;
+		posy = y;
 		prevx = posx;
 		prevy = posy;
 		return true;
 	}
 
 	@Override
-	public boolean notifyMouseMove(float dx, float dy) {
+	public boolean notifyMouseMove(float rx, float ry, float drx, float dry, MouseInfo mouse) {
 		prevx = posx;
 		prevy = posy;
-		posx += dx*pixelScale;
-		posy += dy*pixelScale;
+		posx = ui.rootToLocalX(rx);
+		posy = ui.rootToLocalY(ry);
 		return true;
 	}
 
 	@Override
-	public boolean notifyMouseUp(float x, float y, Button button, int mods, UIElement target) {
+	public void notifyMouseUp(float rx, float ry, MouseInfo mouse, UIElement target) {
 		prevx = posx;
 		prevy = posy;
-		posx = ui.rootToLocalX(x);
-		posy = ui.rootToLocalY(y);
-		return true;
+		posx = ui.rootToLocalX(rx);
+		posy = ui.rootToLocalY(ry);
 	}
 
 }

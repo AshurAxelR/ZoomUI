@@ -1,9 +1,12 @@
 package com.xrbpowered.zoomui.base;
 
+import static com.xrbpowered.zoomui.MouseInfo.LEFT;
+
 import java.awt.Cursor;
 
 import com.xrbpowered.zoomui.DragActor;
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
 
@@ -11,25 +14,25 @@ public abstract class UISplitContainerBase extends UIContainer {
 
 	private DragActor splitDragActor = new DragActor() {
 		@Override
-		public boolean notifyMouseDown(float x, float y, Button button, int mods) {
-			if(button==Button.left && getWidth()>0 && getHeight()>0) {
+		public boolean notifyMouseDown(float x, float y, MouseInfo mouse) {
+			if(mouse.eventButton==LEFT && getWidth()>0 && getHeight()>0) {
 				return true;
 			}
 			return false;
 		}
 
 		@Override
-		public boolean notifyMouseMove(float dx, float dy) {
+		public boolean notifyMouseMove(float rx, float ry, float drx, float dry, MouseInfo mouse) {
 			float pix = getPixelSize();
-			float delta = vertical ? (dy*pix)/getHeight() : (dx*pix)/getWidth();
+			float delta = vertical ? (dry*pix)/getHeight() : (drx*pix)/getWidth();
 			setSplitRatio(splitRatio + delta);
 			repaint();
 			return true;
 		}
 
 		@Override
-		public boolean notifyMouseUp(float x, float y, Button button, int mods, UIElement target) {
-			return true;
+		public void notifyMouseUp(float rx, float ry, MouseInfo mouse, UIElement target) {
+			// do nothing
 		}
 	};
 	
@@ -55,16 +58,16 @@ public abstract class UISplitContainerBase extends UIContainer {
 		}
 		
 		@Override
-		public DragActor acceptDrag(float x, float y, Button button, int mods) {
-			if(splitDragActor.notifyMouseDown(x, y, button, mods))
+		public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
+			if(splitDragActor.notifyMouseDown(x, y, mouse))
 				return splitDragActor;
 			else
 				return null;
 		}
 		
 		@Override
-		public boolean onMouseDown(float x, float y, Button button, int mods) {
-			if(button==Button.left)
+		public boolean onMouseDown(float x, float y, MouseInfo mouse) {
+			if(mouse.eventButton==LEFT)
 				return true;
 			return false;
 		}

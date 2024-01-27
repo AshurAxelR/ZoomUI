@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 
 import com.xrbpowered.zoomui.DragActor;
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
 import com.xrbpowered.zoomui.base.DragPointActor;
@@ -27,23 +28,23 @@ public class UIColorView extends UIContainer {
 		
 		protected DragActor dragActor = new DragPointActor(this) {
 			@Override
-			public boolean notifyMouseMove(float dx, float dy) {
-				super.notifyMouseMove(dx, dy);
-				updateHover(posx, posy, pixelScale);
-				pickColor(pixelScale);
+			public boolean notifyMouseMove(float rx, float ry, float drx, float dry, MouseInfo mouse) {
+				super.notifyMouseMove(rx, ry, drx, dry, mouse);
+				float pix = getPixelSize();
+				updateHover(posx, posy, pix);
+				pickColor(pix);
 				repaint();
 				return true;
 			}
 			
 			@Override
-			public boolean notifyMouseUp(float x, float y, Button button, int mods, UIElement target) {
-				super.notifyMouseUp(x, y, button, mods, target);
+			public void notifyMouseUp(float rx, float ry, MouseInfo mouse, UIElement target) {
+				super.notifyMouseUp(rx, ry, mouse, target);
 				if(!isInside(posx, posy)) {
 					hoverx = -1;
 					hovery = -1;
 					repaint();
 				}
-				return true;
 			}
 		};
 		
@@ -147,15 +148,15 @@ public class UIColorView extends UIContainer {
 		}
 		
 		@Override
-		public DragActor acceptDrag(float x, float y, Button button, int mods) {
-			if(dragActor.notifyMouseDown(x, y, button, mods))
+		public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
+			if(dragActor.notifyMouseDown(x, y, mouse))
 				return dragActor;
 			else
 				return null;
 		}
 		
 		@Override
-		public boolean onMouseDown(float x, float y, Button button, int mods) {
+		public boolean onMouseDown(float x, float y, MouseInfo mouse) {
 			float pix = getPixelSize();
 			updateHover(x, y, pix);
 			pickColor(pix);
@@ -164,7 +165,7 @@ public class UIColorView extends UIContainer {
 		}
 		
 		@Override
-		public void onMouseMoved(float x, float y, int mods) {
+		public void onMouseMoved(float x, float y, MouseInfo mouse) {
 			updateHover(x, y, getPixelSize());
 			repaint();
 		}

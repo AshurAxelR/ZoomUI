@@ -2,6 +2,7 @@ package com.xrbpowered.zoomui.base;
 
 import com.xrbpowered.zoomui.DragActor;
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
 
@@ -48,25 +49,24 @@ public class UIPanView extends UIContainer {
 	 */
 	private DragActor panActor = new DragActor() {
 		@Override
-		public boolean notifyMouseDown(float x, float y, Button button, int mods) {
-			if(isPanTrigger(button, mods)) {
+		public boolean notifyMouseDown(float x, float y, MouseInfo mouse) {
+			if(isPanTrigger(mouse)) {
 				return true;
 			}
 			return false;
 		}
 
 		@Override
-		public boolean notifyMouseMove(float dx, float dy) {
+		public boolean notifyMouseMove(float rx, float ry, float drx, float dry, MouseInfo mouse) {
 			float pix = getPixelSize();
-			pan(dx * pix, dy * pix);
+			pan(drx * pix, dry * pix);
 			repaint();
 			return true;
 		}
 
 		@Override
-		public boolean notifyMouseUp(float x, float y, Button button, int mods, UIElement target) {
+		public void notifyMouseUp(float rx, float ry, MouseInfo mouse, UIElement target) {
 			// do nothing
-			return true;
 		}
 	};
 
@@ -106,8 +106,8 @@ public class UIPanView extends UIContainer {
 	 * @param mods status of the modifier keys
 	 * @return <code>true</code> if the event is a pan trigger, <code>false</code> if it is not
 	 */
-	protected boolean isPanTrigger(Button button, int mods) {
-		return (button==Button.right);
+	protected boolean isPanTrigger(MouseInfo mouse) {
+		return (mouse.eventButton==MouseInfo.RIGHT);
 	}
 
 	private void applyPanLimits() {
@@ -302,40 +302,40 @@ public class UIPanView extends UIContainer {
 	}
 
 	@Override
-	public UIElement notifyMouseDown(float px, float py, Button button, int mods) {
+	public UIElement notifyMouseDown(float px, float py, MouseInfo mouse) {
 		if(isInside(px, py))
-			return super.notifyMouseDown(px, py, button, mods);
+			return super.notifyMouseDown(px, py, mouse);
 		else
 			return null;
 	}
 
 	@Override
-	public UIElement notifyMouseUp(float px, float py, Button button, int mods, UIElement initiator) {
+	public UIElement notifyMouseUp(float px, float py, MouseInfo mouse, UIElement initiator) {
 		if(isInside(px, py))
-			return super.notifyMouseUp(px, py, button, mods, initiator);
+			return super.notifyMouseUp(px, py, mouse, initiator);
 		else
 			return null;
 	}
 
 	@Override
-	public UIElement notifyMouseScroll(float px, float py, float delta, int mods) {
+	public UIElement notifyMouseScroll(float px, float py, float delta, MouseInfo mouse) {
 		if(isInside(px, py))
-			return super.notifyMouseScroll(px, py, delta, mods);
+			return super.notifyMouseScroll(px, py, delta, mouse);
 		else
 			return null;
 	}
 
 	@Override
-	public DragActor acceptDrag(float x, float y, Button button, int mods) {
-		if(panActor.notifyMouseDown(x, y, button, mods))
+	public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
+		if(panActor.notifyMouseDown(x, y, mouse))
 			return panActor;
 		else
 			return null;
 	}
 
 	@Override
-	public boolean onMouseDown(float x, float y, Button button, int mods) {
-		if(button==Button.right)
+	public boolean onMouseDown(float x, float y, MouseInfo mouse) {
+		if(isPanTrigger(mouse))
 			return true;
 		return false;
 	}

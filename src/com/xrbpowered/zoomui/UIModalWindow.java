@@ -1,6 +1,6 @@
 package com.xrbpowered.zoomui;
 
-import com.xrbpowered.zoomui.RootContainer.ModalBaseContainer;
+import com.xrbpowered.zoomui.RootContainer.ModalRootContainer;
 
 public abstract class UIModalWindow<A> extends UIWindow {
 
@@ -28,12 +28,12 @@ public abstract class UIModalWindow<A> extends UIWindow {
 
 	@Override
 	protected RootContainer createContainer() {
-		return new ModalBaseContainer<A>(this, factory.getBaseScale());
+		return new ModalRootContainer<A>(this, factory.getBaseScale());
 	}
 	
 	@SuppressWarnings("unchecked")
-	public ModalBaseContainer<A> getContainer() {
-		return (ModalBaseContainer<A>) this.container;
+	public ModalRootContainer<A> getContainer() {
+		return (ModalRootContainer<A>) this.container;
 	}
 	
 	@Override

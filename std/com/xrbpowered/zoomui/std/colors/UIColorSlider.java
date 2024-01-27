@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 
 import com.xrbpowered.zoomui.DragActor;
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
 import com.xrbpowered.zoomui.base.DragPointActor;
@@ -30,9 +31,9 @@ public abstract class UIColorSlider extends UIElement {
 
 	protected DragActor dragActor = new DragPointActor(this) {
 		@Override
-		public boolean notifyMouseMove(float dx, float dy) {
-			super.notifyMouseMove(dx, dy);
-			pickValue(posx, posy, pixelScale);
+		public boolean notifyMouseMove(float rx, float ry, float drx, float dry, MouseInfo mouse) {
+			super.notifyMouseMove(rx, ry, drx, dry, mouse);
+			pickValue(posx, posy, getPixelSize());
 			repaint();
 			return true;
 		}
@@ -164,15 +165,15 @@ public abstract class UIColorSlider extends UIElement {
 	}
 	
 	@Override
-	public DragActor acceptDrag(float x, float y, Button button, int mods) {
-		if(dragActor.notifyMouseDown(x, y, button, mods))
+	public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
+		if(dragActor.notifyMouseDown(x, y, mouse))
 			return dragActor;
 		else
 			return null;
 	}
 	
 	@Override
-	public boolean onMouseDown(float x, float y, Button button, int mods) {
+	public boolean onMouseDown(float x, float y, MouseInfo mouse) {
 		float pix = getPixelSize();
 		pickValue(x, y, pix);
 		repaint();

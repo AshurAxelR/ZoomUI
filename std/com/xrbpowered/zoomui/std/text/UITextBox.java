@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.event.KeyEvent;
 
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.InputInfo;
 import com.xrbpowered.zoomui.KeyInputHandler;
 import com.xrbpowered.zoomui.TabIndex;
 import com.xrbpowered.zoomui.UIContainer;
@@ -35,10 +36,11 @@ public class UITextBox extends UIPanView {
 	
 	protected UITextEdit createEditor() {
 		return new UITextEdit(this, true) {
-			public boolean onKeyPressed(char c, int code, int modifiers) {
+			@Override
+			public boolean onKeyPressed(char c, int code, InputInfo input) {
 				switch(code) {
 					case KeyEvent.VK_TAB: {
-							KeyInputHandler tab = getRoot().tabIndex().selectTab(TabIndex.getDir(modifiers));
+							KeyInputHandler tab = getRoot().tabIndex().selectTab(TabIndex.getDir(input));
 							if(tab!=this) {
 								if(!onEnter())
 									onEscape();
@@ -58,7 +60,7 @@ public class UITextBox extends UIPanView {
 						repaint();
 						return true;
 					default:
-						return super.onKeyPressed(c, code, modifiers);
+						return super.onKeyPressed(c, code, input);
 				}
 			}
 			@Override

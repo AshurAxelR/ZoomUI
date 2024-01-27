@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.Measurable;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
 import com.xrbpowered.zoomui.UIPopupWindow;
@@ -47,7 +48,7 @@ public class UIMenu extends UIContainer implements Measurable {
 	}
 	
 	@Override
-	public boolean onMouseDown(float x, float y, Button button, int mods) {
+	public boolean onMouseDown(float x, float y, MouseInfo mouse) {
 		return true;
 	}
 	

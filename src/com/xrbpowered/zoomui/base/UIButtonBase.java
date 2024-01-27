@@ -1,6 +1,9 @@
 package com.xrbpowered.zoomui.base;
 
+import static com.xrbpowered.zoomui.MouseInfo.LEFT;
+
 import com.xrbpowered.zoomui.ActionHandler;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
 
@@ -53,8 +56,8 @@ public abstract class UIButtonBase extends UIElement implements ActionHandler {
 	}
 	
 	@Override
-	public boolean onMouseDown(float x, float y, Button button, int mods) {
-		if(button==Button.left) {
+	public boolean onMouseDown(float x, float y, MouseInfo mouse) {
+		if(mouse.eventButton==LEFT) {
 			if(isEnabled()) {
 				down = true;
 				repaint();
@@ -66,10 +69,10 @@ public abstract class UIButtonBase extends UIElement implements ActionHandler {
 	}
 	
 	@Override
-	public boolean onMouseUp(float x, float y, Button button, int mods, UIElement initiator) {
+	public boolean onMouseUp(float x, float y, MouseInfo mouse, UIElement initiator) {
 		if(initiator!=this)
 			return false;
-		if(button==Button.left) {
+		if(mouse.eventButton==LEFT) {
 			down = false;
 			if(isEnabled())
 				onAction();

@@ -1,12 +1,14 @@
 package com.xrbpowered.zoomui.examples;
 
+import static com.xrbpowered.zoomui.MouseInfo.*;
+
 import java.awt.Color;
 import java.awt.Font;
 
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
-import com.xrbpowered.zoomui.UIElement.Button;
 import com.xrbpowered.zoomui.UIWindow;
 import com.xrbpowered.zoomui.swing.SwingWindowFactory;
 
@@ -17,14 +19,14 @@ public class TestEvents {
 	
 	private static int nextId = 0;
 	
-	private static String buttonsToString(Button button, int mods) {
+	private static String buttonsToString(MouseInfo mouse) {
 		String s = "";
-		if((mods&UIElement.modCtrlMask)!=0) { if(!s.isEmpty()) s += "+"; s += "Ctrl"; }
-		if((mods&UIElement.modAltMask)!=0) { if(!s.isEmpty()) s += "+"; s += "Alt"; }
-		if((mods&UIElement.modShiftMask)!=0) { if(!s.isEmpty()) s += "+"; s += "Shift"; }
-		if(button==Button.left) { if(!s.isEmpty()) s += "+"; s += "LMB"; }
-		if(button==Button.middle) { if(!s.isEmpty()) s += "+"; s += "MMB"; }
-		if(button==Button.right) { if(!s.isEmpty()) s += "+"; s += "RMB"; }
+		if(mouse.isCtrlDown()) { if(!s.isEmpty()) s += "+"; s += "Ctrl"; }
+		if(mouse.isAltDown()) { if(!s.isEmpty()) s += "+"; s += "Alt"; }
+		if(mouse.isShiftDown()) { if(!s.isEmpty()) s += "+"; s += "Shift"; }
+		if(mouse.eventButton==LEFT) { if(!s.isEmpty()) s += "+"; s += "LMB"; }
+		if(mouse.eventButton==MIDDLE) { if(!s.isEmpty()) s += "+"; s += "MMB"; }
+		if(mouse.eventButton==RIGHT) { if(!s.isEmpty()) s += "+"; s += "RMB"; }
 		return s;
 	}
 	
@@ -65,20 +67,20 @@ public class TestEvents {
 			repaint();
 		}
 		@Override
-		public boolean onMouseDown(float x, float y, Button button, int mods) {
-			System.out.printf("%d: down[%s]\n", id, buttonsToString(button, mods));
-			if(button==Button.left) {
+		public boolean onMouseDown(float x, float y, MouseInfo mouse) {
+			System.out.printf("%d: down[%s]\n", id, buttonsToString(mouse));
+			if(mouse.eventButton==LEFT) {
 				down = true;
 				repaint();
 			}
 			return true;
 		}
 		@Override
-		public boolean onMouseUp(float x, float y, Button button, int mods, UIElement initiator) {
+		public boolean onMouseUp(float x, float y, MouseInfo mouse, UIElement initiator) {
 			if(initiator!=this)
 				return false;
-			System.out.printf("%d: up[%s]\n", id, buttonsToString(button, mods));
-			if(button==Button.left) {
+			System.out.printf("%d: up[%s]\n", id, buttonsToString(mouse));
+			if(mouse.eventButton==LEFT) {
 				down = false;
 				clicks++;
 				repaint();

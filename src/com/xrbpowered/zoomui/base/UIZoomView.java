@@ -1,6 +1,7 @@
 package com.xrbpowered.zoomui.base;
 
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIContainer;
 
 /**
@@ -36,11 +37,11 @@ public class UIZoomView extends UIPanView {
 	/**
 	 * Determines if the mouse-scroll event is a trigger for zooming based on the modifier keys.
 	 * <p>By default, the zoom is triggered if the Control key is down. Subclasses can override this behaviour.</p> 
-	 * @param mods status of the modifier keys
+	 * @param mouse mouse button state and modifier key information of the related mouse-scroll event
 	 * @return <code>true</code> if the event is a pan trigger, <code>false</code> if it is not
 	 */
-	protected boolean isScrollTrigger(int mods) {
-		return mods==modCtrlMask;
+	protected boolean isScrollTrigger(MouseInfo mouse) {
+		return mouse.mods==MouseInfo.CTRL;
 	}
 
 	private void applyScaleLimits() {
@@ -186,8 +187,8 @@ public class UIZoomView extends UIPanView {
 	}
 
 	@Override
-	public boolean onMouseScroll(float x, float y, float delta, int mods) {
-		if(isScrollTrigger(mods)) {
+	public boolean onMouseScroll(float x, float y, float delta, MouseInfo mouse) {
+		if(isScrollTrigger(mouse)) {
 			rescale(1.0f + delta * 0.2f, x, y);
 			repaint();
 			return true;

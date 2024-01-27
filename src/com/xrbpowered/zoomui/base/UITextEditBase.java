@@ -1,5 +1,8 @@
 package com.xrbpowered.zoomui.base;
 
+import static com.xrbpowered.zoomui.InputInfo.*;
+import static com.xrbpowered.zoomui.MouseInfo.LEFT;
+
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
@@ -18,7 +21,9 @@ import java.util.regex.Pattern;
 
 import com.xrbpowered.zoomui.DragActor;
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.InputInfo;
 import com.xrbpowered.zoomui.KeyInputHandler;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIElement;
 
 public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement implements KeyInputHandler {
@@ -83,14 +88,11 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 	}
 	
 	protected DragActor dragSelectActor = new DragActor() {
-		private float x, y;
 		@Override
-		public boolean notifyMouseDown(float x, float y, Button button, int mods) {
-			if(button==Button.left) {
+		public boolean notifyMouseDown(float x, float y, MouseInfo mouse) {
+			if(mouse.eventButton==LEFT) {
 				checkPushHistory(HistoryAction.unspecified);
-				this.x = rootToLocalX(x);
-				this.y = rootToLocalY(y);
-				cursorToMouse(this.x, this.y);
+				cursorToMouse(x, y);
 				startSelection();
 				return true;
 			}
@@ -98,10 +100,8 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 		}
 
 		@Override
-		public boolean notifyMouseMove(float dx, float dy) {
-			x += dx * getPixelSize();
-			y += dy * getPixelSize();
-			cursorToMouse(this.x, this.y);
+		public boolean notifyMouseMove(float rx, float ry, float drx, float dry, MouseInfo mouse) {
+			cursorToMouse(rootToLocalX(rx), rootToLocalY(ry));
 			scrollToCursor();
 			modifySelection(true);
 			repaint();
@@ -109,8 +109,8 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 		}
 
 		@Override
-		public boolean notifyMouseUp(float x, float y, Button button, int mods, UIElement target) {
-			return true;
+		public void notifyMouseUp(float rx, float ry, MouseInfo mouse, UIElement target) {
+			// do nothing
 		}
 	};
 
@@ -858,11 +858,11 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 	}
 	
 	@Override
-	public boolean onKeyPressed(char c, int code, int modifiers) {
+	public boolean onKeyPressed(char c, int code, InputInfo input) {
 		switch(code) {
 			case KeyEvent.VK_LEFT:
 				checkPushHistory();
-				if((modifiers&UIElement.modShiftMask)>0)
+				if(input.isShiftDown())
 					startSelection();
 				else {
 					if(selMin!=null)
@@ -880,15 +880,15 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 						cursor.line--;
 						cursor.col = lines.get(cursor.line).length;
 					}
-				} while((modifiers&UIElement.modCtrlMask)>0 && !isCursorAtWordBoundary());
+				} while(input.isCtrlDown() && !isCursorAtWordBoundary());
 				scrollToCursor();
-				if((modifiers&UIElement.modShiftMask)>0)
+				if(input.isShiftDown())
 					modifySelection();
 				break;
 				
 			case KeyEvent.VK_RIGHT:
 				checkPushHistory();
-				if((modifiers&UIElement.modShiftMask)>0)
+				if(input.isShiftDown())
 					startSelection();
 				else {
 					if(selMax!=null)
@@ -904,19 +904,19 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 						cursor.line++;
 						cursor.col = 0;
 					}
-				} while((modifiers&UIElement.modCtrlMask)>0 && !isCursorAtWordBoundary());
+				} while(input.isCtrlDown() && !isCursorAtWordBoundary());
 				scrollToCursor();
-				if((modifiers&UIElement.modShiftMask)>0)
+				if(input.isShiftDown())
 					modifySelection();
 				break;
 				
 			case KeyEvent.VK_UP:
 				checkPushHistory();
-				if(modifiers==UIElement.modCtrlMask) {
+				if(input.mods==CTRL) {
 					panView().pan(0, lineHeight);
 				}
 				else {
-					if(modifiers==UIElement.modShiftMask)
+					if(input.mods==SHIFT)
 						startSelection();
 					else
 						deselect();
@@ -925,18 +925,18 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 						updateCursor();
 					}
 					scrollToCursor();
-					if(modifiers==UIElement.modShiftMask)
+					if(input.mods==SHIFT)
 						modifySelection();
 				}
 				break;
 				
 			case KeyEvent.VK_DOWN:
 				checkPushHistory();
-				if(modifiers==UIElement.modCtrlMask) {
+				if(input.mods==CTRL) {
 					panView().pan(0, -lineHeight);
 				}
 				else {
-					if(modifiers==UIElement.modShiftMask)
+					if(input.mods==SHIFT)
 						startSelection();
 					else
 						deselect();
@@ -945,14 +945,14 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 						updateCursor();
 					}
 					scrollToCursor();
-					if(modifiers==UIElement.modShiftMask)
+					if(input.mods==SHIFT)
 						modifySelection();
 				}
 				break;
 				
 			case KeyEvent.VK_PAGE_UP:
 				checkPushHistory();
-				if(modifiers==UIElement.modShiftMask)
+				if(input.mods==SHIFT)
 					startSelection();
 				else
 					deselect();
@@ -962,13 +962,13 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 					cursor.line = 0;
 				updateCursor();
 				scrollToCursor();
-				if(modifiers==UIElement.modShiftMask)
+				if(input.mods==SHIFT)
 					modifySelection();
 				break;
 				
 			case KeyEvent.VK_PAGE_DOWN:
 				checkPushHistory();
-				if(modifiers==UIElement.modShiftMask)
+				if(input.mods==SHIFT)
 					startSelection();
 				else
 					deselect();
@@ -978,39 +978,39 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 					cursor.line = lines.size()-1;
 				updateCursor();
 				scrollToCursor();
-				if(modifiers==UIElement.modShiftMask)
+				if(input.mods==SHIFT)
 					modifySelection();
 				break;
 				
 			case KeyEvent.VK_HOME:
 				checkPushHistory();
-				if((modifiers&UIElement.modShiftMask)>0)
+				if(input.isShiftDown())
 					startSelection();
 				else
 					deselect();
-				if((modifiers&UIElement.modCtrlMask)>0) {
+				if(input.isCtrlDown()) {
 					cursor.line = 0;
 				}
 				cursor.col = 0;
 				cursorX = -1;
 				scrollToCursor();
-				if((modifiers&UIElement.modShiftMask)>0)
+				if(input.isShiftDown())
 					modifySelection();
 				break;
 				
 			case KeyEvent.VK_END:
 				checkPushHistory();
-				if((modifiers&UIElement.modShiftMask)>0)
+				if(input.isShiftDown())
 					startSelection();
 				else
 					deselect();
-				if((modifiers&UIElement.modCtrlMask)>0) {
+				if(input.isCtrlDown()) {
 					cursor.line = lines.size()-1;
 				}
 				cursor.col = lines.get(cursor.line).length;
 				cursorX = -1;
 				scrollToCursor();
-				if((modifiers&UIElement.modShiftMask)>0)
+				if(input.isShiftDown())
 					modifySelection();
 				break;
 				
@@ -1071,7 +1071,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 			case KeyEvent.VK_TAB:
 				if(!singleLine) {
 					if(selStart==null) {
-						if(modifiers==UIElement.modNone) {
+						if(input.mods==NONE) {
 							checkPushHistory(HistoryAction.typing);
 							modify(cursor.line, cursor.col, "\t", cursor.col);
 							cursor.col++;
@@ -1080,7 +1080,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 					}
 					else {
 						checkPushHistory();
-						if(modifiers==UIElement.modShiftMask)
+						if(input.mods==SHIFT)
 							unindentSelection();
 						else
 							indentSelection("\t");
@@ -1092,7 +1092,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 				break;
 				
 			default: {
-				if(modifiers==UIElement.modCtrlMask) {
+				if(input.mods==CTRL) {
 					switch(code) {
 						case KeyEvent.VK_A:
 							checkPushHistory();
@@ -1150,8 +1150,8 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 	}
 	
 	@Override
-	public boolean onMouseDown(float x, float y, Button button, int mods) {
-		if(button==Button.left) {
+	public boolean onMouseDown(float x, float y, MouseInfo mouse) {
+		if(mouse.eventButton==LEFT) {
 			if(!isFocused())
 				getRoot().setFocus(this);
 			else 
@@ -1166,8 +1166,8 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 	}
 	
 	@Override
-	public DragActor acceptDrag(float x, float y, Button button, int mods) {
-		if(dragSelectActor.notifyMouseDown(x, y, button, mods))
+	public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
+		if(dragSelectActor.notifyMouseDown(x, y, mouse))
 			return dragSelectActor;
 		else
 			return null;

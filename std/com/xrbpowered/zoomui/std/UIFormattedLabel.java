@@ -29,6 +29,7 @@ import javax.swing.text.html.InlineView;
 import javax.swing.text.html.StyleSheet;
 
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
 import com.xrbpowered.zoomui.icons.SvgIcon;
@@ -166,8 +167,8 @@ public class UIFormattedLabel extends UIContainer {
 							repaint();
 						}
 						@Override
-						public boolean onMouseDown(float x, float y, Button button, int mods) {
-							if(button==Button.left && mods==UIElement.modNone) {
+						public boolean onMouseDown(float x, float y, MouseInfo mouse) {
+							if(mouse.eventButton==MouseInfo.LEFT && mouse.mods==MouseInfo.NONE) {
 								container.onHrefClicked(href);
 								return true;
 							}

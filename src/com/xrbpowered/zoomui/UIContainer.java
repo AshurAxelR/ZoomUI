@@ -172,45 +172,45 @@ public abstract class UIContainer extends UIElement {
 	}
 
 	@Override
-	public UIElement notifyMouseDown(float px, float py, Button button, int mods) {
+	public UIElement notifyMouseDown(float px, float py, MouseInfo mouse) {
 		if(!isVisible())
 			return null;
 		float cx = parentToLocalX(px);
 		float cy = parentToLocalY(py);
 		for(int i = children.size() - 1; i>=0; i--) {
-			UIElement e = children.get(i).notifyMouseDown(cx, cy, button, mods);
+			UIElement e = children.get(i).notifyMouseDown(cx, cy, mouse);
 			if(e!=null)
 				return e;
 		}
-		return super.notifyMouseDown(px, py, button, mods);
+		return super.notifyMouseDown(px, py, mouse);
 	}
 
 	@Override
-	public UIElement notifyMouseUp(float px, float py, Button button, int mods, UIElement initiator) {
+	public UIElement notifyMouseUp(float px, float py, MouseInfo mouse, UIElement initiator) {
 		if(!isVisible())
 			return null;
 		float cx = parentToLocalX(px);
 		float cy = parentToLocalY(py);
 		for(int i = children.size() - 1; i>=0; i--) {
-			UIElement e = children.get(i).notifyMouseUp(cx, cy, button, mods, initiator);
+			UIElement e = children.get(i).notifyMouseUp(cx, cy, mouse, initiator);
 			if(e!=null)
 				return e;
 		}
-		return super.notifyMouseUp(px, py, button, mods, initiator);
+		return super.notifyMouseUp(px, py, mouse, initiator);
 	}
 
 	@Override
-	public UIElement notifyMouseScroll(float px, float py, float delta, int mods) {
+	public UIElement notifyMouseScroll(float px, float py, float delta, MouseInfo mouse) {
 		if(!isVisible())
 			return null;
 		float cx = parentToLocalX(px);
 		float cy = parentToLocalY(py);
 		for(int i = children.size() - 1; i>=0; i--) {
-			UIElement e = children.get(i).notifyMouseScroll(cx, cy, delta, mods);
+			UIElement e = children.get(i).notifyMouseScroll(cx, cy, delta, mouse);
 			if(e!=null)
 				return e;
 		}
-		return super.notifyMouseScroll(px, py, delta, mods);
+		return super.notifyMouseScroll(px, py, delta, mouse);
 	}
 
 }

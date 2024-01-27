@@ -1,5 +1,7 @@
 package com.xrbpowered.zoomui.std.file;
 
+import static com.xrbpowered.zoomui.MouseInfo.LEFT;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -15,6 +17,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
 import com.xrbpowered.zoomui.icons.SvgIcon;
@@ -141,8 +144,8 @@ public class UIFileView extends UIScrollContainer {
 		}
 		
 		@Override
-		public boolean onMouseDown(float x, float y, Button button, int mods) {
-			if(button==Button.left) {
+		public boolean onMouseDown(float x, float y, MouseInfo mouse) {
+			if(mouse.eventButton==LEFT) {
 				if(selectedFile==file)
 					onSelectionClicked();
 				else {
@@ -199,8 +202,8 @@ public class UIFileView extends UIScrollContainer {
 				}
 				
 				@Override
-				public boolean onMouseDown(float x, float y, Button button, int mods) {
-					if(button==Button.left) {
+				public boolean onMouseDown(float x, float y, MouseInfo mouse) {
+					if(mouse.eventButton==LEFT) {
 						toggleView();
 						repaint();
 						return true;

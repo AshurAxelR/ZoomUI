@@ -5,6 +5,7 @@ import java.awt.Color;
 import com.xrbpowered.zoomui.DragActor;
 import com.xrbpowered.zoomui.DragWindowActor;
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIWindow;
 import com.xrbpowered.zoomui.std.UIButton;
@@ -44,16 +45,16 @@ public class SwingDragTest extends UIContainer {
 	}
 
 	@Override
-	public DragActor acceptDrag(float x, float y, Button button, int mods) {
-		if(dragActor.notifyMouseDown(x, y, button, mods))
+	public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
+		if(dragActor.notifyMouseDown(x, y, mouse))
 			return dragActor;
 		else
 			return null;
 	}
 
 	@Override
-	public boolean onMouseDown(float x, float y, Button button, int mods) {
-		return isInside(x, y) && dragActor.isTrigger(button, mods);
+	public boolean onMouseDown(float x, float y, MouseInfo mouse) {
+		return isInside(x, y) && dragActor.isTrigger(mouse);
 	}
 	
 	public static void main(String[] args) {

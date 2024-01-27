@@ -1,5 +1,7 @@
 package com.xrbpowered.zoomui;
 
+import static com.xrbpowered.zoomui.InputInfo.SHIFT;
+
 import java.awt.event.KeyEvent;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -147,18 +149,18 @@ public class TabIndex {
 		return uiFocused;
 	}
 	
-	public boolean onKeyPressed(char c, int code, int modifiers) {
+	public boolean onKeyPressed(char c, int code, InputInfo input) {
 		switch(code) {
 			case KeyEvent.VK_TAB:
-				base.setFocus(selectTab(getDir(modifiers)));
+				base.setFocus(selectTab(getDir(input)));
 				return true;
 			default:
 				return false;
 		}
 	}
-
-	public static int getDir(int modifiers) {
-		return (modifiers&UIElement.modShiftMask)>0 ? -1 : 1;
+	
+	public static int getDir(InputInfo input) {
+		return (input.mods==SHIFT) ? -1 : 1;
 	}
 	
 }

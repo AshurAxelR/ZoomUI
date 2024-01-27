@@ -1,9 +1,12 @@
 package com.xrbpowered.zoomui.std;
 
+import static com.xrbpowered.zoomui.MouseInfo.LEFT;
+
 import java.awt.Color;
 import java.awt.Font;
 
 import com.xrbpowered.zoomui.GraphAssist;
+import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIElement;
 import com.xrbpowered.zoomui.std.text.UITextBox;
 
@@ -58,8 +61,8 @@ public class UIListItem extends UIElement {
 	}
 	
 	@Override
-	public boolean onMouseDown(float x, float y, Button button, int mods) {
-		if(button==Button.left) {
+	public boolean onMouseDown(float x, float y, MouseInfo mouse) {
+		if(mouse.eventButton==LEFT) {
 			if(list.getSelectedIndex()==index)
 				list.onClickSelected();
 			else

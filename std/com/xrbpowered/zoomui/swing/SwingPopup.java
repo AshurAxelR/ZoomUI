@@ -124,22 +124,22 @@ public class SwingPopup extends UIPopupWindow {
 	}
 
 	@Override
-	public int baseToScreenX(float x) {
+	public int rootToScreenX(float x) {
 		return panel.baseToScreenX(x);
 	}
 
 	@Override
-	public int baseToScreenY(float y) {
+	public int rootToScreenY(float y) {
 		return panel.baseToScreenY(y);
 	}
 
 	@Override
-	public float screenToBaseX(int x) {
+	public float screenToRootX(int x) {
 		return panel.screenToBaseX(x);
 	}
 
 	@Override
-	public float screenToBaseY(int y) {
+	public float screenToRootY(int y) {
 		return panel.screenToBaseY(y);
 	}
 
