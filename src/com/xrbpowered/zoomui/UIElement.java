@@ -27,6 +27,8 @@ import java.security.InvalidParameterException;
  * <li>{@link #onMouseScroll(float, float, float, MouseInfo)} - mouse wheel scrolled over the element</li>
  * </ul>
  * 
+ * <p>All event handler methods are called from the UI thread, therefore can request {@link UIElement#repaint()}
+ * if needed.</p>
  */
 public abstract class UIElement {
 
@@ -443,12 +445,12 @@ public abstract class UIElement {
 	 * happens after the mouse is moved while a button is held down. For convenience,
 	 * the mouse position reported in <code>x</code> and <code>y</code> arguments are the position
 	 * of the initial mouse-down event before the drag. If the method returns a drag actor,
-	 * it will immediately receive {@link DragActor#notifyMouseMove(float, float, float, float, MouseInfo)} with the updated
+	 * it will immediately receive {@link DragActor#onMouseDrag(float, float, float, float, MouseInfo)} with the updated
 	 * mouse position.</p>
 	 * 
 	 * <p>It is not required to create a new instance of <code>DragActor</code> every time.
 	 * The method can return the same drag handler instance for every drag action.
-	 * Typically, the <code>acceptDrag</code> method should also call {@link DragActor#notifyMouseDown(float, float, MouseInfo)}
+	 * Typically, the <code>acceptDrag</code> method should also call {@link DragActor#startDrag(float, float, MouseInfo)}
 	 * to make sure the drag handler is accepting the drag as well.</p>
 	 * 
 	 * @param x mouse-down coordinate in local space (horizontal)
@@ -456,7 +458,7 @@ public abstract class UIElement {
 	 * @param mouse mouse button and modifier key information of the related mouse-down event
 	 * @return drag handler if the drag action started, or <code>null</code> to refuse drag action 
 	 * 
-	 * @see DragActor#notifyMouseDown(float, float, MouseInfo)
+	 * @see DragActor#startDrag(float, float, MouseInfo)
 	 */
 	public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
 		return null;

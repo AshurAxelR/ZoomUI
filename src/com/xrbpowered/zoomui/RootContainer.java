@@ -90,6 +90,21 @@ public class RootContainer extends UILayersContainer implements Measurable {
         return drag != null;
     }
     
+    /**
+     * Cancels any active drag actions.
+     * Calls {@link DragActor#onDragCancel(float, float)} for the active drag action.
+     * Does nothing if there is no active drag action.
+     */
+    public void cancelDrag() {
+        if (isDragActive()) {
+        	float x = getWindow().screenToRootX(prevMouseX);
+        	float y = getWindow().screenToRootY(prevMouseY);
+            drag.onDragCancel(x, y);
+            drag = null;
+        }
+        initiatorInfo = null;
+    }
+    
 	public boolean onKeyPressed(char c, int code, InputInfo input) {
 		tabIndex.validate();
 		if(tabIndex.hasFocus() && tabIndex.getFocus().onKeyPressed(c, code, input))
@@ -120,7 +135,7 @@ public class RootContainer extends UILayersContainer implements Measurable {
 	public UIElement notifyMouseUp(float px, float py, MouseInfo mouse, UIElement initiator) {
 		if(isDragActive()) {
 			UIElement ui = getElementAt(px, py);
-			drag.notifyMouseUp(px, py, mouse, ui);
+			drag.onDragFinish(px, py, mouse, ui);
 			drag = null;
 		}
 		else {
@@ -173,7 +188,7 @@ public class RootContainer extends UILayersContainer implements Measurable {
 
 			// (prevMouseX, prevMouseY) contains the current mouse position at this point;
 			// (px, py) is the previous position
-			if(!drag.notifyMouseMove(x, y, prevMouseX - px, prevMouseY - py, mouse))
+			if(!drag.onMouseDrag(x, y, prevMouseX - px, prevMouseY - py, mouse))
 				drag = null;
 		}
 		updateMouseMove(x, y, mouse);

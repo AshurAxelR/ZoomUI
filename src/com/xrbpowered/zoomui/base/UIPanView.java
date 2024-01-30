@@ -26,7 +26,7 @@ import com.xrbpowered.zoomui.UIElement;
  * <p>Panning limits can be set using {@link #setPanRange(int, int)} or {@link #setPanRangeForClient(float, float)}.
  * The {@link #DISABLED} constant can be used to create a vertical-only or horizontal-only pan view, or to temporarily disable panning.</p>
  * 
- * <p>Default mouse button for panning is the right mouse button. Subclasses can override {@link #isPanTrigger(MouseEvent)}
+ * <p>Default mouse button for panning is the right mouse button. Subclasses can override {@link #isPanTrigger(MouseInfo)}
  * to change the button or add modifier keys.</p>
  * 
  * @see UIZoomView
@@ -49,7 +49,7 @@ public class UIPanView extends UIContainer {
 	 */
 	private DragActor panActor = new DragActor() {
 		@Override
-		public boolean notifyMouseDown(float x, float y, MouseInfo mouse) {
+		public boolean startDrag(float x, float y, MouseInfo mouse) {
 			if(isPanTrigger(mouse)) {
 				return true;
 			}
@@ -57,16 +57,11 @@ public class UIPanView extends UIContainer {
 		}
 
 		@Override
-		public boolean notifyMouseMove(float rx, float ry, float drx, float dry, MouseInfo mouse) {
+		public boolean onMouseDrag(float rx, float ry, float drx, float dry, MouseInfo mouse) {
 			float pix = getPixelSize();
 			pan(drx * pix, dry * pix);
 			repaint();
 			return true;
-		}
-
-		@Override
-		public void notifyMouseUp(float rx, float ry, MouseInfo mouse, UIElement target) {
-			// do nothing
 		}
 	};
 
@@ -102,8 +97,7 @@ public class UIPanView extends UIContainer {
 
 	/**
 	 * Determines if the mouse-down event is a trigger for panning in terms of pressed buttons and key modifiers.
-	 * @param button mouse button of the related mouse-down event
-	 * @param mods status of the modifier keys
+	 * @param mouse mouse button and modifier key information of the related mouse-down event
 	 * @return <code>true</code> if the event is a pan trigger, <code>false</code> if it is not
 	 */
 	protected boolean isPanTrigger(MouseInfo mouse) {
@@ -327,7 +321,7 @@ public class UIPanView extends UIContainer {
 
 	@Override
 	public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
-		if(panActor.notifyMouseDown(x, y, mouse))
+		if(panActor.startDrag(x, y, mouse))
 			return panActor;
 		else
 			return null;

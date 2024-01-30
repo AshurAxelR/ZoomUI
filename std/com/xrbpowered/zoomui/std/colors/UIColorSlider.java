@@ -31,8 +31,8 @@ public abstract class UIColorSlider extends UIElement {
 
 	protected DragActor dragActor = new DragPointActor(this) {
 		@Override
-		public boolean notifyMouseMove(float rx, float ry, float drx, float dry, MouseInfo mouse) {
-			super.notifyMouseMove(rx, ry, drx, dry, mouse);
+		public boolean onMouseDrag(float rx, float ry, float drx, float dry, MouseInfo mouse) {
+			super.onMouseDrag(rx, ry, drx, dry, mouse);
 			pickValue(posx, posy, getPixelSize());
 			repaint();
 			return true;
@@ -166,7 +166,7 @@ public abstract class UIColorSlider extends UIElement {
 	
 	@Override
 	public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
-		if(dragActor.notifyMouseDown(x, y, mouse))
+		if(dragActor.startDrag(x, y, mouse))
 			return dragActor;
 		else
 			return null;

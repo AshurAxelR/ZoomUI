@@ -14,7 +14,7 @@ public class DragPointActor implements DragActor {
 	}
 	
 	@Override
-	public boolean notifyMouseDown(float x, float y, MouseInfo mouse) {
+	public boolean startDrag(float x, float y, MouseInfo mouse) {
 		posx = x;
 		posy = y;
 		prevx = posx;
@@ -23,7 +23,7 @@ public class DragPointActor implements DragActor {
 	}
 
 	@Override
-	public boolean notifyMouseMove(float rx, float ry, float drx, float dry, MouseInfo mouse) {
+	public boolean onMouseDrag(float rx, float ry, float drx, float dry, MouseInfo mouse) {
 		prevx = posx;
 		prevy = posy;
 		posx = ui.rootToLocalX(rx);
@@ -32,7 +32,7 @@ public class DragPointActor implements DragActor {
 	}
 
 	@Override
-	public void notifyMouseUp(float rx, float ry, MouseInfo mouse, UIElement target) {
+	public void onDragFinish(float rx, float ry, MouseInfo mouse, UIElement target) {
 		prevx = posx;
 		prevy = posy;
 		posx = ui.rootToLocalX(rx);

@@ -89,7 +89,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 	
 	protected DragActor dragSelectActor = new DragActor() {
 		@Override
-		public boolean notifyMouseDown(float x, float y, MouseInfo mouse) {
+		public boolean startDrag(float x, float y, MouseInfo mouse) {
 			if(mouse.eventButton==LEFT) {
 				checkPushHistory(HistoryAction.unspecified);
 				cursorToMouse(x, y);
@@ -100,17 +100,12 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 		}
 
 		@Override
-		public boolean notifyMouseMove(float rx, float ry, float drx, float dry, MouseInfo mouse) {
+		public boolean onMouseDrag(float rx, float ry, float drx, float dry, MouseInfo mouse) {
 			cursorToMouse(rootToLocalX(rx), rootToLocalY(ry));
 			scrollToCursor();
 			modifySelection(true);
 			repaint();
 			return true;
-		}
-
-		@Override
-		public void notifyMouseUp(float rx, float ry, MouseInfo mouse, UIElement target) {
-			// do nothing
 		}
 	};
 
@@ -1167,7 +1162,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 	
 	@Override
 	public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
-		if(dragSelectActor.notifyMouseDown(x, y, mouse))
+		if(dragSelectActor.startDrag(x, y, mouse))
 			return dragSelectActor;
 		else
 			return null;

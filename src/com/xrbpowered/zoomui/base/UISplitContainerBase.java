@@ -14,7 +14,7 @@ public abstract class UISplitContainerBase extends UIContainer {
 
 	private DragActor splitDragActor = new DragActor() {
 		@Override
-		public boolean notifyMouseDown(float x, float y, MouseInfo mouse) {
+		public boolean startDrag(float x, float y, MouseInfo mouse) {
 			if(mouse.eventButton==LEFT && getWidth()>0 && getHeight()>0) {
 				return true;
 			}
@@ -22,17 +22,12 @@ public abstract class UISplitContainerBase extends UIContainer {
 		}
 
 		@Override
-		public boolean notifyMouseMove(float rx, float ry, float drx, float dry, MouseInfo mouse) {
+		public boolean onMouseDrag(float rx, float ry, float drx, float dry, MouseInfo mouse) {
 			float pix = getPixelSize();
 			float delta = vertical ? (dry*pix)/getHeight() : (drx*pix)/getWidth();
 			setSplitRatio(splitRatio + delta);
 			repaint();
 			return true;
-		}
-
-		@Override
-		public void notifyMouseUp(float rx, float ry, MouseInfo mouse, UIElement target) {
-			// do nothing
 		}
 	};
 	
@@ -59,7 +54,7 @@ public abstract class UISplitContainerBase extends UIContainer {
 		
 		@Override
 		public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
-			if(splitDragActor.notifyMouseDown(x, y, mouse))
+			if(splitDragActor.startDrag(x, y, mouse))
 				return splitDragActor;
 			else
 				return null;

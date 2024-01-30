@@ -49,7 +49,7 @@ public abstract class UIScrollBarBase extends UIContainer {
 		
 		@Override
 		public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
-			if(dragThumbActor.notifyMouseDown(x, y, mouse))
+			if(dragThumbActor.startDrag(x, y, mouse))
 				return dragThumbActor;
 			else
 				return null;
@@ -86,7 +86,7 @@ public abstract class UIScrollBarBase extends UIContainer {
 	private DragActor dragThumbActor = new DragActor() {
 		private float pos;
 		@Override
-		public boolean notifyMouseDown(float x, float y, MouseInfo mouse) {
+		public boolean startDrag(float x, float y, MouseInfo mouse) {
 			if(mouse.eventButton==LEFT) {
 				pos = vertical ? thumb.getY() : thumb.getX();
 				thumb.down = true;
@@ -96,7 +96,7 @@ public abstract class UIScrollBarBase extends UIContainer {
 		}
 
 		@Override
-		public boolean notifyMouseMove(float rx, float ry, float drx, float dry, MouseInfo mouse) {
+		public boolean onMouseDrag(float rx, float ry, float drx, float dry, MouseInfo mouse) {
 			pos += (vertical ? dry : drx) * getPixelSize();
 			float s = (pos-thumb.top) / (thumb.bottom-thumb.top);
 			if(setValue(Math.round(min + s*(max-min+thumb.span))))
@@ -106,7 +106,13 @@ public abstract class UIScrollBarBase extends UIContainer {
 		}
 
 		@Override
-		public void notifyMouseUp(float rx, float ry, MouseInfo mouse, UIElement target) {
+		public void onDragFinish(float rx, float ry, MouseInfo mouse, UIElement target) {
+			thumb.down = false;
+			repaint();
+		}
+
+		@Override
+		public void onDragCancel(float rx, float ry) {
 			thumb.down = false;
 			repaint();
 		}

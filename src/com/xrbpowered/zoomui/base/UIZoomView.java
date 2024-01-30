@@ -12,7 +12,7 @@ import com.xrbpowered.zoomui.UIContainer;
  * operate in the current scale, while pan range functions {@link #setPanRange(int, int)}, {@link #setPanRangeForClient(float, float)},
  * {@link #getMaxPanX()}, and {@link #getMaxPanY()} are independent of the scale  and always use the identity scale of 1.</p>
  *
- * <p>By default, the zooming is done using Ctrl + mouse-scroll. Subclasses can override {@link #isScrollTrigger(int))}
+ * <p>By default, the zooming is done using Ctrl + mouse-scroll. Subclasses can override {@link #isScrollTrigger(MouseInfo)}
  * to change the modifier key. Zooming by mouse-dragging is not implemented in this class.</p>
  */
 public class UIZoomView extends UIPanView {

@@ -4,16 +4,19 @@ package com.xrbpowered.zoomui;
  * An interface for receiving mouse-drag events.
  * 
  * <p>All drag events are sent to the UI element, who returned this interface instance from
- * {@link UIElement#acceptDrag(float, float, MouseEvent)} method.</p>
+ * {@link UIElement#acceptDrag(float, float, MouseInfo)} method.</p>
  * 
  * <p>It is important to note that <code>DragActor</code> works in root container (pixel) coordinates,
- * except for {@link #notifyMouseDown(float, float, MouseEvent)} method, which is in local space for practical reasons.</p>
+ * except for {@link #startDrag(float, float, MouseInfo)} method, which is in local space for practical reasons.</p>
  * <ul>
  * <li>In order to convert to local, use {@link UIElement#rootToLocalX(float)} and {@link UIElement#rootToLocalY(float)}.</li>
  * <li>In order to convert deltas to local deltas, multiply by {@link UIElement#getPixelSize()}.</li>
  * </ul>
  * 
- * @see UIElement#acceptDrag(float, float, MouseEvent)
+ * <p>All event handler methods are called from the UI thread, therefore can request {@link UIElement#repaint()}
+ * if needed.</p>
+ * 
+ * @see UIElement#acceptDrag(float, float, MouseInfo)
  *
  */
 public interface DragActor {
@@ -24,12 +27,11 @@ public interface DragActor {
 	 * <p>Mouse position is in the local space of the sender UI element.</p>
 	 * 
 	 * <p>The function is not called automatically. A typical use is to call from
-	 * {@link UIElement#acceptDrag(float, float, MouseEvent)} assuming you have an instance of <code>DragActor</code>
+	 * {@link UIElement#acceptDrag(float, float, MouseInfo)} assuming you have an instance of <code>DragActor</code>
 	 * called <code>dragActor</code>:</p>
 	 *<pre>
-	 *{@literal @}Override
-	 *public DragActor acceptDrag(float x, float y, Button button, int mods) {
-	 *    if(dragActor.notifyMouseDown(x, y, button, mods))
+	 *public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
+	 *    if(dragActor.startDrag(x, y, mouse))
 	 *        return dragActor;
 	 *    else
 	 *        return null;
@@ -41,9 +43,9 @@ public interface DragActor {
 	 * @param mouse mouse button and modifier key information of the related mouse-down event
 	 * @return <code>true</code> if the drag action is started, <code>false</code> if it has been rejected
 	 * 
-	 * @see UIElement#acceptDrag(float, float, MouseEvent)
+	 * @see UIElement#acceptDrag(float, float, MouseInfo)
 	 */
-	public boolean notifyMouseDown(float x, float y, MouseInfo mouse);
+	public boolean startDrag(float x, float y, MouseInfo mouse);
 
 	/**
 	 * Implements mouse-drag event handler.
@@ -64,9 +66,6 @@ public interface DragActor {
 	 * {@link UIElement#rootToLocalX(float)} and {@link UIElement#rootToLocalY(float)}.
 	 * The position is reported in addition to the change in position to avoid "drift" effect.</p>
 	 * 
-	 * <p>This method is called from the UI (Swing) thread, therefore can request {@link UIElement#repaint()}
-	 * if needed.</p>
-	 * 
 	 * @param rx current mouse horizontal position in root coordinates
 	 * @param ry current mouse vertical position in root coordinates
 	 * @param drx change in horizontal mouse position since the previous mouse-move event in root (pixel) coordinates 
@@ -75,7 +74,7 @@ public interface DragActor {
 	 * 
 	 * @return <code>false</code> if the drag action has been cancelled, <code>true</code> if the drag should continue 
 	 */
-	public boolean notifyMouseMove(float rx, float ry, float drx, float dry, MouseInfo mouse);
+	public boolean onMouseDrag(float rx, float ry, float drx, float dry, MouseInfo mouse);
 
 	/**
 	 * Implements mouse-up (drag finished) event handler. 
@@ -95,6 +94,23 @@ public interface DragActor {
 	 * @param mouse mouse button and modifier key information of the related mouse-up event
 	 * @param target UI element under mouse, which may be different from the drag initiator 
 	 */
-	public void notifyMouseUp(float rx, float ry, MouseInfo mouse, UIElement target);
+	public default void onDragFinish(float rx, float ry, MouseInfo mouse, UIElement target) {
+		// does nothing by default
+	}
+
+	/**
+	 * Implements cancel event handler.
+	 * 
+	 * <p>This handler is called when the drag is cancelled programmatically without a mouse event trigger.
+	 * Mouse position <code>rx, ry</code> corresponds to the previous mouse-drag event position.</p>
+	 * 
+	 * <p>Default implementation does nothing.</p>
+	 * 
+	 * @param rx latest horizontal mouse position in root coordinates
+	 * @param ry latest vertical mouse position in root coordinates
+	 */
+	public default void onDragCancel(float rx, float ry) {
+		// does nothing by default
+	}
 
 }

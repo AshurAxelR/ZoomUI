@@ -28,8 +28,8 @@ public class UIColorView extends UIContainer {
 		
 		protected DragActor dragActor = new DragPointActor(this) {
 			@Override
-			public boolean notifyMouseMove(float rx, float ry, float drx, float dry, MouseInfo mouse) {
-				super.notifyMouseMove(rx, ry, drx, dry, mouse);
+			public boolean onMouseDrag(float rx, float ry, float drx, float dry, MouseInfo mouse) {
+				super.onMouseDrag(rx, ry, drx, dry, mouse);
 				float pix = getPixelSize();
 				updateHover(posx, posy, pix);
 				pickColor(pix);
@@ -38,8 +38,8 @@ public class UIColorView extends UIContainer {
 			}
 			
 			@Override
-			public void notifyMouseUp(float rx, float ry, MouseInfo mouse, UIElement target) {
-				super.notifyMouseUp(rx, ry, mouse, target);
+			public void onDragFinish(float rx, float ry, MouseInfo mouse, UIElement target) {
+				super.onDragFinish(rx, ry, mouse, target);
 				if(!isInside(posx, posy)) {
 					hoverx = -1;
 					hovery = -1;
@@ -149,7 +149,7 @@ public class UIColorView extends UIContainer {
 		
 		@Override
 		public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
-			if(dragActor.notifyMouseDown(x, y, mouse))
+			if(dragActor.startDrag(x, y, mouse))
 				return dragActor;
 			else
 				return null;

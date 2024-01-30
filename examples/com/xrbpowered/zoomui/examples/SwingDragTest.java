@@ -46,7 +46,7 @@ public class SwingDragTest extends UIContainer {
 
 	@Override
 	public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
-		if(dragActor.notifyMouseDown(x, y, mouse))
+		if(dragActor.startDrag(x, y, mouse))
 			return dragActor;
 		else
 			return null;
