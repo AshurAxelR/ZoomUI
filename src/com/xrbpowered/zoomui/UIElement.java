@@ -135,7 +135,7 @@ public abstract class UIElement {
 	}
 
 	public void invalidateTabIndex() {
-		getRoot().tabIndex().invalidate();
+		getRoot().tabIndex.invalidate();
 	}
 
 	/**

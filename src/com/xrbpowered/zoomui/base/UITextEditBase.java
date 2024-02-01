@@ -168,7 +168,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 	protected int cursorLineIndex = -1;
 
 	protected int displayLine = 0;
-	protected float pixelScale = 0;
+	protected float pixelSize = 0;
 	protected int lineHeight = 0;
 	protected int descent = 0;
 	protected int page = 0;
@@ -210,18 +210,18 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 		checkCursorLineCache();
 		int cx = x0+stringWidth(cursorLine, cursorLineStart, cursorLineStart, cursorLineStart+cursor.col);
 		if(cx-x0<minx)
-			panx = (cx-x0)*pixelScale;
+			panx = (cx-x0)*pixelSize;
 		else if(cx+x0>maxx)
-			panx += (cx+x0-maxx)*pixelScale; // FIXME error in this branch
+			panx += (cx+x0-maxx)*pixelSize; // FIXME error in this branch
 		
 		if(singleLine) {
 			pany = 0;
 		}
 		else {
 			if(displayLine>cursor.line)
-				pany = cursor.line*lineHeight*pixelScale;
+				pany = cursor.line*lineHeight*pixelSize;
 			else if(displayLine+page<=cursor.line) {
-				pany = lineHeight*(cursor.line+1)*pixelScale - getParent().getHeight();
+				pany = lineHeight*(cursor.line+1)*pixelSize - getParent().getHeight();
 			}
 		}
 		
@@ -314,7 +314,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 		descent = fm[0].getDescent();
 		tabWidth = fm[0].stringWidth("    ");
 		y0 = lineHeight*(1+displayLine)-descent;
-		x0 = (int)(4/pixelScale);
+		x0 = (int)(4/pixelSize);
 		g.graph.getClipBounds(clipBounds);
 		minx = (int)Math.floor(clipBounds.getMinX());
 		maxx = (int)Math.ceil(clipBounds.getMaxX());
@@ -326,11 +326,11 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 	public void paint(GraphAssist g) {
 		boolean focused = isFocused();
 		if(lineHeight>0 && !singleLine)
-			displayLine = (int)(panView().getPanY() / pixelScale / lineHeight);
+			displayLine = (int)(panView().getPanY() / pixelSize / lineHeight);
 		
-		pixelScale = g.startPixelMode(this);
+		pixelSize = g.startPixelMode(this);
 		
-		updateMetrics(g, Math.round(fontSizeUnscaled/pixelScale));
+		updateMetrics(g, Math.round(fontSizeUnscaled/pixelSize));
 		
 		if(singleLine) {
 			g.fillRect(minx, y0-lineHeight, maxx-minx, maxy-y0+lineHeight, colorBackground);
@@ -341,7 +341,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 				g.fillRect(minx, y0-lineHeight, x0-minx, maxy-y0+lineHeight, colorBackground);
 		}
 
-		int y = singleLine ? (int)(getParent().getHeight()/pixelScale/2f+(fm[0].getAscent()-fm[0].getDescent())/2f) : y0;
+		int y = singleLine ? (int)(getParent().getHeight()/pixelSize/2f+(fm[0].getAscent()-fm[0].getDescent())/2f) : y0;
 		int pos = 0;
 		float w = 0;
 		int lineIndex = 0;
@@ -368,8 +368,8 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 		}
 			
 		
-		w = (w+x0*2)*pixelScale;
-		float h = singleLine ? 0 : lineHeight*lines.size()*pixelScale;
+		w = (w+x0*2)*pixelSize;
+		float h = singleLine ? 0 : lineHeight*lines.size()*pixelSize;
 		if(updateSize || getWidth()!=w || getHeight()!=h) {
 			panView().setPanRangeForClient(w, h);
 			if(w<getParent().getWidth())
@@ -427,10 +427,10 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 		if(drawCursor && cursor.line==lineIndex) {
 			int cx = stringWidth(line, lineStart, lineStart, lineStart+cursor.col);
 			g.graph.setXORMode(Color.BLACK);
-			g.fillRect(x0+cx, y-lineHeight+descent, 2f/pixelScale, lineHeight, Color.WHITE);
+			g.fillRect(x0+cx, y-lineHeight+descent, 2f/pixelSize, lineHeight, Color.WHITE);
 			g.graph.setPaintMode();
 			if(cursorX<0)
-				cursorX = (x0+cx)*pixelScale;
+				cursorX = (x0+cx)*pixelSize;
 		}
 	}
 	
@@ -548,7 +548,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 	}
 	
 	protected void cursorToMouse(float x, float y) {
-		cursor.line = singleLine ? 0 : (int)(y / pixelScale / lineHeight);
+		cursor.line = singleLine ? 0 : (int)(y / pixelSize / lineHeight);
 		if(cursor.line<0)
 			cursor.line = 0;
 		if(cursor.line>=lines.size())
@@ -558,7 +558,7 @@ public class UITextEditBase<L extends UITextEditBase<L>.Line> extends UIElement 
 	}
 	
 	protected void updateCursor() {
-		cursor.col = searchCol(cursorX/pixelScale-x0);
+		cursor.col = searchCol(cursorX/pixelSize-x0);
 	}
 	
 	public void deselect() {

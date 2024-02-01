@@ -21,13 +21,6 @@ public class TabIndex {
 		this.base = base;
 	}
 	
-	public void copyState(TabIndex src) {
-		this.stickyFocus = src.stickyFocus;
-		this.uiFocused = src.uiFocused;
-		this.lastSelectedIndex = src.lastSelectedIndex;
-		this.invalidList = true;
-	}
-	
 	public void setStickyFocus(KeyInputHandler tab) {
 		if(tab.asElement()==null)
 			throw new InvalidParameterException();

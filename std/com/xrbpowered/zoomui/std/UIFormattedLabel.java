@@ -311,12 +311,10 @@ public class UIFormattedLabel extends UIContainer {
 	private final JEditorPane htmlAssist;
 	private String html = null;
 	
-	public float drawFormattedString(GraphAssist g, String html, float pixelScale, float x, float y, float w) {
-		g.pushTx();
-		g.clearTransform();
-		g.translate(g.getTx().getTranslateX(), g.getTx().getTranslateY());
+	public float drawFormattedString(GraphAssist g, String html, float x, float y, float w) {
+		float pixelSize = g.startPixelMode(this, g.isAntialisingOn());
 		
-		float scale = 1/pixelScale;
+		float scale = 1/pixelSize;
 		if(htmlKit.rebuildUI || htmlKit.scale!=scale) {
 			Font font = htmlKit.defaultFont;
 			htmlAssist.setFont(font.deriveFont(font.getSize() * scale));
@@ -334,8 +332,8 @@ public class UIFormattedLabel extends UIContainer {
 		
 		htmlAssist.paint(g.graph);
 		
-		g.popTx();
-		return (float)htmlAssist.getPreferredSize().getHeight() * pixelScale;
+		g.finishPixelMode();
+		return (float)htmlAssist.getPreferredSize().getHeight() * pixelSize;
 	}
 
 	public UIFormattedLabel(UIContainer parent, String html) {
@@ -369,7 +367,7 @@ public class UIFormattedLabel extends UIContainer {
 
 	@Override
 	public void paintBackground(GraphAssist g) {
-		float h = drawFormattedString(g, html, getPixelSize(), getX(), getY(), getWidth());
+		float h = drawFormattedString(g, html, getX(), getY(), getWidth());
 		setSize(getWidth(), h);
 	}
 

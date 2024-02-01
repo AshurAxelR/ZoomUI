@@ -30,6 +30,7 @@ public interface DragActor {
 	 * {@link UIElement#acceptDrag(float, float, MouseInfo)} assuming you have an instance of <code>DragActor</code>
 	 * called <code>dragActor</code>:</p>
 	 *<pre>
+	 *{@literal @}Override
 	 *public DragActor acceptDrag(float x, float y, MouseInfo mouse) {
 	 *    if(dragActor.startDrag(x, y, mouse))
 	 *        return dragActor;

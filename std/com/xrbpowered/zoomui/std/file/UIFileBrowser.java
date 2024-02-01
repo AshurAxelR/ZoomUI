@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.io.File;
 
 import com.xrbpowered.zoomui.GraphAssist;
-import com.xrbpowered.zoomui.HotKeyMap;
 import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIContainer;
 import com.xrbpowered.zoomui.UIElement;
@@ -186,7 +185,7 @@ public class UIFileBrowser extends UIContainer {
 					resultHandler.onCancel();
 			}
 		};
-		getRoot().hotKeys = new HotKeyMap()
+		getRoot().hotKeys
 				.addOk(btnOk)
 				.addCancel(btnCancel);
 		

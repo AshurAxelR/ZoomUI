@@ -27,11 +27,20 @@ public class HotKeyMap implements KeyInputHandler {
 			map.put(key, action);
 		return this;
 	}
+
+	public HotKeyMap addAll(HotKeyMap other) {
+		map.putAll(other.map);
+		return this;
+	}
 	
 	public ActionHandler remove(int code, int mods) {
 		return map.remove(keyHash(code, mods));
 	}
-	
+
+	public void removeAll() {
+		map.clear();
+	}
+
 	@Override
 	public boolean onKeyPressed(char c, int code, InputInfo input) {
 		ActionHandler action = map.get(keyHash(code, input.mods));

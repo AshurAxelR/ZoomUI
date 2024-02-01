@@ -278,7 +278,7 @@ public class UIPanView extends UIContainer {
 
 	@Override
 	protected void paintChildren(GraphAssist g) {
-		if(g.pushClip(0, 0, getWidth(), getHeight())) {
+		if(g.pushClip(this)) {
 			g.pushTx();
 			applyTransform(g);
 			super.paintChildren(g);

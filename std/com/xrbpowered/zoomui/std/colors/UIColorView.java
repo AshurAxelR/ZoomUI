@@ -92,29 +92,30 @@ public class UIColorView extends UIContainer {
 			if(buffer!=null)
 				g.graph.drawImage(buffer, 0, 0, null);
 			
-			g.pushClip(0, 0, size, size);
-			g.pushAntialiasing(true);
-			g.pushPureStroke(true);
-
-			int r = (int)(colorDotRadius/pix);
-			g.resetStroke();
-			g.setColor(getBrightness()<0.67f ? Color.WHITE : Color.BLACK);
-			g.graph.drawOval((int)(valuex*size)-r, (int)(valuey*size)-r, r*2, r*2);
-			
-			if(hoverx>=0 && hovery>=0) {
-				g.setStroke(3f/pix);
-				g.setColor(new Color(0x55000000, true));
-				g.graph.drawOval(hoverx-r, hovery-r, r*2, r*2);
-				g.setColor(getColorAtHover(size));
-				g.graph.fillOval(hoverx-r, hovery-r, r*2, r*2);
+			if(g.pushClip(0, 0, size, size)) {
+				g.pushAntialiasing(true);
+				g.pushPureStroke(true);
+	
+				int r = (int)(colorDotRadius/pix);
 				g.resetStroke();
-				g.setColor(Color.WHITE);
-				g.graph.drawOval(hoverx-r, hovery-r, r*2, r*2);
+				g.setColor(getBrightness()<0.67f ? Color.WHITE : Color.BLACK);
+				g.graph.drawOval((int)(valuex*size)-r, (int)(valuey*size)-r, r*2, r*2);
+				
+				if(hoverx>=0 && hovery>=0) {
+					g.setStroke(3f/pix);
+					g.setColor(new Color(0x55000000, true));
+					g.graph.drawOval(hoverx-r, hovery-r, r*2, r*2);
+					g.setColor(getColorAtHover(size));
+					g.graph.fillOval(hoverx-r, hovery-r, r*2, r*2);
+					g.resetStroke();
+					g.setColor(Color.WHITE);
+					g.graph.drawOval(hoverx-r, hovery-r, r*2, r*2);
+				}
+				
+				g.popPureStroke();
+				g.popAntialiasing();
+				g.popClip();
 			}
-			
-			g.popPureStroke();
-			g.popAntialiasing();
-			g.popClip();
 
 			g.resetStroke();
 			g.drawRect(0, 0, size-1, size-1, colorBorder);

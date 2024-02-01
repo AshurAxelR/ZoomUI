@@ -3,6 +3,7 @@ package com.xrbpowered.zoomui.base;
 import com.xrbpowered.zoomui.GraphAssist;
 import com.xrbpowered.zoomui.MouseInfo;
 import com.xrbpowered.zoomui.UIContainer;
+import com.xrbpowered.zoomui.UIElement;
 
 /**
  * UI container that allows the user to zoom in and out. Also inherits all panning functionality from {@link UIPanView}.

@@ -60,12 +60,9 @@ public class UIFitScaleContainer extends UIContainer {
 	@Override
 	protected void paintChildren(GraphAssist g) {
 		g.graph.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		if(g.pushClip(0, 0, getWidth(), getHeight())) {
-			g.pushTx();
-			g.scale(scale);
-			super.paintChildren(g);
-			g.popTx();
-			g.popClip();
-		}
+		g.pushTx();
+		g.scale(scale);
+		super.paintChildren(g);
+		g.popTx();
 	}
 }

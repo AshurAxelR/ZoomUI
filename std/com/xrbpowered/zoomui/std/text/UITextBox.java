@@ -40,7 +40,7 @@ public class UITextBox extends UIPanView {
 			public boolean onKeyPressed(char c, int code, InputInfo input) {
 				switch(code) {
 					case KeyEvent.VK_TAB: {
-							KeyInputHandler tab = getRoot().tabIndex().selectTab(TabIndex.getDir(input));
+							KeyInputHandler tab = getRoot().tabIndex.selectTab(TabIndex.getDir(input));
 							if(tab!=this) {
 								if(!onEnter())
 									onEscape();

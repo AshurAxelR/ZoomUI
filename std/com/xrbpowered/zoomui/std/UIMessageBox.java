@@ -63,7 +63,7 @@ public class UIMessageBox extends UIContainer implements KeyInputHandler {
 		this.options = options;
 		this.icon = icon;
 		
-		HotKeyMap hotKeys = new HotKeyMap();
+		HotKeyMap hotKeys = getRoot().hotKeys;
 		this.buttons = new UIButton[options.length];
 		for(int i=0; i<buttons.length; i++) {
 			final MessageResult res = options[i];
@@ -75,7 +75,6 @@ public class UIMessageBox extends UIContainer implements KeyInputHandler {
 			};
 			hotKeys.add(res.keyCode, 0, buttons[i]);
 		}
-		getRoot().hotKeys = hotKeys;
 			
 		this.label = new UIFormattedLabel(this, message);
 		this.label.setSize(0, 0);
