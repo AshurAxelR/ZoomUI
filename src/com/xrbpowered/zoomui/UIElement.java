@@ -202,7 +202,7 @@ public abstract class UIElement {
 	 * @return <code>true</code> if the element is visible within the clip rectangle, otherwise <code>false</code>
 	 */
 	public boolean isVisible(Rectangle clip) {
-		return visible && (clip==null ||
+		return isVisible() && (clip==null ||
 				!(clip.x - x>getWidth() || clip.x - x + clip.width<0 || clip.y - y>getHeight()
 						|| clip.y - y + clip.height<0));
 	}
