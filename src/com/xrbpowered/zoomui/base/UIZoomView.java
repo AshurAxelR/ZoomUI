@@ -24,7 +24,16 @@ public class UIZoomView extends UIPanView {
 	 */
 	protected float scale = 1f; // TODO integer zoom steps
 
+	/**
+	 * Minimum scaling limit.
+	 * @see #getMinScale()
+	 */
 	private float minScale = 0.1f;
+
+	/**
+	 * Maximum scaling limit.
+	 * @see #getMaxScale()
+	 */
 	private float maxScale = 3.0f;
 
 	/**
@@ -45,6 +54,10 @@ public class UIZoomView extends UIPanView {
 		return mouse.mods==MouseInfo.CTRL;
 	}
 
+	/**
+	 * Updates {@link #scale} to ensure it lies within the limits
+	 * defined by {@link #minScale} and {@link #maxScale}.
+	 */
 	private void applyScaleLimits() {
 		if(scale<minScale)
 			scale = minScale;
@@ -54,15 +67,15 @@ public class UIZoomView extends UIPanView {
 
 	/**
 	 * Sets the minimum and maximum allowed zoom levels.
-	 * The value for <code>min</code> should be less or equal to 1, and <code>max</code> should be greater or equal to 1.
+	 * The value for <code>min</code> should be in the range [0, 1], and <code>max</code> should be greater or equal to 1.
 	 * Invalid values are clamped, and no exception is thrown.
 	 * 
 	 * @param min minimum scaling factor
 	 * @param max maximum scaling factor
 	 */
 	public void setScaleRange(float min, float max) {
-		this.minScale = (min>1f) ? 1f : min;
-		this.maxScale = (max<1f) ? 1f : max;
+		this.minScale = Math.min(1f, Math.max(0f, min));
+		this.maxScale = Math.max(1f, max);
 		applyScaleLimits();
 	}
 
@@ -144,6 +157,11 @@ public class UIZoomView extends UIPanView {
 	@Override
 	public void pan(float dx, float dy) {
 		super.pan(dx * scale, dy * scale);
+	}
+
+	@Override
+	public void centerAt(float x, float y) {
+		setPan(x - getWidth()/scale/2, y - getHeight()/scale/2);
 	}
 
 	@Override

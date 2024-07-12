@@ -38,9 +38,8 @@ public abstract class UIElement {
 	private final UIContainer parent;
 
 	/**
-	 * Reference to the root container. Can be <code>null</code>; however,
-	 * {@link #getRoot()} must not return <code>null</code>.
-	 * 
+	 * Reference to the root container. Can be <code>null</code>;
+	 * however, {@link #getRoot()} must not return <code>null</code>.
 	 * @see #getRoot()
 	 */
 	private final RootContainer root;
@@ -100,6 +99,28 @@ public abstract class UIElement {
 	 */
 	public void remove() {
 		getParent().removeChild(this);
+	}
+
+	/**
+	 * Determines whether this element can interact with mouse events.
+	 * 
+	 * <p>Non-interactive (render-only) elements are visible UI elements that do not receive any mouse events.
+	 * This is different from disabled elements in a way that all clicks simply "fall though" to other elements underneath.
+	 * In addition, non-interactive elements do not capture mouse hover events: in, out, and move.</p>
+	 * 
+	 * <p>For containers, this method does not affect container's children, which can still be interactive, and is
+	 * used to differentiate between element-like and logical containers.
+	 * An element-like interactive container acts as an element itself producing mouse events when the cursor is within its bounds.
+	 * A non-interactive (logical) container only passes mouse events to its children, but does not produce mouse hover
+	 * and button events if the mouse misses all its children.</p>
+	 * 
+	 * <p>Returns <code>true</code> for interactive elements (default) and <code>false</code> for non-interactive;
+	 * child classes may override this method.</p>
+	 * 
+	 * @return <code>true</code> if this element or container is interactive, or <code>false</code> if it is non-interactive
+	 */
+	public boolean isInteractive() {
+		return true;
 	}
 
 	/**
@@ -196,15 +217,79 @@ public abstract class UIElement {
 	}
 
 	/**
-	 * Determines whether the element is visible and overlaps the specified clipping area.
-	 * If clipping area is <code>null</code>, the overlap is always true, and the result depends only on the visibility flag {@link #isVisible()}.
+	 * Determines whether the element is visible and its render bounds overlap the specified clipping area.
+	 * 
+	 * <p>If clipping area is <code>null</code>, the overlap is always true, and the result depends only
+	 * on the visibility flag {@link #isVisible()}. Element's render bounds are determined by
+	 * {@link #getPaintMinX()}, {@link #getPaintMaxX()}, {@link #getPaintMinY()}, and {@link #getPaintMaxY()}.</p>
+	 * 
 	 * @param clip clipping rectangle in parent space or <code>null</code>
 	 * @return <code>true</code> if the element is visible within the clip rectangle, otherwise <code>false</code>
 	 */
 	public boolean isVisible(Rectangle clip) {
 		return isVisible() && (clip==null ||
-				!(clip.x - x>getWidth() || clip.x - x + clip.width<0 || clip.y - y>getHeight()
-						|| clip.y - y + clip.height<0));
+				(clip.x<getPaintMaxX() && clip.x + clip.width>getPaintMinX() &&
+						clip.y<getPaintMaxY() && clip.y + clip.height>getPaintMinY()));
+	}
+
+	/**
+	 * Returns the element's left render bound.
+	 * This method is used in {@link #isVisible(Rectangle)} to determine the overlap with the clipping area. 
+	 * 
+	 * <p>By default, render bounds equal to element bounds as returned by by {@link #getX()}, {@link #getY()},
+	 * {@link #getWidth()} and {@link #getHeight()}. Subclasses may override this method to define
+	 * a different render bounds, for example, if the element renders something outside its hitbox or if container's children
+	 * are positioned and visible outside the container bounds.</p>
+	 * 
+	 * @return left coordinate in parent space
+	 */
+	public float getPaintMinX() {
+		return getX();
+	}
+
+	/**
+	 * Returns the element's right render bound.
+	 * This method is used in {@link #isVisible(Rectangle)} to determine the overlap with the clipping area. 
+	 * 
+	 * <p>By default, render bounds equal to element bounds as returned by by {@link #getX()}, {@link #getY()},
+	 * {@link #getWidth()} and {@link #getHeight()}. Subclasses may override this method to define
+	 * a different render bounds, for example, if the element renders something outside its hitbox or if container's children
+	 * are positioned and visible outside the container bounds.</p>
+	 * 
+	 * @return right coordinate in parent space
+	 */
+	public float getPaintMaxX() {
+		return getX() + getWidth();
+	}
+
+	/**
+	 * Returns the element's top render bound.
+	 * This method is used in {@link #isVisible(Rectangle)} to determine the overlap with the clipping area. 
+	 * 
+	 * <p>By default, render bounds equal to element bounds as returned by by {@link #getX()}, {@link #getY()},
+	 * {@link #getWidth()} and {@link #getHeight()}. Subclasses may override this method to define
+	 * a different render bounds, for example, if the element renders something outside its hitbox or if container's children
+	 * are positioned and visible outside the container bounds.</p>
+	 * 
+	 * @return top coordinate in parent space
+	 */
+	public float getPaintMinY() {
+		return getY();
+	}
+
+	/**
+	 * Returns the element's bottom render bound.
+	 * This method is used in {@link #isVisible(Rectangle)} to determine the overlap with the clipping area. 
+	 * 
+	 * <p>By default, render bounds equal to element bounds as returned by by {@link #getX()}, {@link #getY()},
+	 * {@link #getWidth()} and {@link #getHeight()}. Subclasses may override this method to define
+	 * a different render bounds, for example, if the element renders something outside its hitbox or if container's children
+	 * are positioned and visible outside the container bounds.</p>
+	 * 
+	 * @return bottom coordinate in parent space
+	 */
+	public float getPaintMaxY() {
+		return getY() + getHeight();
 	}
 
 	/**
@@ -260,20 +345,22 @@ public abstract class UIElement {
 	}
 
 	/**
-	 * Determines if the point is visible within element's bounds; always <code>false</code> for invisible elements.
-	 * This method is primarily used for selecting mouse event targets.
+	 * Determines if the point is within element's hit box; always <code>false</code> for invisible
+	 * or non-interactive elements. This method is used for selecting mouse event targets.
 	 * 
-	 * <p>Element's bounds are in parent space and determined by {@link #getX()}, {@link #getY()}, {@link #getWidth()} and {@link #getHeight()} of the element.
-	 * Child classes may override this method to create "unbounded" elements.</p>
+	 * <p>Element's hit box are in parent space and determined by {@link #getX()}, {@link #getY()},
+	 * {@link #getWidth()} and {@link #getHeight()} of the element.
+	 * Child classes may override this method to create "unbounded" elements or elements with non-rectangular hit boxes.</p>
 	 * 
 	 * @param px horizontal coordinate of the point in parent space
 	 * @param py vertical coordinate of the point in parent space
-	 * @return <code>true</code> if the element is visible and the point lies within its bounds, otherwise <code>false</code>.
+	 * @return <code>true</code> if the point hits this element's interactive area, otherwise <code>false</code>.
 	 * 
 	 * @see #isVisible()
 	 */
-	public boolean isInside(float px, float py) {
-		return isVisible() && px>=getX() && py>=getY() && px<=(getX() + getWidth()) && py<=(getY() + getHeight());
+	public boolean isHit(float px, float py) {
+		return isVisible() && isInteractive() &&
+				px>=getX() && py>=getY() && px<=getX() + getWidth() && py<=getY() + getHeight();
 	}
 
 	/**
@@ -400,8 +487,7 @@ public abstract class UIElement {
 	}
 
 	/**
-	 * Determines whether the hover status is set. Hover status is managed by the
-	 * default mouse-in and mouse-out event handlers.
+	 * Determines whether the hover status is set. Hover status is managed by the default mouse-in and mouse-out event handlers.
 	 * @return current hover status
 	 * @see #resetHover()
 	 */
@@ -475,14 +561,14 @@ public abstract class UIElement {
 	 * will be considered "above" in the hierarchy.</p>
 	 * 
 	 * <p>Default implementation for <code>UIElement</code> checks if the point lies within element's bounds
-	 * via {@link #isInside(float, float)} method and returns <code>null</code> if it doesn't.</p>
+	 * via {@link #isHit(float, float)} method and returns <code>null</code> if it doesn't.</p>
 	 * 
 	 * @param px horizontal coordinate in parent space
 	 * @param py vertical coordinate in parent space
 	 * @return top visible UI element or <code>null</code> if there is no UI element in this location.
 	 */
 	public UIElement getElementAt(float px, float py) {
-		if(isInside(px, py))
+		if(isHit(px, py))
 			return this;
 		else
 			return null;
@@ -496,7 +582,7 @@ public abstract class UIElement {
 	 * @return UI element in the tree that handled the event, or <code>null</code> if the event was not handled
 	 */
 	UIElement notifyMouseDown(float px, float py, MouseInfo mouse) {
-		if(isInside(px, py) && onMouseDown(parentToLocalX(px), parentToLocalY(py), mouse))
+		if(isHit(px, py) && onMouseDown(parentToLocalX(px), parentToLocalY(py), mouse))
 			return this;
 		else
 			return null;
@@ -511,7 +597,7 @@ public abstract class UIElement {
 	 * @return UI element in the tree that handled the event, or <code>null</code> if the event was not handled
 	 */
 	UIElement notifyMouseUp(float px, float py, MouseInfo mouse, UIElement initiator) {
-		if(isInside(px, py) && onMouseUp(parentToLocalX(px), parentToLocalY(py), mouse, initiator))
+		if(isHit(px, py) && onMouseUp(parentToLocalX(px), parentToLocalY(py), mouse, initiator))
 			return this;
 		else
 			return null;
@@ -526,7 +612,7 @@ public abstract class UIElement {
 	 * @return UI element in the tree that handled the event, or <code>null</code> if the event was not handled
 	 */
 	UIElement notifyMouseScroll(float px, float py, float delta, MouseInfo mouse) {
-		if(isInside(px, py) && onMouseScroll(parentToLocalX(px), parentToLocalY(py), delta, mouse))
+		if(isHit(px, py) && onMouseScroll(parentToLocalX(px), parentToLocalY(py), delta, mouse))
 			return this;
 		else
 			return null;

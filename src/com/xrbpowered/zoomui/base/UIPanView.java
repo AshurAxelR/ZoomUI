@@ -78,14 +78,16 @@ public class UIPanView extends UIContainer {
 	protected float panY = 0;
 
 	/**
-	 * Horizontal pan limit. See {@link #getMaxPanX()}
+	 * Horizontal pan limit.
+	 * @see #getMaxPanX()
 	 */
-	protected int maxPanX = UNLIMITED;
+	private int maxPanX = UNLIMITED;
 
 	/**
-	* Vertical pan limit. See {@link #getMaxPanY()}
+	* Vertical pan limit.
+	* @see #getMaxPanY()
 	*/
-	protected int maxPanY = UNLIMITED;
+	private int maxPanY = UNLIMITED;
 
 	/**
 	* Constructor, see {@link UIElement#UIElement(UIContainer)}.
@@ -104,6 +106,10 @@ public class UIPanView extends UIContainer {
 		return (mouse.eventButton==MouseInfo.RIGHT);
 	}
 
+	/**
+	 * Updates {@link #panX} and {@link #panY} to ensure they lie within the limits
+	 * defined by {@link #maxPanX} and {@link #maxPanY}.
+	 */
 	private void applyPanLimits() {
 		if(maxPanX!=DISABLED) {
 			if(maxPanX>0) {
@@ -153,6 +159,15 @@ public class UIPanView extends UIContainer {
 		panX -= dx;
 		panY -= dy;
 		applyPanLimits();
+	}
+
+	/**
+	 * Pans this view so the specified location is at its centre.
+	 * @param x horizontal coordinate
+	 * @param y vertical coordinate
+	 */
+	public void centerAt(float x, float y) {
+		setPan(x - getWidth()/2, y - getHeight()/2);
 	}
 
 	/**
@@ -268,6 +283,50 @@ public class UIPanView extends UIContainer {
 	}
 
 	/**
+	 * Returns the leftmost horizontal coordinate visible in this container.
+	 * Can be used for better culling and optimisation.
+	 * <p>The returned coordinate is in transformed local space. Children of this view
+	 * can further transform it into their local space using <code>parentToLocalX(getViewMinX())</code>.</p>
+	 * @return smallest horizontal coordinate in transformed local space
+	 */
+	public float getViewMinX() {
+		return parentToLocalX(0);
+	}
+
+	/**
+	 * Returns the rightmost horizontal coordinate visible in this container.
+	 * Can be used for better culling and optimisation.
+	 * <p>The returned coordinate is in transformed local space. Children of this view
+	 * can further transform it into their local space using <code>parentToLocalX(getViewMaxX())</code>.</p>
+	 * @return largest horizontal coordinate in transformed local space
+	 */
+	public float getViewMaxX() {
+		return parentToLocalX(getWidth());
+	}
+
+	/**
+	 * Returns the topmost vertical coordinate visible in this container.
+	 * Can be used for better culling and optimisation.
+	 * <p>The returned coordinate is in transformed local space. Children of this view
+	 * can further transform it into their local space using <code>parentToLocalY(getViewMinY())</code>.</p>
+	 * @return smallest vertical coordinate in transformed local space
+	 */
+	public float getViewMinY() {
+		return parentToLocalY(0);
+	}
+
+	/**
+	 * Returns the lowest vertical coordinate visible in this container.
+	 * Can be used for better culling and optimisation.
+	 * <p>The returned coordinate is in transformed local space. Children of this view
+	 * can further transform it into their local space using <code>parentToLocalY(getViewMaxY())</code>.</p>
+	 * @return largest vertical coordinate in transformed local space
+	 */
+	public float getViewMaxY() {
+		return parentToLocalY(getHeight());
+	}
+
+	/**
 	 * Updates the transform in <code>g</code> to convert to the transformed local space.
 	 * This method does not need to save the old transform.
 	 * @param g wrapper for {@link Graphics2D} canvas in local coordinates
@@ -289,7 +348,7 @@ public class UIPanView extends UIContainer {
 
 	@Override
 	public UIElement getElementAt(float px, float py) {
-		if(isInside(px, py))
+		if(isHit(px, py))
 			return super.getElementAt(px, py);
 		else
 			return null;
@@ -297,7 +356,7 @@ public class UIPanView extends UIContainer {
 
 	@Override
 	public UIElement notifyMouseDown(float px, float py, MouseInfo mouse) {
-		if(isInside(px, py))
+		if(isHit(px, py))
 			return super.notifyMouseDown(px, py, mouse);
 		else
 			return null;
@@ -305,7 +364,7 @@ public class UIPanView extends UIContainer {
 
 	@Override
 	public UIElement notifyMouseUp(float px, float py, MouseInfo mouse, UIElement initiator) {
-		if(isInside(px, py))
+		if(isHit(px, py))
 			return super.notifyMouseUp(px, py, mouse, initiator);
 		else
 			return null;
@@ -313,7 +372,7 @@ public class UIPanView extends UIContainer {
 
 	@Override
 	public UIElement notifyMouseScroll(float px, float py, float delta, MouseInfo mouse) {
-		if(isInside(px, py))
+		if(isHit(px, py))
 			return super.notifyMouseScroll(px, py, delta, mouse);
 		else
 			return null;

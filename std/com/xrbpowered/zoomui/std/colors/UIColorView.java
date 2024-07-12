@@ -40,7 +40,7 @@ public class UIColorView extends UIContainer {
 			@Override
 			public void onDragFinish(float rx, float ry, MouseInfo mouse, UIElement target) {
 				super.onDragFinish(rx, ry, mouse, target);
-				if(!isInside(posx, posy)) {
+				if(!isHit(posx, posy)) {
 					hoverx = -1;
 					hovery = -1;
 					repaint();

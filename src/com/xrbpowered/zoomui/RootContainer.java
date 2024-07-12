@@ -76,6 +76,12 @@ public class RootContainer extends UILayersContainer implements Measurable {
 
 	private Color clientBorderColor = null;
 
+	/**
+	 * Class constructor.
+	 * Root container is automatically created in the window constructor using {@link UIWindow#createContainer()}.
+	 * @param panel parent window
+	 * @param scale UI scaling factor
+	 */
 	protected RootContainer(UIWindow window, float scale) {
 		super(null);
 		this.window = window;
@@ -135,8 +141,8 @@ public class RootContainer extends UILayersContainer implements Measurable {
 			float y = getWindow().screenToRootY(prevMouseY);
 			drag.onDragCancel(x, y);
 			drag = null;
+			initiatorInfo = null;
 		}
-		initiatorInfo = null;
 	}
 
 	public boolean onKeyPressed(char c, int code, InputInfo input) {
@@ -349,7 +355,7 @@ public class RootContainer extends UILayersContainer implements Measurable {
 	}
 
 	@Override
-	public boolean isInside(float px, float py) {
+	public boolean isHit(float px, float py) {
 		return true;
 	}
 

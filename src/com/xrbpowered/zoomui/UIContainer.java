@@ -23,9 +23,12 @@ import java.util.ArrayList;
  *
  * @see UIElement
  */
-public abstract class UIContainer extends UIElement {
+public class UIContainer extends UIElement {
 
-	protected ArrayList<UIElement> children = new ArrayList<>();
+	/**
+	 * List of child elements in paint order.
+	 */
+	protected ArrayList<UIElement> children = new ArrayList<>(); // requires O(1) for get() and size()
 
 	/**
 	 * Constructor, see {@link UIElement#UIElement(UIContainer)}.
