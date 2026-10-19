@@ -160,7 +160,7 @@ public class UIColorBrowser extends UIContainer {
 			@Override
 			public void onAction() {
 				if(resultHandler!=null) {
-					resultHandler.onResult(view.getColor());
+					resultHandler.onResult(getColor());
 				}
 			}
 		};
@@ -184,6 +184,7 @@ public class UIColorBrowser extends UIContainer {
 		view.setColor(color);
 		if(pickAlpha)
 			alphaSlider.setValue(color.getAlpha()/255f);
+		updateText();
 	}
 	
 	protected int numChan() {
@@ -196,6 +197,10 @@ public class UIColorBrowser extends UIContainer {
 	
 	public int getRGB() {
 		return UIColorBox.colorWithAlpha(view.getColor().getRGB(), getAlpha());
+	}
+	
+	public Color getColor() {
+		return new Color(getRGB(), pickAlpha);
 	}
 	
 	protected boolean enterHSB() {
@@ -306,7 +311,7 @@ public class UIColorBrowser extends UIContainer {
 			}
 		}
 		getRoot().resetFocus();
-		colorBox.color = new Color(getRGB(), pickAlpha);
+		colorBox.color = getColor();
 		if(pickAlpha)
 			alphaSlider.resetBuffer();
 	}
